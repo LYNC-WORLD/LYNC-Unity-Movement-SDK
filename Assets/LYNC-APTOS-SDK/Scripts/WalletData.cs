@@ -121,7 +121,7 @@ namespace LYNC.Wallet
                 LyncManager.Instance.StartCoroutine(API.CoroutineGetAptosProfile("http://localhost:5000/api/users/profile", new AptosProfileData(aptosEmail, aptosFirebaseUid),
                 async wallet =>
                 {
-                    var loadedWallet = new WalletData(wallet, false);
+                    var loadedWallet = new WalletData(wallet, loadedLoginDate, false);
                     try
                     {
                         await loadedWallet.GetBalance();
