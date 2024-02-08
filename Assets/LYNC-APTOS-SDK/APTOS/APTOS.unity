@@ -669,6 +669,21 @@ MonoBehaviour:
   mint: {fileID: 1632990412}
   loginUrl: http://localhost:5173/auth
   backendUrl: http://localhost:5000
+  customTransaction:
+    contractAddress: address
+    contractName: cName
+    functionName: fName
+    arguments:
+    - argument: 12
+      argumentType: number
+    - argument: test
+      argumentType: byteArray
+    - argument: st
+      argumentType: string
+    args: 
+    publicAddress: 
+    privateAddress: 
+    firebaseUid: 
 --- !u!4 &890959727
 Transform:
   m_ObjectHideFlags: 0

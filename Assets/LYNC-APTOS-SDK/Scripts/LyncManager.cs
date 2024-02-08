@@ -15,8 +15,6 @@ namespace LYNC
         //
         public string LyncAPIKey;
         [Space]
-        public string dappAPIKey;
-        public string web3AuthClientID;
         public string xApiKey;
 
         //

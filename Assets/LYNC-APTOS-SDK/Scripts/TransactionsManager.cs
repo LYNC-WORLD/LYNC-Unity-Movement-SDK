@@ -13,12 +13,14 @@ namespace LYNC.Transactions
             middleware = blockchainMiddleware;
         }
 
-        public async Task<TransactionData> SendTransaction(TRANSACTIONS transactionType)
+        public async Task<TransactionData> SendTransaction(TRANSACTIONS transactionType, CustomTransaction customTransaction = null)
         {
             var tcs = new TaskCompletionSource<TransactionData>();
-            middleware.SendTransaction(transactionType, txData => { tcs.SetResult(txData); }, err => { tcs.SetException(new Exception(err)); });
+            middleware.SendTransaction(transactionType, customTransaction, txData => { tcs.SetResult(txData); }, err => { tcs.SetException(new Exception(err)); });
 
             return await tcs.Task;
         }
+
+
     }
 }

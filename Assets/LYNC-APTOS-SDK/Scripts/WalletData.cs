@@ -10,6 +10,8 @@ namespace LYNC.Wallet
         public System.DateTime loginDate { private set; get; }
         public AptosWallet AptosWallet = null;
 
+        public static WalletData ConnectedWalletInstance;
+
         public bool WalletConnected
         {
             private set { WalletConnected = value; }
@@ -23,6 +25,8 @@ namespace LYNC.Wallet
             AptosWallet = aptosWallet;
             loginDate = System.DateTime.Now;
             if (save) Save();
+
+            ConnectedWalletInstance = this;
         }
 
         public WalletData(AptosWallet aptosWallet, System.DateTime loginDate, bool save = true)
@@ -33,6 +37,7 @@ namespace LYNC.Wallet
             this.loginDate = loginDate;
             if (save) Save();
 
+            ConnectedWalletInstance = this;
             CheckSessionExpiration();
         }
 
@@ -60,7 +65,10 @@ namespace LYNC.Wallet
             AptosFirebaseUid = aptosFirebaseUid;
             var tcs = new TaskCompletionSource<WalletData>();
             if (AptosWallet != null)
+            {
+                ConnectedWalletInstance = this;
                 tcs.SetResult(this);
+            }
             else
             {
                 if (!string.IsNullOrEmpty(aptosEmail) && !string.IsNullOrEmpty(aptosFirebaseUid))
@@ -77,6 +85,8 @@ namespace LYNC.Wallet
                         {
                             Debug.LogError(e);
                         }
+
+                        ConnectedWalletInstance = this;
                         tcs.SetResult(this);
                     }, msg =>
                     {
@@ -130,6 +140,8 @@ namespace LYNC.Wallet
                     {
                         Debug.LogError(e);
                     }
+
+                    ConnectedWalletInstance = loadedWallet;
                     tcs.SetResult(loadedWallet);
                 }, msg =>
                 {

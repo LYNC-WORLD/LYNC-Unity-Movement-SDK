@@ -17,6 +17,10 @@ public class APTOSExample : MonoBehaviour
 
     public static APTOSExample Instance;
 
+    [Space]
+    [Header("Transaction")]
+    public CustomTransaction customTransaction;
+
     private void OnEnable()
     {
         API.BackendUrl = backendUrl;
@@ -80,7 +84,7 @@ public class APTOSExample : MonoBehaviour
             mint.interactable = false;
             try
             {
-                TransactionData txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.FUND);
+                TransactionData txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.FUND, customTransaction);
                 messageTxt.text += "\nFund success, hash = " + txData.data.transactionHash;
                 await walletData.GetBalance();
                 Populate(walletData);
@@ -93,7 +97,7 @@ public class APTOSExample : MonoBehaviour
 
             try
             {
-                TransactionData txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.MINT);
+                TransactionData txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.MINT, customTransaction);
                 messageTxt.text += "\nTransaction success, hash = " + txData.data.transactionHash;
                 await walletData.GetBalance();
                 Populate(walletData);
@@ -106,7 +110,7 @@ public class APTOSExample : MonoBehaviour
 
             try
             {
-                TransactionData txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.REFUND);
+                TransactionData txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.REFUND, customTransaction);
                 messageTxt.text += "\nRefund success, hash = " + txData.data.transactionHash + "\n\n";
                 await walletData.GetBalance();
                 Populate(walletData);

@@ -16,11 +16,10 @@ public class API
     public delegate void OnSuccess(TransactionData tsxData);
     public delegate void OnError(string error);
 
-    public static IEnumerator CoroutineTransaction(TRANSACTIONS transactionType, AptosWallet aptosWallet, Action<TransactionData> onSuccess, Action<string> onError)
+    public static IEnumerator CoroutineTransaction(CustomTransaction customTransaction, Action<TransactionData> onSuccess, Action<string> onError)
     {
-        string url = BackendUrl + "/api/unity/" + transactionType.ToString().ToLower();
-        Debug.Log(url);
-        UnityWebRequest webRequest = UnityWebRequest.Put(url, JsonUtility.ToJson(aptosWallet));
+        string url = BackendUrl + "/api/unity/transaction";
+        UnityWebRequest webRequest = UnityWebRequest.Put(url, customTransaction.ToJson());
         webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
         webRequest.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);

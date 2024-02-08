@@ -30,13 +30,13 @@ namespace LYNC.Transactions
             walletData = await WalletData.TryLoadSavedWallet();
         }
 
-        public async void SendTransaction(TRANSACTIONS transactionType, System.Action<TransactionData> onSuccess = null, System.Action<string> onError = null)
+        public async void SendTransaction(TRANSACTIONS transactionType, CustomTransaction customTransaction = null, System.Action<TransactionData> onSuccess = null, System.Action<string> onError = null)
         {
             try
             {
                 if (!await IsReady()) throw new System.Exception("Wallet not connected!");
 
-                StartCoroutine(API.CoroutineTransaction(transactionType, walletData.AptosWallet, onSuccess, onError));
+                StartCoroutine(API.CoroutineTransaction(customTransaction, onSuccess, onError));
             }
             catch (System.Exception e)
             {

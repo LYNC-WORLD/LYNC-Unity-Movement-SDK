@@ -45,7 +45,7 @@ namespace LYNC.Wallet
         public void StartProcess(string loginUrl, System.Action<WalletData> onSuccess)
         {
             _onSuccess = onSuccess;
-            string url = loginUrl + "?scheme=" + DeepLinkRegistration.DeepLinkUrl.Trim() + "&clientId=" + LyncManager.Instance.web3AuthClientID.Trim();
+            string url = loginUrl + "?scheme=" + DeepLinkRegistration.DeepLinkUrl.Trim();
 
             // Open auth page for standalone and mobile
             Application.OpenURL(url);
