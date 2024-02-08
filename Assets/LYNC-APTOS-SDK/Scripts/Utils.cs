@@ -101,18 +101,16 @@ namespace LYNC
         public string ToJson()
         {
             PopulateGenericData();
-
-            // args = Utils.MapArgsToString(arguments);
-            Debug.Log("ToJson = ");
-            Debug.Log(JsonUtility.ToJson(this));
             return JsonUtility.ToJson(this);
         }
     }
+
+    public enum ARGUMENT_TYPE { STRING, NUMBER, BYTEARRAY }
 
     [Serializable]
     public class TransactionArgument
     {
         public string argument;
-        public string argumentType;
+        public ARGUMENT_TYPE type;
     }
 }

@@ -18,7 +18,7 @@ public class API
 
     public static IEnumerator CoroutineTransaction(CustomTransaction customTransaction, Action<TransactionData> onSuccess, Action<string> onError)
     {
-        string url = BackendUrl + "/api/unity/transaction";
+        string url = BackendUrl + "/api/unity/txn";
         UnityWebRequest webRequest = UnityWebRequest.Put(url, customTransaction.ToJson());
         webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
@@ -28,6 +28,7 @@ public class API
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
             TransactionData tsxData = JsonUtility.FromJson<TransactionData>(webRequest.downloadHandler.text);
+            Debug.Log(webRequest.downloadHandler.text);
             onSuccess(tsxData);
         }
         else

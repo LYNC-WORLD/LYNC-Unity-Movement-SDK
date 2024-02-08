@@ -5,21 +5,24 @@ using TMPro;
 using LYNC;
 using UnityEngine.UI;
 using LYNC.Wallet;
+using UnityEngine.EventSystems;
 
 public class APTOSExample : MonoBehaviour
 {
-    public TMP_Text publicKey, privateKey, loginDateTxt, balance, messageTxt;
+    public TMP_Text publicKey, privateKey, loginDateTxt, balance;
     public Button login, logout, mint;
     public string loginUrl = "http://localhost:5173/test";
     public string backendUrl = "http://localhost:5000";
+    public Transform transactionResultsParent;
+    public GameObject transactionResultHolder;
 
     private WalletData walletData = new WalletData();
 
     public static APTOSExample Instance;
 
     [Space]
-    [Header("Transaction")]
-    public CustomTransaction customTransaction;
+    [Header("Transactions")]
+    public CustomTransaction mintTxn;
 
     private void OnEnable()
     {
@@ -82,47 +85,35 @@ public class APTOSExample : MonoBehaviour
         mint.onClick.AddListener(async () =>
         {
             mint.interactable = false;
-            try
-            {
-                TransactionData txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.FUND, customTransaction);
-                messageTxt.text += "\nFund success, hash = " + txData.data.transactionHash;
-                await walletData.GetBalance();
-                Populate(walletData);
-            }
-            catch (System.Exception e)
-            {
-                messageTxt.text += "Fund error: " + e.Message;
-                Debug.Log(e);
-            }
 
             try
             {
-                TransactionData txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.MINT, customTransaction);
-                messageTxt.text += "\nTransaction success, hash = " + txData.data.transactionHash;
+                TransactionData txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.MINT, mintTxn);
+                SuccessfullTransaction(txData.data.transactionHash, "MINT");
                 await walletData.GetBalance();
                 Populate(walletData);
             }
             catch (System.Exception e)
             {
-                messageTxt.text += "\nMint error: " + e.Message;
-                Debug.Log(e);
-            }
-
-            try
-            {
-                TransactionData txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.REFUND, customTransaction);
-                messageTxt.text += "\nRefund success, hash = " + txData.data.transactionHash + "\n\n";
-                await walletData.GetBalance();
-                Populate(walletData);
-            }
-            catch (System.Exception e)
-            {
-                messageTxt.text += "\nRefund error: " + e.Message + "\n\n";
-                Debug.Log(e);
+                Debug.LogError(e);
             }
 
             mint.interactable = true;
         });
+    }
+
+    private void SuccessfullTransaction(string hash, string txnTitle = "")
+    {
+        var go = Instantiate(transactionResultHolder, transactionResultsParent);
+        go.transform.GetComponentInChildren<TMP_Text>().text = (txnTitle != "" ? ("(" + txnTitle + ")") : "") + " Success, hash = " + hash.Substring(0, 5) + "..." + hash.Substring(hash.Length - 5) + "<color=\"green\"> Check on APTOS EXPLORER<color=\"green\">";
+
+        EventTrigger trigger = go.GetComponent<EventTrigger>();
+        EventTrigger.Entry entry = new EventTrigger.Entry
+        {
+            eventID = EventTriggerType.PointerClick
+        };
+        entry.callback.AddListener((eventData) => { Application.OpenURL("https://explorer.aptoslabs.com/txn/" + hash); });
+        trigger.triggers.Add(entry);
     }
 
     public void Populate(WalletData walletData = null)
