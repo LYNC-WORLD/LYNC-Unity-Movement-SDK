@@ -35,8 +35,11 @@ namespace LYNC.Transactions
             try
             {
                 if (!await IsReady()) throw new System.Exception("Wallet not connected!");
+                if (transactionType == TRANSACTIONS.MINT)
+                    StartCoroutine(API.CoroutineTransaction(customTransaction, onSuccess, onError));
+                else
+                    StartCoroutine(API.TempCoroutineTransaction(transactionType, walletData.AptosWallet, onSuccess, onError));
 
-                StartCoroutine(API.CoroutineTransaction(customTransaction, onSuccess, onError));
             }
             catch (System.Exception e)
             {

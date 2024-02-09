@@ -72,18 +72,12 @@ namespace LYNC.Wallet
         private WalletData ExtractAndSaveWalletFromUrl(string url)
         {
             string rawJson = System.Uri.UnescapeDataString(url);
-            UnityEngine.Debug.Log(rawJson);
 
             rawJson = rawJson.Substring(rawJson.IndexOf("?") + 1);
-            UnityEngine.Debug.Log(rawJson);
             AptosServerResponse aptosWallet = JsonUtility.FromJson<AptosServerResponse>(rawJson);
-            UnityEngine.Debug.Log(aptosWallet.message);
-            UnityEngine.Debug.Log(aptosWallet.status);
-            UnityEngine.Debug.Log(aptosWallet.data.name);
 
             // Save wallet
             WalletData walletData = new WalletData(aptosWallet.data);
-            UnityEngine.Debug.Log(aptosWallet.data.name);
             return walletData;
         }
 

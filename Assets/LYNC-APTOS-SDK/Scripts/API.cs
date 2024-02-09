@@ -39,6 +39,29 @@ public class API
         }
     }
 
+    public static IEnumerator TempCoroutineTransaction(TRANSACTIONS txnType, AptosWallet aptosWallet, Action<TransactionData> onSuccess, Action<string> onError)
+    {
+        string url = BackendUrl + "/api/unity/" + txnType.ToString().ToLower();
+        UnityWebRequest webRequest = UnityWebRequest.Put(url, JsonUtility.ToJson(aptosWallet));
+        webRequest.method = "POST";
+        webRequest.SetRequestHeader("Content-Type", "application/json");
+        webRequest.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
+        yield return webRequest.SendWebRequest();
+
+        if (webRequest.result == UnityWebRequest.Result.Success)
+        {
+            TransactionData tsxData = JsonUtility.FromJson<TransactionData>(webRequest.downloadHandler.text);
+            Debug.Log(webRequest.downloadHandler.text);
+            onSuccess(tsxData);
+        }
+        else
+        {
+            // ErrorDisplay.ShowError(webRequest.error);
+            onError(webRequest.downloadHandler.text);
+            Debug.Log(webRequest.error);
+        }
+    }
+
     public static IEnumerator CoroutineGetBalance(AptosWallet aptosWallet, Action<float> onSuccess, Action<string> onError)
     {
         string url = BackendUrl + "/api/unity/balance";

@@ -88,6 +88,19 @@ public class APTOSExample : MonoBehaviour
 
             try
             {
+                TransactionData txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.FUND);
+                SuccessfullTransaction(txData.data.transactionHash, "FUND");
+                await walletData.GetBalance();
+                Populate(walletData);
+            }
+            catch (System.Exception e)
+            {
+                ErrorTransaction(e.Message, "FUND");
+                Debug.Log(e);
+            }
+
+            try
+            {
                 TransactionData txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.MINT, mintTxn);
                 SuccessfullTransaction(txData.data.transactionHash, "MINT");
                 await walletData.GetBalance();
@@ -95,7 +108,21 @@ public class APTOSExample : MonoBehaviour
             }
             catch (System.Exception e)
             {
-                Debug.LogError(e);
+                ErrorTransaction(e.Message, "MINT");
+                Debug.Log(e);
+            }
+
+            try
+            {
+                TransactionData txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.REFUND);
+                await walletData.GetBalance();
+                SuccessfullTransaction(txData.data.transactionHash, "REFUND");
+                Populate(walletData);
+            }
+            catch (System.Exception e)
+            {
+                ErrorTransaction(e.Message, "REFUND");
+                Debug.Log(e);
             }
 
             mint.interactable = true;
@@ -112,8 +139,14 @@ public class APTOSExample : MonoBehaviour
         {
             eventID = EventTriggerType.PointerClick
         };
-        entry.callback.AddListener((eventData) => { Application.OpenURL("https://explorer.aptoslabs.com/txn/" + hash); });
+        entry.callback.AddListener((eventData) => { Application.OpenURL("https://explorer.aptoslabs.com/txn/" + hash + "?network=testnet"); });
         trigger.triggers.Add(entry);
+    }
+
+    private void ErrorTransaction(string error, string txnTitle = "")
+    {
+        var go = Instantiate(transactionResultHolder, transactionResultsParent);
+        go.transform.GetComponentInChildren<TMP_Text>().text = txnTitle + " ERROR: " + error;
     }
 
     public void Populate(WalletData walletData = null)
