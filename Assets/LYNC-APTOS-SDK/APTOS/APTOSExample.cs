@@ -16,7 +16,7 @@ public class APTOSExample : MonoBehaviour
     public Transform transactionResultsParent;
     public GameObject transactionResultHolder;
 
-    private WalletData walletData = new WalletData();
+    private FirebaseAuth firebaseAuth = new FirebaseAuth();
 
     public static APTOSExample Instance;
 
@@ -43,13 +43,14 @@ public class APTOSExample : MonoBehaviour
     {
         try
         {
-            walletData = await WalletData.TryLoadSavedWallet();
-            if (walletData.WalletConnected)
+            firebaseAuth = (FirebaseAuth)AuthBase.LoadSavedAuth();
+            await firebaseAuth.Load();
+            if (firebaseAuth.WalletConnected)
             {
                 login.interactable = false;
                 logout.interactable = true;
                 mint.interactable = true;
-                Populate(walletData);
+                Populate(firebaseAuth);
             }
             else
             {
@@ -69,7 +70,7 @@ public class APTOSExample : MonoBehaviour
                 login.interactable = false;
                 logout.interactable = true;
                 mint.interactable = true;
-                Populate(wallet);
+                Populate((FirebaseAuth)wallet);
             });
         });
 
@@ -90,8 +91,8 @@ public class APTOSExample : MonoBehaviour
             {
                 TransactionData txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.FUND);
                 SuccessfullTransaction(txData.data.transactionHash, "FUND");
-                await walletData.GetBalance();
-                Populate(walletData);
+                await firebaseAuth.AptosWallet.UpdateBalance();
+                Populate(firebaseAuth);
             }
             catch (System.Exception e)
             {
@@ -103,8 +104,8 @@ public class APTOSExample : MonoBehaviour
             {
                 TransactionData txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.MINT, mintTxn);
                 SuccessfullTransaction(txData.data.transactionHash, "MINT");
-                await walletData.GetBalance();
-                Populate(walletData);
+                await firebaseAuth.AptosWallet.UpdateBalance();
+                Populate(firebaseAuth);
             }
             catch (System.Exception e)
             {
@@ -115,9 +116,9 @@ public class APTOSExample : MonoBehaviour
             try
             {
                 TransactionData txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.REFUND);
-                await walletData.GetBalance();
+                await firebaseAuth.AptosWallet.UpdateBalance();
                 SuccessfullTransaction(txData.data.transactionHash, "REFUND");
-                Populate(walletData);
+                Populate(firebaseAuth);
             }
             catch (System.Exception e)
             {
@@ -127,6 +128,7 @@ public class APTOSExample : MonoBehaviour
 
             mint.interactable = true;
         });
+
     }
 
     private void SuccessfullTransaction(string hash, string txnTitle = "")
@@ -149,11 +151,11 @@ public class APTOSExample : MonoBehaviour
         go.transform.GetComponentInChildren<TMP_Text>().text = txnTitle + " ERROR: " + error;
     }
 
-    public void Populate(WalletData walletData = null)
+    public void Populate(FirebaseAuth firebaseAuth = null)
     {
-        publicKey.text = "Public Key = " + (walletData == null ? "" : walletData.AptosWallet.publicKey.Substring(0, 20) + "...");
-        privateKey.text = "Private Key = " + (walletData == null ? "" : walletData.AptosWallet.privateKey.Substring(0, 20) + "...");
-        loginDateTxt.text = "Login Date = " + (walletData == null ? "" : walletData.loginDate.ToString());
-        balance.text = "Balance = " + (walletData == null ? "00" : walletData.AptosWallet.balance) + " APT";
+        publicKey.text = "Public Key = " + (firebaseAuth == null ? "" : firebaseAuth.AptosWallet.publicKey.Substring(0, 20) + "...");
+        privateKey.text = "Private Key = " + (firebaseAuth == null ? "" : firebaseAuth.AptosWallet.privateKey.Substring(0, 20) + "...");
+        loginDateTxt.text = "Login Date = " + (firebaseAuth == null ? "" : firebaseAuth.LoginDate.ToString());
+        balance.text = "Balance = " + (firebaseAuth == null ? "00" : firebaseAuth.AptosWallet.balance) + " APT";
     }
 }

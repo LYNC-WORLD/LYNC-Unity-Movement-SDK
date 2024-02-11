@@ -38,6 +38,10 @@ namespace LYNC
 
         public void Init()
         {
+            string savedAuthType = PlayerPrefs.GetString("_savedAuthType", null);
+            System.Enum.TryParse(savedAuthType, true, out AUTH_TYPE authType);
+            AuthBase.AuthType = authType;
+
             void OnAPIKeyValidation(bool isValidAPIKey)
             {
                 try
@@ -53,8 +57,8 @@ namespace LYNC
                     {
                         WalletAuth = gameObject.AddComponent<WalletAuth>();
                     }
-                    WalletAuth = WalletAuth.Instance;
                     // WalletAuth
+                    WalletAuth = WalletAuth.Instance;
 
                     // TransactionsManager
                     BlockchainMiddleware = gameObject.GetComponent<BlockchainMiddleware>();

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using LYNC.Wallet;
 using UnityEngine;
 
@@ -49,6 +50,21 @@ namespace LYNC
         public string privateKey;
         public string publicKey;
         public float balance;
+
+        public async Task<float> UpdateBalance()
+        {
+            var tcs = new TaskCompletionSource<float>();
+            LyncManager.Instance.StartCoroutine(API.CoroutineGetBalance(this, res =>
+            {
+                balance = res;
+                tcs.SetResult(res);
+            }, err =>
+            {
+                tcs.SetException(new System.Exception(err));
+            }));
+
+            return await tcs.Task;
+        }
     }
 
     public class AptosProfileData
@@ -93,9 +109,9 @@ namespace LYNC
 
         private void PopulateGenericData()
         {
-            publicAddress = WalletData.ConnectedWalletInstance.AptosWallet.publicKey;
-            privateAddress = WalletData.ConnectedWalletInstance.AptosWallet.privateKey;
-            firebaseUid = WalletData.ConnectedWalletInstance.AptosFirebaseUid;
+            publicAddress = FirebaseAuth.Instance.AptosWallet.publicKey;
+            privateAddress = FirebaseAuth.Instance.AptosWallet.privateKey;
+            firebaseUid = FirebaseAuth.Instance.FirebaseUid;
         }
 
         public string ToJson()

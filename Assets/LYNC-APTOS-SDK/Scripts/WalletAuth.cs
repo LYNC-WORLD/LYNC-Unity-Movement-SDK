@@ -5,32 +5,40 @@ namespace LYNC.Wallet
     public class WalletAuth : MonoBehaviour
     {
         public static WalletAuth Instance { private set; get; }
-        public static event System.Action<string, System.Action<WalletData>> walletConnectionRequested;
+        public static event System.Action<string, System.Action<AuthBase>> walletConnectionRequested;
 
         private void Awake()
         {
-            if (Instance != null)
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+            else
             {
                 Destroy(gameObject);
             }
-
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
 
-        public void ConnectWallet(string loginUrl, System.Action<WalletData> onSuccess = null)
+        public void ConnectWallet(string loginUrl, System.Action<AuthBase> onSuccess = null)
         {
-            async void _onSuccess(WalletData walletData)
+
+            async void _onSuccess(AuthBase authBase)
             {
-                try
+                switch (AuthBase.AuthType)
                 {
-                    await walletData.GetBalance();
-                    Debug.Log("Balance = " + walletData.AptosWallet.balance);
-                    onSuccess(walletData);
-                }
-                catch (System.Exception e)
-                {
-                    Debug.LogError(e);
+                    case AUTH_TYPE.FIREBASE:
+                        try
+                        {
+                            await ((FirebaseAuth)authBase).AptosWallet.UpdateBalance();
+                            onSuccess(authBase);
+                        }
+                        catch (System.Exception e)
+                        {
+                            Debug.LogError(e);
+                        }
+                        break;
+                    default:
+                        break;
                 }
             }
             walletConnectionRequested?.Invoke(loginUrl, _onSuccess);
@@ -38,7 +46,7 @@ namespace LYNC.Wallet
 
         public void Logout()
         {
-            WalletData.Logout();
+            AuthBase.Logout();
         }
     }
 }

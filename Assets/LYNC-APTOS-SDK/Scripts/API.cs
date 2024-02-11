@@ -142,7 +142,7 @@ public class API
         }
     }
 
-    public static IEnumerator CoroutineGetAptosProfile(string uri, AptosProfileData aptosProfileData, Action<AptosWallet> onSuccess, Action<string> onError)
+    public static IEnumerator CoroutineGetFirebaseProfile(string uri, AptosProfileData aptosProfileData, Action<AptosWallet> onSuccess, Action<string> onError)
     {
         UnityWebRequest webRequest = UnityWebRequest.Put(uri, JsonUtility.ToJson(aptosProfileData));
         webRequest.method = "POST";

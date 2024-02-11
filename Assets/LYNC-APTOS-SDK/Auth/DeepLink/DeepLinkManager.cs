@@ -15,7 +15,7 @@ namespace LYNC.Wallet
 
         public static DeepLinkManager Instance { private set; get; }
 
-        private System.Action<WalletData> _onSuccess = null;
+        private System.Action<AuthBase> _onSuccess = null;
         private Coroutine runningCoroutine = null;
 
         private void Start()
@@ -42,7 +42,7 @@ namespace LYNC.Wallet
                 Destroy(gameObject);
         }
 
-        public void StartProcess(string loginUrl, System.Action<WalletData> onSuccess)
+        public void StartProcess(string loginUrl, System.Action<AuthBase> onSuccess)
         {
             _onSuccess = onSuccess;
             string url = loginUrl + "?scheme=" + DeepLinkRegistration.DeepLinkUrl.Trim();
@@ -60,35 +60,52 @@ namespace LYNC.Wallet
 
         private void onDeepLinkActivated(string url)
         {
-            WalletData walletData = ExtractAndSaveWalletFromUrl(url);
+            AuthBase authBase = ExtractAndSaveWalletFromUrl(url);
             if (_onSuccess != null)
             {
                 WalletAuth.walletConnectionRequested -= StartProcess;
-                _onSuccess(walletData);
+                _onSuccess(authBase);
                 _onSuccess = null;
             }
         }
 
-        private WalletData ExtractAndSaveWalletFromUrl(string url)
+        class TempAuthData { public string authType; }
+        private AuthBase ExtractAndSaveWalletFromUrl(string url)
         {
             string rawJson = System.Uri.UnescapeDataString(url);
 
             rawJson = rawJson.Substring(rawJson.IndexOf("?") + 1);
-            AptosServerResponse aptosWallet = JsonUtility.FromJson<AptosServerResponse>(rawJson);
+            TempAuthData tempAuthData = JsonUtility.FromJson<TempAuthData>(rawJson);
+
 
             // Save wallet
-            WalletData walletData = new WalletData(aptosWallet.data);
-            return walletData;
+            AuthBase authBase;
+            switch (tempAuthData.authType)
+            {
+                case "firebase":
+                    AuthBase.AuthType = AUTH_TYPE.FIREBASE;
+                    AptosServerResponse aptosWallet = JsonUtility.FromJson<AptosServerResponse>(rawJson);
+                    authBase = new FirebaseAuth(aptosWallet.data);
+                    break;
+                case "pontem":
+                    AuthBase.AuthType = AUTH_TYPE.PONTEM;
+                    authBase = new PontemAuth();
+                    throw new System.Exception("Not handled yet");
+                    break;
+                default:
+                    throw new System.Exception("Unknown auth type");
+            }
+            return authBase;
         }
 
         #region Windows platform methods
-        private IEnumerator ListenForConnectedWallet(System.Action<WalletData> onSuccess)
+        private IEnumerator ListenForConnectedWallet(System.Action<AuthBase> onSuccess)
         {
             string text = File.ReadAllText(sharedFilePath);
             if (text.IndexOf(DeepLinkRegistration.DeepLinkUrl.ToLower()) > -1)
             {
                 string url = text.Replace(Process.GetCurrentProcess().Id.ToString(), "").Trim();
-                WalletData wallet = ExtractAndSaveWalletFromUrl(url);
+                AuthBase wallet = ExtractAndSaveWalletFromUrl(url);
                 onSuccess?.Invoke(wallet);
 
                 ClearSharedFile();
