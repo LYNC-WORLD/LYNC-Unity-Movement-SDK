@@ -21,19 +21,36 @@ namespace LYNC
             temp = temp.Substring(0, temp.Length - 1);
             return temp;
         }
+
+        public static string ToBase64(string data)
+        {
+            byte[] bytesToEncode = System.Text.Encoding.UTF8.GetBytes(data);
+            string encodedString = Convert.ToBase64String(bytesToEncode);
+
+            return encodedString;
+        }
+
+        public static string FromBase64(string encoded)
+        {
+            byte[] bytesToDecode = Convert.FromBase64String(encoded);
+            string decodedString = System.Text.Encoding.UTF8.GetString(bytesToDecode);
+
+            return decodedString;
+        }
+
+        // public static async Task<OutputType> AwaitableCoroutine(Delegate coroutine)
     }
 
-    [System.Serializable]
-    public class AptosServerResponse
+    public class GetProfileServerResponse
     {
         public string message;
-        public int status;
         public bool success;
-        public AptosWallet data;
+        public int status;
+        public AptosAuthData data;
     }
 
     [System.Serializable]
-    public class AptosWallet
+    public class AptosAuthData
     {
         public bool isFunded;
         public string mintingHash;
@@ -80,44 +97,62 @@ namespace LYNC
     }
 
     [Serializable]
-    public class CustomTransaction
+    public class Transaction
     {
         public string contractAddress;
         public string contractName;
         public string functionName;
         public List<TransactionArgument> arguments;
-        [HideInInspector] public string args;
 
+        [HideInInspector] public string transactionId;
         [HideInInspector] public string publicAddress;
         [HideInInspector] public string privateAddress;
         [HideInInspector] public string firebaseUid;
 
-        public CustomTransaction(string contractAddress, string contractName, string functionName, List<Dictionary<string, string>> args)
+        private AuthBase authBase;
+
+        public Transaction(string contractAddress, string contractName, string functionName, List<TransactionArgument> args)
         {
-            // this.arguments = args;
+            arguments = args;
             this.functionName = functionName;
             this.contractName = contractName;
             this.contractAddress = contractAddress;
         }
 
-        public CustomTransaction(string contractAddress, string contractName, string functionName)
+        public Transaction(string contractAddress, string contractName, string functionName)
         {
             this.functionName = functionName;
             this.contractName = contractName;
             this.contractAddress = contractAddress;
         }
 
-        private void PopulateGenericData()
+        private void AppendAuthData()
         {
-            publicAddress = FirebaseAuth.Instance.AptosWallet.publicKey;
-            privateAddress = FirebaseAuth.Instance.AptosWallet.privateKey;
-            firebaseUid = FirebaseAuth.Instance.FirebaseUid;
+            authBase = AuthBase.Instance;
+            publicAddress = authBase.PublicAddress;
+
+            if (authBase is FirebaseAuth)
+            {
+                privateAddress = (authBase as FirebaseAuth).AptosAuthData.privateKey;
+                firebaseUid = (authBase as FirebaseAuth).FirebaseUid;
+            }
+            if (authBase is PontemAuth)
+            {
+
+            }
         }
 
         public string ToJson()
         {
-            PopulateGenericData();
+            AppendAuthData();
             return JsonUtility.ToJson(this);
+        }
+
+        public string GetBrowserUrl()
+        {
+            AppendAuthData();
+            string json = JsonUtility.ToJson(this);
+            return $"{API.FrontendUrl}/pontem-transaction?scheme={DeepLinkRegistration.DeepLinkUrl}&transaction={Utils.ToBase64(json)}";
         }
     }
 
@@ -128,5 +163,12 @@ namespace LYNC
     {
         public string argument;
         public ARGUMENT_TYPE type;
+    }
+
+    public class TransactionResult
+    {
+        public bool success;
+        public string hash;
+        public string transactionId;
     }
 }

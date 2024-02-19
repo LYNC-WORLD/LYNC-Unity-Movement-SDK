@@ -8,7 +8,7 @@ namespace LYNC.Wallet
     //     public string AptosEmail;
     //     public string AptosFirebaseUid;
     //     public System.DateTime loginDate { private set; get; }
-    //     public AptosWallet AptosWallet = null;
+    //     public AptosAuthData AptosAuthData = null;
 
     //     public static WalletData ConnectedWalletInstance;
 
@@ -18,22 +18,22 @@ namespace LYNC.Wallet
     //         get => !string.IsNullOrEmpty(AptosEmail) && !string.IsNullOrEmpty(AptosFirebaseUid);
     //     }
 
-    //     public WalletData(AptosWallet aptosWallet, bool save = true)
+    //     public WalletData(AptosAuthData aptosWallet, bool save = true)
     //     {
     //         AptosEmail = aptosWallet.email;
     //         AptosFirebaseUid = aptosWallet.firebaseUid;
-    //         AptosWallet = aptosWallet;
+    //         AptosAuthData = aptosWallet;
     //         loginDate = System.DateTime.Now;
     //         if (save) Save();
 
     //         ConnectedWalletInstance = this;
     //     }
 
-    //     public WalletData(AptosWallet aptosWallet, System.DateTime loginDate, bool save = true)
+    //     public WalletData(AptosAuthData aptosWallet, System.DateTime loginDate, bool save = true)
     //     {
     //         AptosEmail = aptosWallet.email;
     //         AptosFirebaseUid = aptosWallet.firebaseUid;
-    //         AptosWallet = aptosWallet;
+    //         AptosAuthData = aptosWallet;
     //         this.loginDate = loginDate;
     //         if (save) Save();
 
@@ -64,7 +64,7 @@ namespace LYNC.Wallet
     //         AptosEmail = aptosEmail;
     //         AptosFirebaseUid = aptosFirebaseUid;
     //         var tcs = new TaskCompletionSource<WalletData>();
-    //         if (AptosWallet != null)
+    //         if (AptosAuthData != null)
     //         {
     //             ConnectedWalletInstance = this;
     //             tcs.SetResult(this);
@@ -76,7 +76,7 @@ namespace LYNC.Wallet
     //                 LyncManager.Instance.StartCoroutine(API.CoroutineGetAptosProfile(API.BackendUrl + "/api/users/profile", new AptosProfileData(aptosEmail, aptosFirebaseUid),
     //                async wallet =>
     //                 {
-    //                     AptosWallet = wallet;
+    //                     AptosAuthData = wallet;
     //                     try
     //                     {
     //                         await GetBalance();
@@ -106,9 +106,9 @@ namespace LYNC.Wallet
     //     public async Task<float> GetBalance()
     //     {
     //         var tcs = new TaskCompletionSource<float>();
-    //         LyncManager.Instance.StartCoroutine(API.CoroutineGetBalance(AptosWallet, res =>
+    //         LyncManager.Instance.StartCoroutine(API.CoroutineGetBalance(AptosAuthData, res =>
     //         {
-    //             AptosWallet.balance = res;
+    //             AptosAuthData.balance = res;
     //             tcs.SetResult(res);
     //         }, err =>
     //         {

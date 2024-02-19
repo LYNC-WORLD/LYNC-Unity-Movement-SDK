@@ -6,23 +6,33 @@ using LYNC;
 using UnityEngine.UI;
 using LYNC.Wallet;
 using UnityEngine.EventSystems;
+using System;
 
 public class APTOSExample : MonoBehaviour
 {
-    public TMP_Text publicKey, privateKey, loginDateTxt, balance;
-    public Button login, logout, mint;
+    [Header("General settings")]
     public string loginUrl = "http://localhost:5173/test";
     public string backendUrl = "http://localhost:5000";
-    public Transform transactionResultsParent;
-    public GameObject transactionResultHolder;
+    public Button login, logout, mint;
 
-    private FirebaseAuth firebaseAuth = new FirebaseAuth();
+    [Space]
+    [Header("Aptos")]
+    public Transform aptosContainer;
+    public TMP_Text publicKey, privateKey, loginDateTxt, balance;
 
-    public static APTOSExample Instance;
+    [Space]
+    [Header("Pontem")]
+    public Transform pontemContainer;
+    public TMP_Text pontemPublicAddress;
 
     [Space]
     [Header("Transactions")]
-    public CustomTransaction mintTxn;
+    public Transform transactionResultsParent;
+    public GameObject transactionResultHolder;
+    public Transaction mintTxn;
+
+    private AuthBase authBase;
+    public static APTOSExample Instance;
 
     private void OnEnable()
     {
@@ -37,20 +47,18 @@ public class APTOSExample : MonoBehaviour
         login.interactable = false;
         logout.interactable = false;
         mint.interactable = false;
+        Application.targetFrameRate = 30;
     }
 
     private async void LyncReady(LyncManager Lync)
     {
         try
         {
-            firebaseAuth = (FirebaseAuth)AuthBase.LoadSavedAuth();
-            await firebaseAuth.Load();
-            if (firebaseAuth.WalletConnected)
+            authBase = await AuthBase.LoadSavedAuth();
+            if (authBase.WalletConnected)
             {
-                login.interactable = false;
-                logout.interactable = true;
-                mint.interactable = true;
-                Populate(firebaseAuth);
+                Debug.Log("Saved wallet successfuly loaded");
+                OnWalletConnected(authBase);
             }
             else
             {
@@ -67,10 +75,9 @@ public class APTOSExample : MonoBehaviour
         {
             Lync.WalletAuth.ConnectWallet(loginUrl, (wallet) =>
             {
-                login.interactable = false;
-                logout.interactable = true;
-                mint.interactable = true;
-                Populate((FirebaseAuth)wallet);
+                Debug.Log(wallet.WalletConnected);
+                Debug.Log(wallet.PublicAddress);
+                OnWalletConnected(wallet);
             });
         });
 
@@ -87,48 +94,76 @@ public class APTOSExample : MonoBehaviour
         {
             mint.interactable = false;
 
-            try
-            {
-                TransactionData txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.FUND);
-                SuccessfullTransaction(txData.data.transactionHash, "FUND");
-                await firebaseAuth.AptosWallet.UpdateBalance();
-                Populate(firebaseAuth);
-            }
-            catch (System.Exception e)
-            {
-                ErrorTransaction(e.Message, "FUND");
-                Debug.Log(e);
-            }
 
-            try
-            {
-                TransactionData txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.MINT, mintTxn);
-                SuccessfullTransaction(txData.data.transactionHash, "MINT");
-                await firebaseAuth.AptosWallet.UpdateBalance();
-                Populate(firebaseAuth);
-            }
-            catch (System.Exception e)
-            {
-                ErrorTransaction(e.Message, "MINT");
-                Debug.Log(e);
-            }
+            TransactionResult txData = await LyncManager.Instance.TransactionsManager.SendTransaction(mintTxn);
+            Debug.Log(txData.hash);
+            SuccessfullTransaction(txData.hash, "MINT");
+            // await ((FirebaseAuth)authBase).AptosAuthData.UpdateBalance();
+            // Populate((FirebaseAuth)authBase);
 
-            try
-            {
-                TransactionData txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.REFUND);
-                await firebaseAuth.AptosWallet.UpdateBalance();
-                SuccessfullTransaction(txData.data.transactionHash, "REFUND");
-                Populate(firebaseAuth);
-            }
-            catch (System.Exception e)
-            {
-                ErrorTransaction(e.Message, "REFUND");
-                Debug.Log(e);
-            }
+
+            // try
+            // {
+            //     // ServerBasedTransactionFeedback txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.MINT, mintTxn);
+            //     // SuccessfullTransaction(txData.data.transactionHash, "MINT");
+            //     await ((FirebaseAuth)authBase).AptosAuthData.UpdateBalance();
+            //     Populate((FirebaseAuth)authBase);
+            // }
+            // catch (System.Exception e)
+            // {
+            //     ErrorTransaction(e.Message, "MINT");
+            //     Debug.Log(e);
+            // }
+
+            // try
+            // {
+            //     // ServerBasedTransactionFeedback txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.REFUND);
+            //     await ((FirebaseAuth)authBase).AptosAuthData.UpdateBalance();
+            //     // SuccessfullTransaction(txData.data.transactionHash, "REFUND");
+            //     Populate((FirebaseAuth)authBase);
+            // }
+            // catch (System.Exception e)
+            // {
+            //     ErrorTransaction(e.Message, "REFUND");
+            //     Debug.Log(e);
+            // }
 
             mint.interactable = true;
         });
 
+    }
+
+    private void OnWalletConnected(AuthBase _authBase)
+    {
+        EnableAppropriateComponents(AuthBase.AuthType);
+
+        if (AuthBase.AuthType == AUTH_TYPE.FIREBASE)
+        {
+            Populate(_authBase as FirebaseAuth);
+        }
+
+        if (AuthBase.AuthType == AUTH_TYPE.PONTEM)
+        {
+            pontemPublicAddress.text = "Public address = " + _authBase.PublicAddress;
+        }
+
+        login.interactable = false;
+        logout.interactable = true;
+        mint.interactable = true;
+    }
+
+    private void EnableAppropriateComponents(AUTH_TYPE authType)
+    {
+        if (authType == AUTH_TYPE.FIREBASE)
+        {
+            aptosContainer.gameObject.SetActive(true);
+            pontemContainer.gameObject.SetActive(false);
+        }
+        if (authType == AUTH_TYPE.PONTEM)
+        {
+            pontemContainer.gameObject.SetActive(true);
+            aptosContainer.gameObject.SetActive(false);
+        }
     }
 
     private void SuccessfullTransaction(string hash, string txnTitle = "")
@@ -153,9 +188,9 @@ public class APTOSExample : MonoBehaviour
 
     public void Populate(FirebaseAuth firebaseAuth = null)
     {
-        publicKey.text = "Public Key = " + (firebaseAuth == null ? "" : firebaseAuth.AptosWallet.publicKey.Substring(0, 20) + "...");
-        privateKey.text = "Private Key = " + (firebaseAuth == null ? "" : firebaseAuth.AptosWallet.privateKey.Substring(0, 20) + "...");
+        publicKey.text = "Public Key = " + (firebaseAuth == null ? "" : firebaseAuth.AptosAuthData.publicKey.Substring(0, 20) + "...");
+        privateKey.text = "Private Key = " + (firebaseAuth == null ? "" : firebaseAuth.AptosAuthData.privateKey.Substring(0, 20) + "...");
         loginDateTxt.text = "Login Date = " + (firebaseAuth == null ? "" : firebaseAuth.LoginDate.ToString());
-        balance.text = "Balance = " + (firebaseAuth == null ? "00" : firebaseAuth.AptosWallet.balance) + " APT";
+        balance.text = "Balance = " + (firebaseAuth == null ? "00" : firebaseAuth.AptosAuthData.balance) + " APT";
     }
 }

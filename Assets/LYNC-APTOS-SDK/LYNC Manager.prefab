@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5805647402976630236}
   - component: {fileID: 6429189280026421520}
   - component: {fileID: 375463546}
-  - component: {fileID: 375463548}
   - component: {fileID: 375463547}
   m_Layer: 0
   m_Name: LYNC Manager
@@ -74,23 +73,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LyncAPIKey: B30D905974544D082BFEA8A727534195
-  dappAPIKey: AIRQgnifH.434ef290-8927-4608-995d-974374c35b90
-  web3AuthClientID: BFKyj7mVffGPkfQh5iBeezv8Hc9HbL4kV553OnJ2JPRD37QyXs4NaGbHPI0NpbtgoH0PlkRc_Fi9-fpkPChBHIM
   xApiKey: 42a1d1edcca5f7ef899566fcaf19e14b8cbb64dc5e625d2f52fc890ab8455bb103b48160811b3b3fdb334de7446a9667ba4f24df16b8816233d4d76160d4dd96
---- !u!114 &375463548
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8536144024681728999}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73ff7223deabb4453aef8dc80d7a114d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rpcUrl: 
-  dappAPIKey: 
 --- !u!114 &375463547
 MonoBehaviour:
   m_ObjectHideFlags: 0

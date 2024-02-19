@@ -1,25 +1,32 @@
 using LYNC;
-using Newtonsoft.Json;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Net.NetworkInformation;
-using System.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
+
+public class ROUTES
+{
+    public static string GENERIC_TRANSACTION = API.BackendUrl + "/api/unity/" + "txn";
+    public static string FUND = API.BackendUrl + "/api/unity/" + "fund";
+    public static string MINT = API.BackendUrl + "/api/unity/" + "mint";
+    public static string REFUND = API.BackendUrl + "/api/unity/" + "refund";
+    public static string BALANCE = API.BackendUrl + "/api/unity/" + "balance";
+    public static string PROFILE = API.BackendUrl + "/api/users/" + "profile";
+}
 
 public class API
 {
     public static string BackendUrl = "http://localhost:5000";
+    public static string FrontendUrl = "http://localhost:5173";
+    public static ROUTES ROUTES;
 
-    public delegate void OnSuccess(TransactionData tsxData);
+    public delegate void OnSuccess(ServerBasedTransactionFeedback tsxData);
     public delegate void OnError(string error);
 
-    public static IEnumerator CoroutineTransaction(CustomTransaction customTransaction, Action<TransactionData> onSuccess, Action<string> onError)
+    public static IEnumerator CoroutineTransaction(Transaction customTransaction, System.Action<ServerBasedTransactionFeedback> onSuccess, System.Action<string> onError)
     {
         string url = BackendUrl + "/api/unity/txn";
         UnityWebRequest webRequest = UnityWebRequest.Put(url, customTransaction.ToJson());
+        Debug.Log(customTransaction.ToJson());
         webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
         webRequest.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
@@ -27,7 +34,7 @@ public class API
 
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
-            TransactionData tsxData = JsonUtility.FromJson<TransactionData>(webRequest.downloadHandler.text);
+            ServerBasedTransactionFeedback tsxData = JsonUtility.FromJson<ServerBasedTransactionFeedback>(webRequest.downloadHandler.text);
             Debug.Log(webRequest.downloadHandler.text);
             onSuccess(tsxData);
         }
@@ -39,7 +46,7 @@ public class API
         }
     }
 
-    public static IEnumerator TempCoroutineTransaction(TRANSACTIONS txnType, AptosWallet aptosWallet, Action<TransactionData> onSuccess, Action<string> onError)
+    public static IEnumerator TempCoroutineTransaction(TRANSACTIONS txnType, AptosAuthData aptosWallet, System.Action<ServerBasedTransactionFeedback> onSuccess, System.Action<string> onError)
     {
         string url = BackendUrl + "/api/unity/" + txnType.ToString().ToLower();
         UnityWebRequest webRequest = UnityWebRequest.Put(url, JsonUtility.ToJson(aptosWallet));
@@ -50,7 +57,7 @@ public class API
 
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
-            TransactionData tsxData = JsonUtility.FromJson<TransactionData>(webRequest.downloadHandler.text);
+            ServerBasedTransactionFeedback tsxData = JsonUtility.FromJson<ServerBasedTransactionFeedback>(webRequest.downloadHandler.text);
             Debug.Log(webRequest.downloadHandler.text);
             onSuccess(tsxData);
         }
@@ -62,7 +69,7 @@ public class API
         }
     }
 
-    public static IEnumerator CoroutineGetBalance(AptosWallet aptosWallet, Action<float> onSuccess, Action<string> onError)
+    public static IEnumerator CoroutineGetBalance(AptosAuthData aptosWallet, System.Action<float> onSuccess, System.Action<string> onError)
     {
         string url = BackendUrl + "/api/unity/balance";
         UnityWebRequest webRequest = UnityWebRequest.Put(url, JsonUtility.ToJson(aptosWallet));
@@ -118,7 +125,7 @@ public class API
 
     }
 
-    public static IEnumerator CoroutineCheckAPIKey(string uri, string apiKey, Action<bool> onSuccess, Action<string> onError)
+    public static IEnumerator CoroutineCheckAPIKey(string uri, string apiKey, System.Action<bool> onSuccess, System.Action<string> onError)
     {
         UnityWebRequest webRequest = UnityWebRequest.Put(uri, JsonUtility.ToJson(new APIKeyCheckBody(apiKey)));
         webRequest.method = "POST";
@@ -142,9 +149,9 @@ public class API
         }
     }
 
-    public static IEnumerator CoroutineGetFirebaseProfile(string uri, AptosProfileData aptosProfileData, Action<AptosWallet> onSuccess, Action<string> onError)
+    public static IEnumerator CoroutineGetFirebaseProfile(AptosProfileData aptosProfileData, System.Action<AptosAuthData> onSuccess, System.Action<string> onError)
     {
-        UnityWebRequest webRequest = UnityWebRequest.Put(uri, JsonUtility.ToJson(aptosProfileData));
+        UnityWebRequest webRequest = UnityWebRequest.Put(ROUTES.PROFILE, JsonUtility.ToJson(aptosProfileData));
         webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
         webRequest.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
@@ -155,9 +162,9 @@ public class API
 
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
-            //Debug.Log(webRequest.downloadHandler.text);
-            AptosServerResponse aptosResponse = JsonUtility.FromJson<AptosServerResponse>(webRequest.downloadHandler.text);
-            onSuccess(aptosResponse.data);
+            Debug.Log(webRequest.downloadHandler.text);
+            AptosAuthData aptosResponse = JsonUtility.FromJson<GetProfileServerResponse>(webRequest.downloadHandler.text).data;
+            onSuccess(aptosResponse);
         }
         else
         {
@@ -176,17 +183,27 @@ public class ApiKeyValidator
 }
 
 [System.Serializable]
-public class TransactionData
+public class ServerBasedTransactionFeedback
 {
     public string message;
     public bool success;
     public int status;
-    public TransactionDataDetails data;
+    public ServerBasedTransactionFeedbackDetails data;
 
     [System.Serializable]
-    public class TransactionDataDetails
+    public class ServerBasedTransactionFeedbackDetails
     {
         public string transactionHash;
+    }
+
+    public TransactionResult ToTransactionResult()
+    {
+        var temp = new TransactionResult
+        {
+            success = success,
+            hash = data.transactionHash
+        };
+        return temp;
     }
 }
 
@@ -208,7 +225,7 @@ public class APIKeyCheckBody
     public APIKeyCheckBody() { }
 }
 
-[Serializable]
+[System.Serializable]
 public class AnalyticsData
 {
     public string apiKey;

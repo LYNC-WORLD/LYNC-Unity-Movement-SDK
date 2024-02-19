@@ -7,6 +7,7 @@ public abstract class AuthBase
     public string PublicAddress = null;
     public System.DateTime LoginDate { protected set; get; }
     public static AUTH_TYPE AuthType;
+    public static AuthBase Instance = null;
 
     public bool WalletConnected
     {
@@ -14,48 +15,54 @@ public abstract class AuthBase
         get => !string.IsNullOrEmpty(PublicAddress);
     }
 
-    // Constructors
-    public AuthBase() { }
-    public AuthBase(AUTH_TYPE authType) { AuthType = authType; }
-
-
     // Methods
-    public void Save()
+    public void Save(AuthBase _Instance)
     {
         LoginDate = System.DateTime.Now;
         PlayerPrefs.SetString("_loginDate", LoginDate.ToString("yyyy-MM-dd HH:mm:ss"));
-        PlayerPrefs.SetString("_savedAuthType", AuthType.ToString().ToLower());
+        PlayerPrefs.SetString("_publicAddress", PublicAddress);
 
         PlayerPrefs.Save();
         CustomeSave();
-        Debug.Log("Auth data saved successfully!");
+        Instance = _Instance;
     }
 
     public static void Logout()
     {
         PlayerPrefs.SetString("_loginDate", "");
+        PlayerPrefs.SetString("_publicAddress", "");
+        PlayerPrefs.SetString("_savedAuthType", "");
         PlayerPrefs.Save();
     }
+    protected abstract void CustomLogout();
 
-    // Abstract methods
     protected abstract void CustomeSave();
-    public abstract Task Load(System.Action onSessionExpired = null);
+    protected abstract Task Load(System.Action onSessionExpired = null);
 
-    /// <summary>
-    /// Used when the saved auth is unknown
-    /// </summary>
-    /// <returns></returns>
-    public static AuthBase LoadSavedAuth()
+    public static async Task<AuthBase> LoadSavedAuth()
     {
+        AuthBase temp = null;
         switch (AuthType)
         {
             case AUTH_TYPE.FIREBASE:
-                return new FirebaseAuth();
+                try
+                {
+                    temp = new FirebaseAuth();
+                    await temp.Load();
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError(e);
+                }
+                break;
             case AUTH_TYPE.PONTEM:
-                return new PontemAuth();
+                temp = new PontemAuth();
+                break;
             default:
-                return null;
+                break;
         }
+
+        return temp;
     }
 
     // TO-DO fetch the sessionInSeconds param from the general setting 

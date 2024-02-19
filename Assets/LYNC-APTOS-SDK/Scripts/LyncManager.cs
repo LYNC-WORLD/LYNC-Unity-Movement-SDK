@@ -9,7 +9,6 @@ namespace LYNC
         public static LyncManager Instance { private set; get; }
         public WalletAuth WalletAuth { private set; get; }
         public TransactionsManager TransactionsManager { private set; get; }
-        public BlockchainMiddleware BlockchainMiddleware { private set; get; }
         public static event System.Action<LyncManager> onLyncReady;
 
         //
@@ -38,7 +37,7 @@ namespace LYNC
 
         public void Init()
         {
-            string savedAuthType = PlayerPrefs.GetString("_savedAuthType", null);
+            string savedAuthType = PlayerPrefs.GetString("_savedAuthType", "");
             System.Enum.TryParse(savedAuthType, true, out AUTH_TYPE authType);
             AuthBase.AuthType = authType;
 
@@ -61,10 +60,7 @@ namespace LYNC
                     WalletAuth = WalletAuth.Instance;
 
                     // TransactionsManager
-                    BlockchainMiddleware = gameObject.GetComponent<BlockchainMiddleware>();
-
-                    if (!BlockchainMiddleware) BlockchainMiddleware = gameObject.AddComponent<BlockchainMiddleware>();
-                    TransactionsManager = new TransactionsManager(BlockchainMiddleware);
+                    TransactionsManager = new TransactionsManager();
 
                     // Fire ready event if there are listeners
                     onLyncReady?.Invoke(this);

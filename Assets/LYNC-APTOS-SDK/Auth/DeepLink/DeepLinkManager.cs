@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using System.Diagnostics;
 using System.IO;
-using UnityEditor;
+using LYNC.DeepLink;
 
 namespace LYNC.Wallet
 {
@@ -15,8 +15,9 @@ namespace LYNC.Wallet
 
         public static DeepLinkManager Instance { private set; get; }
 
-        private System.Action<AuthBase> _onSuccess = null;
         private Coroutine runningCoroutine = null;
+
+        private MessageHandler messageHandler;
 
         private void Start()
         {
@@ -27,8 +28,8 @@ namespace LYNC.Wallet
                 ClearSharedFile();
                 OpenLauncher();
             }
-            WalletAuth.walletConnectionRequested += StartProcess;
-            Application.deepLinkActivated += onDeepLinkActivated;
+            Application.deepLinkActivated += OnDeepLinkActivated;
+            messageHandler = new MessageHandler();
         }
 
         private void Awake()
@@ -42,11 +43,9 @@ namespace LYNC.Wallet
                 Destroy(gameObject);
         }
 
-        public void StartProcess(string loginUrl, System.Action<AuthBase> onSuccess)
+        // Invokable 
+        public void StartBrowserProcess(string url)
         {
-            _onSuccess = onSuccess;
-            string url = loginUrl + "?scheme=" + DeepLinkRegistration.DeepLinkUrl.Trim();
-
             // Open auth page for standalone and mobile
             Application.OpenURL(url);
 
@@ -54,67 +53,36 @@ namespace LYNC.Wallet
             {
                 ClearSharedFile();
                 OpenLauncher();
-                runningCoroutine = StartCoroutine(ListenForConnectedWallet(onSuccess));
+                runningCoroutine = StartCoroutine(ListenForBrowserMessageWindows());
             }
         }
 
-        private void onDeepLinkActivated(string url)
+        private void OnDeepLinkActivated(string url)
         {
-            AuthBase authBase = ExtractAndSaveWalletFromUrl(url);
-            if (_onSuccess != null)
-            {
-                WalletAuth.walletConnectionRequested -= StartProcess;
-                _onSuccess(authBase);
-                _onSuccess = null;
-            }
-        }
-
-        class TempAuthData { public string authType; }
-        private AuthBase ExtractAndSaveWalletFromUrl(string url)
-        {
-            string rawJson = System.Uri.UnescapeDataString(url);
-
-            rawJson = rawJson.Substring(rawJson.IndexOf("?") + 1);
-            TempAuthData tempAuthData = JsonUtility.FromJson<TempAuthData>(rawJson);
-
-
-            // Save wallet
-            AuthBase authBase;
-            switch (tempAuthData.authType)
-            {
-                case "firebase":
-                    AuthBase.AuthType = AUTH_TYPE.FIREBASE;
-                    AptosServerResponse aptosWallet = JsonUtility.FromJson<AptosServerResponse>(rawJson);
-                    authBase = new FirebaseAuth(aptosWallet.data);
-                    break;
-                case "pontem":
-                    AuthBase.AuthType = AUTH_TYPE.PONTEM;
-                    authBase = new PontemAuth();
-                    throw new System.Exception("Not handled yet");
-                    break;
-                default:
-                    throw new System.Exception("Unknown auth type");
-            }
-            return authBase;
+            // Handle the message
+            messageHandler.HandleMessage(url);
         }
 
         #region Windows platform methods
-        private IEnumerator ListenForConnectedWallet(System.Action<AuthBase> onSuccess)
+        private IEnumerator ListenForBrowserMessageWindows()
         {
             string text = File.ReadAllText(sharedFilePath);
             if (text.IndexOf(DeepLinkRegistration.DeepLinkUrl.ToLower()) > -1)
             {
                 string url = text.Replace(Process.GetCurrentProcess().Id.ToString(), "").Trim();
-                AuthBase wallet = ExtractAndSaveWalletFromUrl(url);
-                onSuccess?.Invoke(wallet);
-
                 ClearSharedFile();
                 StopCoroutine(runningCoroutine);
+
+                // Handle the message
+                messageHandler.HandleMessage(url);
+
+                yield break;
             }
 
             yield return new WaitForSeconds(0.1f);
 
-            runningCoroutine = StartCoroutine(ListenForConnectedWallet(onSuccess));
+            runningCoroutine = StartCoroutine(ListenForBrowserMessageWindows());
+
         }
 
         private void OpenLauncher()

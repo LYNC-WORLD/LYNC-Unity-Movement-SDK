@@ -1,3 +1,4 @@
+using LYNC.DeepLink;
 using UnityEngine;
 
 namespace LYNC.Wallet
@@ -5,7 +6,7 @@ namespace LYNC.Wallet
     public class WalletAuth : MonoBehaviour
     {
         public static WalletAuth Instance { private set; get; }
-        public static event System.Action<string, System.Action<AuthBase>> walletConnectionRequested;
+        public static event System.Action<string> WalletConnectionRequested;
 
         private void Awake()
         {
@@ -21,7 +22,6 @@ namespace LYNC.Wallet
 
         public void ConnectWallet(string loginUrl, System.Action<AuthBase> onSuccess = null)
         {
-
             async void _onSuccess(AuthBase authBase)
             {
                 switch (AuthBase.AuthType)
@@ -29,8 +29,7 @@ namespace LYNC.Wallet
                     case AUTH_TYPE.FIREBASE:
                         try
                         {
-                            await ((FirebaseAuth)authBase).AptosWallet.UpdateBalance();
-                            onSuccess(authBase);
+                            await ((FirebaseAuth)authBase).AptosAuthData.UpdateBalance();
                         }
                         catch (System.Exception e)
                         {
@@ -40,8 +39,11 @@ namespace LYNC.Wallet
                     default:
                         break;
                 }
+
+                onSuccess(authBase);
             }
-            walletConnectionRequested?.Invoke(loginUrl, _onSuccess);
+            MessageHandler.AddAuthListener( _onSuccess);
+            DeepLinkManager.Instance.StartBrowserProcess(loginUrl + "?scheme=" + DeepLinkRegistration.DeepLinkUrl);
         }
 
         public void Logout()
