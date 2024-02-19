@@ -24,25 +24,13 @@ namespace LYNC.Wallet
         {
             async void _onSuccess(AuthBase authBase)
             {
-                switch (AuthBase.AuthType)
-                {
-                    case AUTH_TYPE.FIREBASE:
-                        try
-                        {
-                            await ((FirebaseAuth)authBase).AptosAuthData.UpdateBalance();
-                        }
-                        catch (System.Exception e)
-                        {
-                            Debug.LogError(e);
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                if (AuthBase.Instance is FirebaseAuth)
+                    await (authBase as FirebaseAuth).AptosAuthData.UpdateBalance();
 
                 onSuccess(authBase);
             }
-            MessageHandler.AddAuthListener( _onSuccess);
+
+            MessageHandler.AddAuthListener(_onSuccess);
             DeepLinkManager.Instance.StartBrowserProcess(loginUrl + "?scheme=" + DeepLinkRegistration.DeepLinkUrl);
         }
 

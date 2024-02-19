@@ -27,9 +27,4 @@ public class PontemAuth : AuthBase
         if (!string.IsNullOrEmpty(PublicAddress)) Save(this);
         return default;
     }
-
-    protected override void CustomLogout()
-    {
-
-    }
 }

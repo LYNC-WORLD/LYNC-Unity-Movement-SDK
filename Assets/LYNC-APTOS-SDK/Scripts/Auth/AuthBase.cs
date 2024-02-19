@@ -32,9 +32,10 @@ public abstract class AuthBase
         PlayerPrefs.SetString("_loginDate", "");
         PlayerPrefs.SetString("_publicAddress", "");
         PlayerPrefs.SetString("_savedAuthType", "");
+        PlayerPrefs.SetString("firebase_email", "");
+        PlayerPrefs.SetString("firebase_firebaseUid", "");
         PlayerPrefs.Save();
     }
-    protected abstract void CustomLogout();
 
     protected abstract void CustomeSave();
     protected abstract Task Load(System.Action onSessionExpired = null);

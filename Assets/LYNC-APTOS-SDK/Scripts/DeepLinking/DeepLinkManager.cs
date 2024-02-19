@@ -17,11 +17,10 @@ namespace LYNC.Wallet
 
         private Coroutine runningCoroutine = null;
 
-        private MessageHandler messageHandler;
+        private MessageHandler messageHandler = new MessageHandler();
 
         private void Start()
         {
-            // Windows player or editor and not Android nor IPhone
             if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
             {
                 RegisterCustomProtocol();
@@ -29,7 +28,6 @@ namespace LYNC.Wallet
                 OpenLauncher();
             }
             Application.deepLinkActivated += OnDeepLinkActivated;
-            messageHandler = new MessageHandler();
         }
 
         private void Awake()
@@ -37,7 +35,6 @@ namespace LYNC.Wallet
             if (Instance == null)
             {
                 Instance = this;
-                DontDestroyOnLoad(gameObject);
             }
             else
                 Destroy(gameObject);

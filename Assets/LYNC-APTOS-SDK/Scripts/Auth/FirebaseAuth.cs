@@ -87,12 +87,4 @@ public class FirebaseAuth : AuthBase
 
         await tcs.Task;
     }
-
-    protected override void CustomLogout()
-    {
-        PlayerPrefs.SetString("firebase_email", "");
-        PlayerPrefs.SetString("firebase_firebaseUid", "");
-    }
-
-
 }

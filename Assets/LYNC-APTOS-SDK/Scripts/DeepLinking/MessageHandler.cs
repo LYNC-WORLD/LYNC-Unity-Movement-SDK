@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
 namespace LYNC.DeepLink
 {
@@ -66,7 +65,6 @@ namespace LYNC.DeepLink
         {
             registeredEvents.Remove("auth");
             registeredEvents.Add("auth", callback);
-            Debug.Log("Listener added for: " + "auth");
         }
 
         public static void AddTransactionListener(Transaction transaction, System.Action<TransactionResult> callback)
