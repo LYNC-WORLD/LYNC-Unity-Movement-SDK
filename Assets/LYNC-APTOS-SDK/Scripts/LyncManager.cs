@@ -19,7 +19,6 @@ namespace LYNC
 
         //
         private static readonly string apiKeyValidationUrl = "https://server.lync.world/user/check_api_key";
-        public static readonly string TransactionUrl = "";
 
         // 
         public static readonly string BaseFrontEndURL = "http://192.168.1.12:5173";
