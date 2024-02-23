@@ -147,13 +147,6 @@ namespace LYNC
             AppendAuthData();
             return JsonUtility.ToJson(this);
         }
-
-        public string GetBrowserUrl()
-        {
-            AppendAuthData();
-            string json = JsonUtility.ToJson(this);
-            return $"{API.FrontendUrl}/pontem-transaction?scheme={DeepLinkRegistration.DeepLinkUrl}&transaction={Utils.ToBase64(json)}";
-        }
     }
 
     public enum ARGUMENT_TYPE { STRING, NUMBER, BYTEARRAY }
@@ -168,7 +161,9 @@ namespace LYNC
     public class TransactionResult
     {
         public bool success;
+        public string response;
         public string hash;
         public string transactionId;
+        public string error;
     }
 }

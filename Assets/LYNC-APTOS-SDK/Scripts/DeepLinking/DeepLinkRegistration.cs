@@ -10,8 +10,9 @@ namespace LYNC.Wallet
         public string deepLinkUrl = "lync";
         public static string DeepLinkUrl { private set; get; }
 
-        private void Start()
+        private void Awake()
         {
+            Debug.Log("Starting...");
             DeepLinkRegistration.DeepLinkUrl = deepLinkUrl.ToLower();
 
             if (!string.IsNullOrEmpty(deepLinkUrl))
@@ -23,18 +24,12 @@ namespace LYNC.Wallet
         }
 
 #if UNITY_EDITOR
-        private void Update()
-        {
-            if (string.IsNullOrEmpty(deepLinkUrl))
-                Debug.LogError("DeepLink URL is empty or null, set its value in LYNC prefab.");
-        }
-
         private void OnValidate()
         {
             if (!string.IsNullOrEmpty(deepLinkUrl))
             {
 #if UNITY_EDITOR_OSX
-                    UnityEditor.PlayerSettings.macOS.urlSchemes = new string[] { deepLinkUrl.ToLower() };
+                UnityEditor.PlayerSettings.macOS.urlSchemes = new string[] { deepLinkUrl.ToLower() };
 #endif
 
                 UnityEditor.PlayerSettings.iOS.iOSUrlSchemes = new string[] { deepLinkUrl.ToLower() };

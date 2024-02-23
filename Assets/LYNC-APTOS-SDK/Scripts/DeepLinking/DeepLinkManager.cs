@@ -1,26 +1,29 @@
 using System.Collections;
 using UnityEngine;
-using System.Diagnostics;
 using System.IO;
 using LYNC.DeepLink;
 
 namespace LYNC.Wallet
 {
-    public class DeepLinkManager : MonoBehaviour
+    public class DeepLinkManager
     {
         // Windows configuration
         private readonly string launcherPath = (Application.streamingAssetsPath + "/Executables/Launcher.exe").Replace("/", "\\");
         private readonly string registerPath = (Application.streamingAssetsPath + "/Executables/register.reg").Replace("/", "\\");
         private readonly string sharedFilePath = @"C:\ProgramData\launcherdata.txt";
 
-        public static DeepLinkManager Instance { private set; get; }
+        public static DeepLinkManager Instance { private set; get; } = null;
 
         private Coroutine runningCoroutine = null;
 
         private MessageHandler messageHandler = new MessageHandler();
 
-        private void Start()
+        public DeepLinkManager()
         {
+            if (Instance != null) return;
+
+            Instance = this;
+
             if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
             {
                 RegisterCustomProtocol();
@@ -28,16 +31,6 @@ namespace LYNC.Wallet
                 OpenLauncher();
             }
             Application.deepLinkActivated += OnDeepLinkActivated;
-        }
-
-        private void Awake()
-        {
-            if (Instance == null)
-            {
-                Instance = this;
-            }
-            else
-                Destroy(gameObject);
         }
 
         // Invokable 
@@ -50,7 +43,7 @@ namespace LYNC.Wallet
             {
                 ClearSharedFile();
                 OpenLauncher();
-                runningCoroutine = StartCoroutine(ListenForBrowserMessageWindows());
+                runningCoroutine = LyncManager.Instance.StartCoroutine(ListenForBrowserMessageWindows());
             }
         }
 
@@ -66,9 +59,9 @@ namespace LYNC.Wallet
             string text = File.ReadAllText(sharedFilePath);
             if (text.IndexOf(DeepLinkRegistration.DeepLinkUrl.ToLower()) > -1)
             {
-                string url = text.Replace(Process.GetCurrentProcess().Id.ToString(), "").Trim();
+                string url = text.Replace(System.Diagnostics.Process.GetCurrentProcess().Id.ToString(), "").Trim();
                 ClearSharedFile();
-                StopCoroutine(runningCoroutine);
+                LyncManager.Instance.StopCoroutine(runningCoroutine);
 
                 // Handle the message
                 messageHandler.HandleMessage(url);
@@ -78,14 +71,14 @@ namespace LYNC.Wallet
 
             yield return new WaitForSeconds(0.1f);
 
-            runningCoroutine = StartCoroutine(ListenForBrowserMessageWindows());
+            runningCoroutine = LyncManager.Instance.StartCoroutine(ListenForBrowserMessageWindows());
 
         }
 
         private void OpenLauncher()
         {
-            string processId = Process.GetCurrentProcess().Id.ToString();
-            Process p = Process.Start(launcherPath, "processid" + processId);
+            string processId = System.Diagnostics.Process.GetCurrentProcess().Id.ToString();
+            System.Diagnostics.Process p = System.Diagnostics.Process.Start(launcherPath, "processid" + processId);
         }
 
         private void ClearSharedFile()
@@ -108,7 +101,7 @@ namespace LYNC.Wallet
                 writer.Write(temp);
             }
 
-            Process regeditProcess = new Process();
+            System.Diagnostics.Process regeditProcess = new System.Diagnostics.Process();
             regeditProcess.StartInfo.FileName = "reg.exe";
             regeditProcess.StartInfo.Arguments = "import \"" + tempFilePath + "\"";
             regeditProcess.StartInfo.UseShellExecute = false;

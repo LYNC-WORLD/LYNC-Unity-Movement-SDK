@@ -4,22 +4,26 @@ using UnityEngine;
 
 namespace LYNC
 {
+    [RequireComponent(typeof(DeepLinkRegistration))]
     public class LyncManager : MonoBehaviour
     {
         public static LyncManager Instance { private set; get; }
         public WalletAuth WalletAuth { private set; get; }
         public TransactionsManager TransactionsManager { private set; get; }
+        public DeepLinkManager DeepLinkManager { private set; get; }
         public static event System.Action<LyncManager> onLyncReady;
 
         //
         public string LyncAPIKey;
-        [Space]
         public string xApiKey;
 
         //
         private static readonly string apiKeyValidationUrl = "https://server.lync.world/user/check_api_key";
         public static readonly string TransactionUrl = "";
 
+        // 
+        public static readonly string BaseFrontEndURL = "http://192.168.1.12:5173";
+        public static readonly string BaseServerURL = "http://localhost:5000";
 
         private void Awake()
         {
@@ -52,10 +56,11 @@ namespace LYNC
                         return;
                     }
 
-                    if (!WalletAuth.Instance)
-                    {
-                        WalletAuth = gameObject.AddComponent<WalletAuth>();
-                    }
+                    if (WalletAuth.Instance == null)
+                        WalletAuth = new WalletAuth();
+                    if (DeepLinkManager.Instance == null)
+                        DeepLinkManager = new DeepLinkManager();
+
                     // WalletAuth
                     WalletAuth = WalletAuth.Instance;
 

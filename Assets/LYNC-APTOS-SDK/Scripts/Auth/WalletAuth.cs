@@ -3,24 +3,17 @@ using UnityEngine;
 
 namespace LYNC.Wallet
 {
-    public class WalletAuth : MonoBehaviour
+    public class WalletAuth
     {
         public static WalletAuth Instance { private set; get; }
         public static event System.Action<string> WalletConnectionRequested;
 
-        private void Awake()
+        public WalletAuth()
         {
-            if (Instance == null)
-            {
-                Instance = this;
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
+            Instance = this;
         }
 
-        public void ConnectWallet(string loginUrl, System.Action<AuthBase> onSuccess = null)
+        public void ConnectWallet(System.Action<AuthBase> onSuccess = null)
         {
             async void _onSuccess(AuthBase authBase)
             {
@@ -30,8 +23,17 @@ namespace LYNC.Wallet
                 onSuccess(authBase);
             }
 
-            MessageHandler.AddAuthListener(_onSuccess);
-            DeepLinkManager.Instance.StartBrowserProcess(loginUrl + "?scheme=" + DeepLinkRegistration.DeepLinkUrl);
+            MessageHandler.AddListener<AuthBase>(_onSuccess);
+
+            string url = LyncManager.BaseFrontEndURL + "/auth?scheme=" + DeepLinkRegistration.DeepLinkUrl;
+            // For mobile platforms, used to add app_info for interacting with Pontem Mobile App
+            // app_info is also used in the front end to redirect to Pontem Mobile App
+            if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+            {
+                PontemMobileAuthOutScheme pontemMobile = new PontemMobileAuthOutScheme();
+                url += "&app_info=" + pontemMobile.ToBase64();
+            }
+            DeepLinkManager.Instance.StartBrowserProcess(url);
         }
 
         public void Logout()

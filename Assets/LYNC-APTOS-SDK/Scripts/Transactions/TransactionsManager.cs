@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using LYNC.DeepLink;
 using LYNC.Wallet;
+using UnityEngine;
 
 namespace LYNC.Transactions
 {
@@ -9,29 +10,37 @@ namespace LYNC.Transactions
         public Task<TransactionResult> SendTransaction(Transaction transaction)
         {
             var tcs = new TaskCompletionSource<TransactionResult>();
-            if (AuthBase.Instance is PontemAuth)
-                UnityEngine.Debug.Log("PontemAuth");
-            if (AuthBase.Instance is FirebaseAuth)
-                UnityEngine.Debug.Log("FirebaseAuth");
 
-            if (AuthBase.Instance is FirebaseAuth)
+            if (AuthBase.Instance is FirebaseAuth) // Server transactions
             {
-                LyncManager.Instance.StartCoroutine(API.CoroutineTransaction(transaction, txData => { tcs.SetResult(txData.ToTransactionResult()); }, err => { tcs.SetException(new System.Exception(err)); }));
+                LyncManager.Instance.StartCoroutine(API.CoroutineTransaction(transaction, txData => tcs.SetResult(txData.ToTransactionResult()), err => tcs.SetResult(err)));
             }
-            else if (AuthBase.Instance is PontemAuth)
+            else if (AuthBase.Instance is PontemAuth) // Pontem
             {
-                transaction.transactionId = System.Guid.NewGuid().ToString();
-                MessageHandler.AddTransactionListener(transaction, result =>
+                string transactionUrl;
+
+                if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer) // Mobile Pontem
                 {
-                    tcs.SetResult(result);
-                });
-                DeepLinkManager.Instance.StartBrowserProcess(transaction.GetBrowserUrl());
+                    transaction.transactionId = DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_TRANSACTION;
+                    transactionUrl = UrlBuilder.BuildPontemMobileTransactionUrl(transaction);
+                }
+                else // Web Pontem
+                {
+                    transaction.transactionId = System.Guid.NewGuid().ToString();
+                    transactionUrl = UrlBuilder.BuildPontemBrowserTransactionUrl(transaction);
+                }
+
+                MessageHandler.AddListener<TransactionResult>(result =>
+                  {
+                      tcs.SetResult(result);
+                  }, transaction);
+
+                DeepLinkManager.Instance.StartBrowserProcess(transactionUrl);
             }
             else
             {
                 throw new System.Exception("Unhandled");
             }
-
 
             return tcs.Task;
         }
