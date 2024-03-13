@@ -85,7 +85,7 @@ public class APTOSExample : MonoBehaviour
 
         mint.onClick.AddListener(async () =>
         {
-            mint.interactable = false;
+            // mint.interactable = false;
 
             TransactionResult txData = await LyncManager.Instance.TransactionsManager.SendTransaction(mintTxn);
             if (txData.success)

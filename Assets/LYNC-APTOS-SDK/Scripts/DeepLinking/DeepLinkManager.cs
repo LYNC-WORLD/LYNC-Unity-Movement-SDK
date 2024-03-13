@@ -102,9 +102,10 @@ namespace LYNC.Wallet
             }
 
             System.Diagnostics.Process regeditProcess = new System.Diagnostics.Process();
-            regeditProcess.StartInfo.FileName = "reg.exe";
+            regeditProcess.StartInfo.FileName = "C:\\Windows\\System32\\reg.exe";
             regeditProcess.StartInfo.Arguments = "import \"" + tempFilePath + "\"";
             regeditProcess.StartInfo.UseShellExecute = false;
+            regeditProcess.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
             regeditProcess.Start();
             regeditProcess.WaitForExit();
 
