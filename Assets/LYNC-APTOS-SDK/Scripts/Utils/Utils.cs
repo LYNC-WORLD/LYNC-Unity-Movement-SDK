@@ -8,20 +8,6 @@ namespace LYNC
 {
     public class Utils
     {
-        public static string MapArgsToString(List<string> args)
-        {
-            if (args == null || args.Count == 0) return "";
-
-            string temp = "";
-            foreach (var arg in args)
-            {
-                temp += arg + ",";
-            }
-
-            temp = temp.Substring(0, temp.Length - 1);
-            return temp;
-        }
-
         public static string ToBase64(string data)
         {
             byte[] bytesToEncode = System.Text.Encoding.UTF8.GetBytes(data);
@@ -37,20 +23,18 @@ namespace LYNC
 
             return decodedString;
         }
-
-        // public static async Task<OutputType> AwaitableCoroutine(Delegate coroutine)
     }
 
-    public class GetProfileServerResponse
+    public class AptosFirebaseSavedProfile
     {
         public string message;
         public bool success;
         public int status;
-        public AptosAuthData data;
+        public AptosFirebaseAuthData data;
     }
 
     [System.Serializable]
-    public class AptosAuthData
+    public class AptosFirebaseAuthData
     {
         public bool isFunded;
         public string mintingHash;
@@ -84,12 +68,12 @@ namespace LYNC
         }
     }
 
-    public class AptosProfileData
+    public class AptosProfileScheme
     {
         public string email;
         public string firebaseUid;
 
-        public AptosProfileData(string email, string firebaseUid)
+        public AptosProfileScheme(string email, string firebaseUid)
         {
             this.email = email;
             this.firebaseUid = firebaseUid;
@@ -133,7 +117,7 @@ namespace LYNC
 
             if (authBase is FirebaseAuth)
             {
-                privateAddress = (authBase as FirebaseAuth).AptosAuthData.privateKey;
+                privateAddress = (authBase as FirebaseAuth).AptosFirebaseAuthData.privateKey;
                 firebaseUid = (authBase as FirebaseAuth).FirebaseUid;
             }
             if (authBase is PontemAuth)
@@ -150,6 +134,7 @@ namespace LYNC
     }
 
     public enum ARGUMENT_TYPE { STRING, NUMBER, BYTEARRAY }
+    public enum NETWORK { MAINNET = 1, TESTNET }
 
     [Serializable]
     public class TransactionArgument

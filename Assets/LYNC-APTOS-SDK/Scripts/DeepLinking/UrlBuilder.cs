@@ -25,7 +25,7 @@ namespace LYNC.DeepLink
 
         public static string BuildPontemBrowserTransactionUrl(Transaction transaction)
         {
-            return $"{LyncManager.BaseFrontEndURL}/pontem-transaction?scheme={DeepLinkRegistration.DeepLinkUrl}&transaction={Utils.ToBase64(transaction.ToJson())}";
+            return $"{LyncManager.BaseFrontEndURL}/pontem-transaction?scheme={DeepLinkRegistration.DeepLinkUrl}&transaction={Utils.ToBase64(transaction.ToJson())}&network={(int)LyncManager.Instance.Network}";
         }
 
         public static string BuildBrowserAuthUrl()

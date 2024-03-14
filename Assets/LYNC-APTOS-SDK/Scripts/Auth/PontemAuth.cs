@@ -18,7 +18,7 @@ public class PontemAuth : AuthBase
 
     protected override void CustomeSave()
     {
-        PlayerPrefs.SetString("_savedAuthType", AUTH_TYPE.PONTEM.ToString().ToLower());
+
     }
 
     protected override Task Load(Action onSessionExpired = null)

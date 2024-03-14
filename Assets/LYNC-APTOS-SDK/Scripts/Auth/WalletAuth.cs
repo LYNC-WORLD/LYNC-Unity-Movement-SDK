@@ -18,7 +18,7 @@ namespace LYNC.Wallet
             async void _onSuccess(AuthBase authBase)
             {
                 if (AuthBase.Instance is FirebaseAuth)
-                    await (authBase as FirebaseAuth).AptosAuthData.UpdateBalance();
+                    await (authBase as FirebaseAuth).AptosFirebaseAuthData.UpdateBalance();
 
                 onSuccess(authBase);
             }

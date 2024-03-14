@@ -5,15 +5,15 @@ using UnityEngine;
 public class FirebaseAuth : AuthBase
 {
     public string FirebaseEmail, FirebaseUid;
-    public AptosAuthData AptosAuthData = null;
+    public AptosFirebaseAuthData AptosFirebaseAuthData = null;
 
     public FirebaseAuth()
     {
     }
 
-    public FirebaseAuth(AptosAuthData aptosWallet)
+    public FirebaseAuth(AptosFirebaseAuthData aptosWallet)
     {
-        AptosAuthData = aptosWallet;
+        AptosFirebaseAuthData = aptosWallet;
         FirebaseEmail = aptosWallet.email;
         FirebaseUid = aptosWallet.firebaseUid;
         PublicAddress = aptosWallet.publicKey;
@@ -29,10 +29,10 @@ public class FirebaseAuth : AuthBase
 
     protected override async Task Load(System.Action onSessionExpired = null)
     {
-        var tcs = new TaskCompletionSource<AptosAuthData>();
+        var tcs = new TaskCompletionSource<AptosFirebaseAuthData>();
         if (Instance != null && Instance is FirebaseAuth)
         {
-            tcs.SetResult((Instance as FirebaseAuth).AptosAuthData);
+            tcs.SetResult((Instance as FirebaseAuth).AptosFirebaseAuthData);
         }
         else
         {
@@ -54,22 +54,22 @@ public class FirebaseAuth : AuthBase
             }
 
             Debug.Log("Fetching firebase data from server...");
-            if (AptosAuthData != null)
+            if (AptosFirebaseAuthData != null)
             {
-                tcs.SetResult(AptosAuthData);
+                tcs.SetResult(AptosFirebaseAuthData);
                 Save(this);
             }
             else
             {
                 if (!string.IsNullOrEmpty(FirebaseEmail) && !string.IsNullOrEmpty(FirebaseUid))
                 {
-                    LyncManager.Instance.StartCoroutine(API.CoroutineGetFirebaseProfile(new AptosProfileData(FirebaseEmail, FirebaseUid),
+                    LyncManager.Instance.StartCoroutine(API.CoroutineGetFirebaseProfile(new AptosProfileScheme(FirebaseEmail, FirebaseUid),
                     wallet =>
                     {
-                        AptosAuthData = wallet;
+                        AptosFirebaseAuthData = wallet;
                         Debug.Log(JsonUtility.ToJson(wallet));
-                        PublicAddress = AptosAuthData.publicKey;
-                        tcs.SetResult(AptosAuthData);
+                        PublicAddress = AptosFirebaseAuthData.publicKey;
+                        tcs.SetResult(AptosFirebaseAuthData);
                         Save(this);
                     }, msg =>
                     {

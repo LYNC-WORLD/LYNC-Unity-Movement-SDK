@@ -47,7 +47,7 @@ public class API
         }
     }
 
-    public static IEnumerator TempCoroutineTransaction(TRANSACTIONS txnType, AptosAuthData aptosWallet, System.Action<ServerBasedTransactionFeedback> onSuccess, System.Action<string> onError)
+    public static IEnumerator TempCoroutineTransaction(TRANSACTIONS txnType, AptosFirebaseAuthData aptosWallet, System.Action<ServerBasedTransactionFeedback> onSuccess, System.Action<string> onError)
     {
         string url = LyncManager.BaseServerURL + "/api/unity/" + txnType.ToString().ToLower();
         UnityWebRequest webRequest = UnityWebRequest.Put(url, JsonUtility.ToJson(aptosWallet));
@@ -70,7 +70,7 @@ public class API
         }
     }
 
-    public static IEnumerator CoroutineGetBalance(AptosAuthData aptosWallet, System.Action<float> onSuccess, System.Action<string> onError)
+    public static IEnumerator CoroutineGetBalance(AptosFirebaseAuthData aptosWallet, System.Action<float> onSuccess, System.Action<string> onError)
     {
         string url = LyncManager.BaseServerURL + "/api/unity/balance";
         UnityWebRequest webRequest = UnityWebRequest.Put(url, JsonUtility.ToJson(aptosWallet));
@@ -150,7 +150,7 @@ public class API
         }
     }
 
-    public static IEnumerator CoroutineGetFirebaseProfile(AptosProfileData aptosProfileData, System.Action<AptosAuthData> onSuccess, System.Action<string> onError)
+    public static IEnumerator CoroutineGetFirebaseProfile(AptosProfileScheme aptosProfileData, System.Action<AptosFirebaseAuthData> onSuccess, System.Action<string> onError)
     {
         UnityWebRequest webRequest = UnityWebRequest.Put(ROUTES.PROFILE, JsonUtility.ToJson(aptosProfileData));
         webRequest.method = "POST";
@@ -164,7 +164,7 @@ public class API
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
             Debug.Log(webRequest.downloadHandler.text);
-            AptosAuthData aptosResponse = JsonUtility.FromJson<GetProfileServerResponse>(webRequest.downloadHandler.text).data;
+            AptosFirebaseAuthData aptosResponse = JsonUtility.FromJson<AptosFirebaseSavedProfile>(webRequest.downloadHandler.text).data;
             onSuccess(aptosResponse);
         }
         else

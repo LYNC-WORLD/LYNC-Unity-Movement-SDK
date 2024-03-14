@@ -161,9 +161,9 @@ public class APTOSExample : MonoBehaviour
 
     public void Populate(FirebaseAuth firebaseAuth = null)
     {
-        publicKey.text = "Public Key = " + (firebaseAuth == null ? "" : firebaseAuth.AptosAuthData.publicKey.Substring(0, 20) + "...");
-        privateKey.text = "Private Key = " + (firebaseAuth == null ? "" : firebaseAuth.AptosAuthData.privateKey.Substring(0, 20) + "...");
+        publicKey.text = "Public Key = " + (firebaseAuth == null ? "" : firebaseAuth.AptosFirebaseAuthData.publicKey.Substring(0, 20) + "...");
+        privateKey.text = "Private Key = " + (firebaseAuth == null ? "" : firebaseAuth.AptosFirebaseAuthData.privateKey.Substring(0, 20) + "...");
         loginDateTxt.text = "Login Date = " + (firebaseAuth == null ? "" : firebaseAuth.LoginDate.ToString());
-        balance.text = "Balance = " + (firebaseAuth == null ? "00" : firebaseAuth.AptosAuthData.balance) + " APT";
+        balance.text = "Balance = " + (firebaseAuth == null ? "00" : firebaseAuth.AptosFirebaseAuthData.balance) + " APT";
     }
 }

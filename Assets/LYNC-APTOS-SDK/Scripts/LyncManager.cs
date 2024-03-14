@@ -17,6 +17,9 @@ namespace LYNC
         public string LyncAPIKey;
         public string xApiKey;
 
+        [Space]
+        public NETWORK Network = NETWORK.TESTNET;
+
         //
         private static readonly string apiKeyValidationUrl = "https://server.lync.world/user/check_api_key";
 

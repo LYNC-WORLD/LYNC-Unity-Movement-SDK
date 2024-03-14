@@ -67,8 +67,8 @@ namespace LYNC.DeepLink
             {
                 case DEEPLINK_MESSAGE_PATH.FIREBASE:
                     AuthBase.AuthType = AUTH_TYPE.FIREBASE;
-                    AptosAuthData aptosAuthData = JsonUtility.FromJson<AptosAuthData>(MessageData);
-                    authBase = new FirebaseAuth(aptosAuthData);
+                    AptosFirebaseAuthData AptosFirebaseAuthData = JsonUtility.FromJson<AptosFirebaseAuthData>(MessageData);
+                    authBase = new FirebaseAuth(AptosFirebaseAuthData);
                     break;
                 case DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_AUTH:
                     AuthBase.AuthType = AUTH_TYPE.PONTEM;
