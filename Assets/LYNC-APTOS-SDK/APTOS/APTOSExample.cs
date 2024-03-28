@@ -123,11 +123,13 @@ public class APTOSExample : MonoBehaviour
         {
             aptosContainer.gameObject.SetActive(true);
             pontemContainer.gameObject.SetActive(false);
+            Debug.Log("FIREBASE auth");
         }
         if (authType == AUTH_TYPE.PONTEM)
         {
             pontemContainer.gameObject.SetActive(true);
             aptosContainer.gameObject.SetActive(false);
+            Debug.Log("PONTEM auth");
         }
     }
 

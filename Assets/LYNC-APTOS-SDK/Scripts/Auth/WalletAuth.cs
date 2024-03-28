@@ -17,10 +17,19 @@ namespace LYNC.Wallet
         {
             async void _onSuccess(AuthBase authBase)
             {
-                if (AuthBase.Instance is FirebaseAuth)
-                    await (authBase as FirebaseAuth).AptosFirebaseAuthData.UpdateBalance();
-
-                onSuccess(authBase);
+                try
+                {
+                    if (AuthBase.Instance is FirebaseAuth)
+                        await (authBase as FirebaseAuth).AptosFirebaseAuthData.UpdateBalance();
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogException(e);
+                }
+                finally
+                {
+                    onSuccess(authBase);
+                }
             }
 
             MessageHandler.AddListener<AuthBase>(_onSuccess);
