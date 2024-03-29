@@ -669,12 +669,12 @@ MonoBehaviour:
   transactionResultsParent: {fileID: 447854476}
   transactionResultHolder: {fileID: 7745483059579634397, guid: ec5af3f3746218347bb2036f04b39301, type: 3}
   mintTxn:
-    contractAddress: 0x55a5d8e2588d84ef1e9dbe4e8fba38ab0cd2cc54c35987856caece4d971c3ff5
-    contractName: LyncNFTCollection721A
-    functionName: mint_nft
+    contractAddress: 0x55db3f109405348dd4ce271dc92a39a6e1cbc3d78cf71f6bf128b1c8a9dfac33
+    contractName: tst_unity
+    functionName: set_data_string
     arguments:
-    - argument: 1
-      type: 1
+    - argument: 0xb66b180422a4886dac85b8f68cc42ec1c6bafc824e196d437fdfd176192c25fccfc10e47777699420eec0c54a0176861a353a43dd45b338385e1b975709f2000
+      type: 2
     transactionId: 
     publicAddress: 
     privateAddress: 

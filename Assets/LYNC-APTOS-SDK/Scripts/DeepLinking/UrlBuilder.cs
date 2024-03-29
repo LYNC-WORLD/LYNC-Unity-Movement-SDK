@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using LYNC.Wallet;
 using UnityEngine;
 
@@ -13,14 +14,24 @@ namespace LYNC.DeepLink
             return temp;
         }
 
-        public static string BuildPontemMobileTransactionUrl(Transaction transaction)
+        public static async Task<string> BuildPontemMobileTransactionUrlAsync(Transaction transaction)
         {
-            PontemMobileAuthOutScheme appInfo = new PontemMobileAuthOutScheme();
-            PontemMobileTransactionOutScheme transactionPayload = new PontemMobileTransactionOutScheme(transaction);
-            string temp = "pontem-wallet://mob2mob?payload=" + transactionPayload.ToBase64() + "&app_info=" + appInfo.ToBase64();
-            Debug.Log("BuildPontemMobileTransactionUrl = " + temp);
-            Debug.Log(JsonUtility.ToJson(transactionPayload));
-            return temp;
+            var tcs = new TaskCompletionSource<string>();
+            LyncManager.Instance.StartCoroutine(API.CouroutineBuildMobileTransaction(transaction, res => tcs.SetResult(res), err => tcs.SetException(new System.Exception(err))));
+            try
+            {
+                string result = await tcs.Task;
+
+                PontemMobileAuthOutScheme appInfo = new PontemMobileAuthOutScheme();
+                string temp = "pontem-wallet://mob2mob?payload=" + Utils.ToBase64(result) + "&app_info=" + appInfo.ToBase64();
+                Debug.Log(temp);
+                return temp;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogException(e);
+                throw;
+            }
         }
 
         public static string BuildPontemBrowserTransactionUrl(Transaction transaction)

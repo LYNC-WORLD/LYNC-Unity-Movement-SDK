@@ -12,6 +12,7 @@ public class ROUTES
     public static string REFUND = LyncManager.BaseServerURL + "/api/unity/" + "refund";
     public static string BALANCE = LyncManager.BaseServerURL + "/api/unity/" + "balance";
     public static string PROFILE = LyncManager.BaseServerURL + "/api/users/" + "profile";
+    public static string MOBILE_TRANSACTION = LyncManager.BaseServerURL + "/api/unity/" + "mobile-transaction-builder";
 }
 
 public class API
@@ -169,6 +170,28 @@ public class API
         }
         else
         {
+            onError(webRequest.error);
+        }
+    }
+
+    public static IEnumerator CouroutineBuildMobileTransaction(Transaction transaction, System.Action<string> onSuccess, System.Action<string> onError)
+    {
+        UnityWebRequest webRequest = UnityWebRequest.Put(ROUTES.MOBILE_TRANSACTION, JsonUtility.ToJson(transaction));
+        webRequest.method = "POST";
+        webRequest.SetRequestHeader("Content-Type", "application/json");
+        webRequest.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
+
+
+        yield return webRequest.SendWebRequest();
+
+        if (webRequest.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log(webRequest.downloadHandler.text);
+            onSuccess(webRequest.downloadHandler.text);
+        }
+        else
+        {
+            Debug.LogError(webRequest.error);
             onError(webRequest.error);
         }
     }

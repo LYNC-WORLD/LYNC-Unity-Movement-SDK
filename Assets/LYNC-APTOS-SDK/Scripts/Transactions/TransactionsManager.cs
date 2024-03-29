@@ -7,7 +7,7 @@ namespace LYNC.Transactions
 {
     public class TransactionsManager
     {
-        public Task<TransactionResult> SendTransaction(Transaction transaction)
+        public async Task<TransactionResult> SendTransaction(Transaction transaction)
         {
             var tcs = new TaskCompletionSource<TransactionResult>();
 
@@ -22,7 +22,7 @@ namespace LYNC.Transactions
                 if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer) // Mobile Pontem
                 {
                     transaction.transactionId = DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_TRANSACTION;
-                    transactionUrl = UrlBuilder.BuildPontemMobileTransactionUrl(transaction);
+                    transactionUrl = await UrlBuilder.BuildPontemMobileTransactionUrlAsync(transaction);
                 }
                 else // Web Pontem
                 {
@@ -42,7 +42,7 @@ namespace LYNC.Transactions
                 throw new System.Exception("Unhandled");
             }
 
-            return tcs.Task;
+            return await tcs.Task;
         }
     }
 }

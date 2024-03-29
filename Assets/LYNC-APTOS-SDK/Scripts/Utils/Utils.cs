@@ -133,7 +133,7 @@ namespace LYNC
         }
     }
 
-    public enum ARGUMENT_TYPE { STRING, NUMBER, BYTEARRAY }
+    public enum ARGUMENT_TYPE { STRING = 0, NUMBER, BYTEARRAY }
     public enum NETWORK { MAINNET = 1, TESTNET }
 
     [Serializable]
