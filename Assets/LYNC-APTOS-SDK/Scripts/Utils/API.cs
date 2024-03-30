@@ -24,7 +24,7 @@ public class API
 
     public static IEnumerator CoroutineTransaction(Transaction customTransaction, System.Action<ServerBasedTransactionFeedback> onSuccess, System.Action<TransactionResult> onError)
     {
-        string url = LyncManager.BaseServerURL + "/api/unity/txn";
+        string url = LyncManager.BaseServerURL + "/api/unity/txn2";
         UnityWebRequest webRequest = UnityWebRequest.Put(url, customTransaction.ToJson());
         Debug.Log(customTransaction.ToJson());
         webRequest.method = "POST";
