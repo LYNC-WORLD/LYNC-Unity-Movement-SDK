@@ -206,7 +206,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &312383503
 RectTransform:
   m_ObjectHideFlags: 0
@@ -672,6 +672,7 @@ MonoBehaviour:
     contractAddress: 0x55db3f109405348dd4ce271dc92a39a6e1cbc3d78cf71f6bf128b1c8a9dfac33
     contractName: tst_unity
     functionName: set_data_bytes
+    network: 
     arguments:
     - argument: 0xb66b180422a4886dac85b8f68cc42ec1c6bafc824e196d437fdfd176192c25fccfc10e47777699420eec0c54a0176861a353a43dd45b338385e1b975709f2000
       type: 2
@@ -679,6 +680,7 @@ MonoBehaviour:
     publicAddress: 
     privateAddress: 
     firebaseUid: 
+    usePaymaster: 0
 --- !u!4 &890959727
 Transform:
   m_ObjectHideFlags: 0
@@ -2221,6 +2223,10 @@ PrefabInstance:
     - target: {fileID: 375463546, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: Network
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 375463546, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
+      propertyPath: SponsorTransaction
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5805647402976630236, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: m_Enabled

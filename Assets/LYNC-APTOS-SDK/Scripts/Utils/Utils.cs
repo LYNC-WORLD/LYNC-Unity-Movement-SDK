@@ -72,11 +72,13 @@ namespace LYNC
     {
         public string email;
         public string firebaseUid;
+        public string network;
 
         public AptosProfileScheme(string email, string firebaseUid)
         {
             this.email = email;
             this.firebaseUid = firebaseUid;
+            this.network = ((int)LyncManager.Instance.Network).ToString();;
         }
     }
 
@@ -103,7 +105,7 @@ namespace LYNC
             this.functionName = functionName;
             this.contractName = contractName;
             this.contractAddress = contractAddress;
-            this.usePaymaster = true;
+            this.usePaymaster = LyncManager.Instance.SponsorTransaction;
             this.network = ((int)LyncManager.Instance.Network).ToString();
         }
 
@@ -112,7 +114,7 @@ namespace LYNC
             this.functionName = functionName;
             this.contractName = contractName;
             this.contractAddress = contractAddress;
-            this.usePaymaster = true;
+            this.usePaymaster = LyncManager.Instance.SponsorTransaction;
             this.network = ((int)LyncManager.Instance.Network).ToString();
         }
 
