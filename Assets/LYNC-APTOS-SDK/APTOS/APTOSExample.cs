@@ -3,6 +3,7 @@ using TMPro;
 using LYNC;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class APTOSExample : MonoBehaviour
 {
@@ -83,13 +84,20 @@ public class APTOSExample : MonoBehaviour
             Populate();
         });
 
+        List<TransactionArgument> arguments = new List<TransactionArgument>{
+            new TransactionArgument{ argument = "0xb66b180422a4886dac85b8f68cc42ec1c6bafc824e196d437fdfd176192c25fccfc10e47777699420eec0c54a0176861a353a43dd45b338385e1b975709f2000", type = ARGUMENT_TYPE.STRING }
+        };
+
         mint.onClick.AddListener(async () =>
         {
             // mint.interactable = false;
 
-            TransactionResult txData = await LyncManager.Instance.TransactionsManager.SendTransaction(mintTxn);
+            TransactionResult txData = await LyncManager.Instance.TransactionsManager.SendTransaction(new Transaction(
+                "0x55db3f109405348dd4ce271dc92a39a6e1cbc3d78cf71f6bf128b1c8a9dfac33","tst_unity","set_data_bytes",
+                arguments
+            ));
             if (txData.success)
-                SuccessfullTransaction(txData.hash, "MINT");
+                SuccessfulTransaction(txData.hash, "MINT");
             else
                 ErrorTransaction(txData.error);
 
@@ -133,7 +141,7 @@ public class APTOSExample : MonoBehaviour
         }
     }
 
-    private void SuccessfullTransaction(string hash, string txnTitle = "")
+    private void SuccessfulTransaction(string hash, string txnTitle = "")
     {
         var go = Instantiate(transactionResultHolder, transactionResultsParent);
 

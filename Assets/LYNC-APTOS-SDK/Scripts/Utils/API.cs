@@ -7,9 +7,9 @@ using UnityEngine.Networking;
 public class ROUTES
 {
     public static string GENERIC_TRANSACTION = LyncManager.BaseServerURL + "/api/unity/" + "txn";
-    public static string FUND = LyncManager.BaseServerURL + "/api/unity/" + "fund";
-    public static string MINT = LyncManager.BaseServerURL + "/api/unity/" + "mint";
-    public static string REFUND = LyncManager.BaseServerURL + "/api/unity/" + "refund";
+    // public static string FUND = LyncManager.BaseServerURL + "/api/unity/" + "fund";
+    // public static string MINT = LyncManager.BaseServerURL + "/api/unity/" + "mint";
+    // public static string REFUND = LyncManager.BaseServerURL + "/api/unity/" + "refund";
     public static string BALANCE = LyncManager.BaseServerURL + "/api/unity/" + "balance";
     public static string PROFILE = LyncManager.BaseServerURL + "/api/users/" + "profile";
     public static string MOBILE_TRANSACTION = LyncManager.BaseServerURL + "/api/unity/" + "mobile-transaction-builder";
@@ -26,7 +26,7 @@ public class API
     {
         string url = LyncManager.BaseServerURL + "/api/unity/txn2";
         UnityWebRequest webRequest = UnityWebRequest.Put(url, customTransaction.ToJson());
-        Debug.Log(customTransaction.ToJson());
+        Debug.Log("TEST DATA:"+customTransaction.ToJson());
         webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
         webRequest.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
@@ -48,28 +48,28 @@ public class API
         }
     }
 
-    public static IEnumerator TempCoroutineTransaction(TRANSACTIONS txnType, AptosFirebaseAuthData aptosWallet, System.Action<ServerBasedTransactionFeedback> onSuccess, System.Action<string> onError)
-    {
-        string url = LyncManager.BaseServerURL + "/api/unity/" + txnType.ToString().ToLower();
-        UnityWebRequest webRequest = UnityWebRequest.Put(url, JsonUtility.ToJson(aptosWallet));
-        webRequest.method = "POST";
-        webRequest.SetRequestHeader("Content-Type", "application/json");
-        webRequest.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
-        yield return webRequest.SendWebRequest();
+    // public static IEnumerator TempCoroutineTransaction(TRANSACTIONS txnType, AptosFirebaseAuthData aptosWallet, System.Action<ServerBasedTransactionFeedback> onSuccess, System.Action<string> onError)
+    // {
+    //     string url = LyncManager.BaseServerURL + "/api/unity/" + txnType.ToString().ToLower();
+    //     UnityWebRequest webRequest = UnityWebRequest.Put(url, JsonUtility.ToJson(aptosWallet));
+    //     webRequest.method = "POST";
+    //     webRequest.SetRequestHeader("Content-Type", "application/json");
+    //     webRequest.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
+    //     yield return webRequest.SendWebRequest();
 
-        if (webRequest.result == UnityWebRequest.Result.Success)
-        {
-            ServerBasedTransactionFeedback tsxData = JsonUtility.FromJson<ServerBasedTransactionFeedback>(webRequest.downloadHandler.text);
-            Debug.Log(webRequest.downloadHandler.text);
-            onSuccess(tsxData);
-        }
-        else
-        {
-            // ErrorDisplay.ShowError(webRequest.error);
-            onError(webRequest.downloadHandler.text);
-            Debug.Log(webRequest.error);
-        }
-    }
+    //     if (webRequest.result == UnityWebRequest.Result.Success)
+    //     {
+    //         ServerBasedTransactionFeedback tsxData = JsonUtility.FromJson<ServerBasedTransactionFeedback>(webRequest.downloadHandler.text);
+    //         Debug.Log(webRequest.downloadHandler.text);
+    //         onSuccess(tsxData);
+    //     }
+    //     else
+    //     {
+    //         // ErrorDisplay.ShowError(webRequest.error);
+    //         onError(webRequest.downloadHandler.text);
+    //         Debug.Log(webRequest.error);
+    //     }
+    // }
 
     public static IEnumerator CoroutineGetBalance(AptosFirebaseAuthData aptosWallet, System.Action<float> onSuccess, System.Action<string> onError)
     {
@@ -259,7 +259,7 @@ public class AnalyticsData
     public string chainId;
 }
 
-public enum TRANSACTIONS
-{
-    FUND, MINT, REFUND
-}
+// public enum TRANSACTIONS
+// {
+//     FUND, MINT, REFUND
+// }

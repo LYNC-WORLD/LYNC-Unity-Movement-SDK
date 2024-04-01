@@ -86,12 +86,14 @@ namespace LYNC
         public string contractAddress;
         public string contractName;
         public string functionName;
+        public string network;
         public List<TransactionArgument> arguments;
 
         [HideInInspector] public string transactionId;
         [HideInInspector] public string publicAddress;
         [HideInInspector] public string privateAddress;
         [HideInInspector] public string firebaseUid;
+        [HideInInspector] public bool usePaymaster;
 
         private AuthBase authBase;
 
@@ -101,6 +103,8 @@ namespace LYNC
             this.functionName = functionName;
             this.contractName = contractName;
             this.contractAddress = contractAddress;
+            this.usePaymaster = true;
+            this.network = ((int)LyncManager.Instance.Network).ToString();
         }
 
         public Transaction(string contractAddress, string contractName, string functionName)
@@ -108,6 +112,8 @@ namespace LYNC
             this.functionName = functionName;
             this.contractName = contractName;
             this.contractAddress = contractAddress;
+            this.usePaymaster = true;
+            this.network = ((int)LyncManager.Instance.Network).ToString();
         }
 
         private void AppendAuthData()
