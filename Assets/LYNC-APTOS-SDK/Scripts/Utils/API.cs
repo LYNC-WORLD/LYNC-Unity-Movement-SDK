@@ -74,7 +74,15 @@ public class API
     public static IEnumerator CoroutineGetBalance(AptosFirebaseAuthData aptosWallet, System.Action<float> onSuccess, System.Action<string> onError)
     {
         string url = LyncManager.BaseServerURL + "/api/unity/balance";
-        UnityWebRequest webRequest = UnityWebRequest.Put(url, JsonUtility.ToJson(aptosWallet));
+        BalanceData jsonObject = new BalanceData
+        {
+            network = ((int)LyncManager.Instance.Network).ToString(),
+            publicKey = aptosWallet.publicKey
+
+        };
+
+        var jsonData = JsonUtility.ToJson(jsonObject);
+        UnityWebRequest webRequest = UnityWebRequest.Put(url, jsonData);
         webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
         webRequest.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
@@ -83,10 +91,13 @@ public class API
 
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
-            if (float.TryParse(webRequest.downloadHandler.text, out var balance))
-                onSuccess(balance / 100000000);
-            else
-                onError("Invalid response from the server");
+            Debug.Log("webRequest.downloadHandler.text"+webRequest.downloadHandler.text);
+            BalanceDataOutput balanceData = JsonUtility.FromJson<BalanceDataOutput>(webRequest.downloadHandler.text);
+            string balance = balanceData.data;
+            // if (float.TryParse(webRequest.downloadHandler.text, out var balance))
+                onSuccess(float.Parse(balance));
+            // else
+                // onError("Invalid response from the server");
         }
         else
         {
@@ -257,6 +268,19 @@ public class AnalyticsData
     public string smartContractAddress;
 
     public string chainId;
+}
+
+[System.Serializable]
+public class BalanceData
+{
+    public string network;
+    public string publicKey;
+}
+
+[System.Serializable]
+public class BalanceDataOutput
+{
+    public string data;
 }
 
 // public enum TRANSACTIONS
