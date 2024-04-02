@@ -94,10 +94,7 @@ public class API
             Debug.Log("webRequest.downloadHandler.text"+webRequest.downloadHandler.text);
             BalanceDataOutput balanceData = JsonUtility.FromJson<BalanceDataOutput>(webRequest.downloadHandler.text);
             string balance = balanceData.data;
-            // if (float.TryParse(webRequest.downloadHandler.text, out var balance))
                 onSuccess(float.Parse(balance));
-            // else
-                // onError("Invalid response from the server");
         }
         else
         {
