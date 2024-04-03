@@ -179,7 +179,7 @@ public class APTOSExample : MonoBehaviour
 
     public void Populate(FirebaseAuth firebaseAuth = null)
     {
-        WalletAddressText.text = (firebaseAuth == null ? "" : AbbreviateWalletAddressHex(firebaseAuth.AptosFirebaseAuthData.publicKey));
+        WalletAddressText.text = (firebaseAuth == null ? "Disconnected" : AbbreviateWalletAddressHex(firebaseAuth.AptosFirebaseAuthData.publicKey));
         loginDateTxt.text = "Login Date = " + (firebaseAuth == null ? "" : firebaseAuth.LoginDate.ToString());
         balance.text = (firebaseAuth == null ? "0" : firebaseAuth.AptosFirebaseAuthData.balance) + " APT";
     }
