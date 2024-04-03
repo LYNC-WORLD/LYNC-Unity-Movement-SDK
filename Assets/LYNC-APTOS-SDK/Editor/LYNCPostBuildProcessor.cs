@@ -57,7 +57,8 @@ public class LYNCPostBuildProcessor : IPostGenerateGradleAndroidProject
 
                 Debug.Log("intentFilterExists: " + intentFilterExists);
 
-                if (!intentFilterExists){
+                if (!intentFilterExists)
+                {
                     XmlElement intentFilterElement = doc.CreateElement("intent-filter");
 
                     XmlAttribute actionAttribute = doc.CreateAttribute("android", "name", "http://schemas.android.com/apk/res/android");

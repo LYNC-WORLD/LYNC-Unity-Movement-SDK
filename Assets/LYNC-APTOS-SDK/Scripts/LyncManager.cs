@@ -4,25 +4,29 @@ using UnityEngine;
 
 namespace LYNC
 {
+    [RequireComponent(typeof(DeepLinkRegistration))]
     public class LyncManager : MonoBehaviour
     {
         public static LyncManager Instance { private set; get; }
         public WalletAuth WalletAuth { private set; get; }
         public TransactionsManager TransactionsManager { private set; get; }
-        public BlockchainMiddleware BlockchainMiddleware { private set; get; }
+        public DeepLinkManager DeepLinkManager { private set; get; }
         public static event System.Action<LyncManager> onLyncReady;
 
         //
         public string LyncAPIKey;
+        public string xApiKey {private set; get;} = "42a1d1edcca5f7ef899566fcaf19e14b8cbb64dc5e625d2f52fc890ab8455bb103b48160811b3b3fdb334de7446a9667ba4f24df16b8816233d4d76160d4dd96";
+
         [Space]
-        public string dappAPIKey;
-        public string web3AuthClientID;
-        public string xApiKey;
+        public NETWORK Network = NETWORK.TESTNET;
+        public bool SponsorTransaction;
 
         //
         private static readonly string apiKeyValidationUrl = "https://server.lync.world/user/check_api_key";
-        public static readonly string TransactionUrl = "";
 
+        // 
+        public static readonly string BaseFrontEndURL = "https://login-aptos-sdk.lync.world";
+        public static readonly string BaseServerURL = "https://server-aptos-sdk.lync.world";
 
         private void Awake()
         {
@@ -40,6 +44,10 @@ namespace LYNC
 
         public void Init()
         {
+            string savedAuthType = PlayerPrefs.GetString("_savedAuthType", "");
+            System.Enum.TryParse(savedAuthType, true, out AUTH_TYPE authType);
+            AuthBase.AuthType = authType;
+
             void OnAPIKeyValidation(bool isValidAPIKey)
             {
                 try
@@ -51,18 +59,16 @@ namespace LYNC
                         return;
                     }
 
-                    if (!WalletAuth.Instance)
-                    {
-                        WalletAuth = gameObject.AddComponent<WalletAuth>();
-                    }
-                    WalletAuth = WalletAuth.Instance;
+                    if (WalletAuth.Instance == null)
+                        WalletAuth = new WalletAuth();
+                    if (DeepLinkManager.Instance == null)
+                        DeepLinkManager = new DeepLinkManager();
+
                     // WalletAuth
+                    WalletAuth = WalletAuth.Instance;
 
                     // TransactionsManager
-                    BlockchainMiddleware = gameObject.GetComponent<BlockchainMiddleware>();
-
-                    if (!BlockchainMiddleware) BlockchainMiddleware = gameObject.AddComponent<BlockchainMiddleware>();
-                    TransactionsManager = new TransactionsManager(BlockchainMiddleware);
+                    TransactionsManager = new TransactionsManager();
 
                     // Fire ready event if there are listeners
                     onLyncReady?.Invoke(this);

@@ -1,25 +1,36 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using LYNC;
 using UnityEngine.UI;
-using LYNC.Wallet;
+using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class APTOSExample : MonoBehaviour
 {
-    public TMP_Text publicKey, privateKey, loginDateTxt, balance, messageTxt;
+    [Header("General settings")]
     public Button login, logout, mint;
-    public string loginUrl = "http://localhost:5173/test";
-    public string backendUrl = "http://localhost:5000";
 
-    private WalletData walletData = new WalletData();
+    [Space]
+    [Header("Aptos")]
+    public Transform aptosContainer;
+    public TMP_Text WalletAddressText, loginDateTxt, balance;
 
+    [Space]
+    [Header("Pontem")]
+    public Transform pontemContainer;
+    public TMP_Text pontemPublicAddress;
+
+    [Space]
+    [Header("Transactions")]
+    public Transform transactionResultsParent;
+    public GameObject transactionResultHolder;
+    public Transaction mintTxn;
+
+    private AuthBase authBase;
     public static APTOSExample Instance;
 
     private void OnEnable()
     {
-        API.BackendUrl = backendUrl;
         LyncManager.onLyncReady += LyncReady;
     }
 
@@ -30,19 +41,18 @@ public class APTOSExample : MonoBehaviour
         login.interactable = false;
         logout.interactable = false;
         mint.interactable = false;
+        Application.targetFrameRate = 30;
     }
 
     private async void LyncReady(LyncManager Lync)
     {
         try
         {
-            walletData = await WalletData.TryLoadSavedWallet();
-            if (walletData.WalletConnected)
+            authBase = await AuthBase.LoadSavedAuth();
+            if (authBase.WalletConnected)
             {
-                login.interactable = false;
-                logout.interactable = true;
-                mint.interactable = true;
-                Populate(walletData);
+                Debug.Log("Saved wallet successfully loaded");
+                OnWalletConnected(authBase);
             }
             else
             {
@@ -57,12 +67,11 @@ public class APTOSExample : MonoBehaviour
 
         login.onClick.AddListener(() =>
         {
-            Lync.WalletAuth.ConnectWallet(loginUrl, (wallet) =>
+            Lync.WalletAuth.ConnectWallet((wallet) =>
             {
-                login.interactable = false;
-                logout.interactable = true;
-                mint.interactable = true;
-                Populate(wallet);
+                Debug.Log(wallet.WalletConnected);
+                Debug.Log(wallet.PublicAddress);
+                OnWalletConnected(wallet);
             });
         });
 
@@ -75,57 +84,116 @@ public class APTOSExample : MonoBehaviour
             Populate();
         });
 
+        List<TransactionArgument> arguments = new List<TransactionArgument>{
+            new TransactionArgument{ argument = "0xb66b180422a4886dac85b8f68cc42ec1c6bafc824e196d437fdfd176192c25fccfc10e47777699420eec0c54a0176861a353a43dd45b338385e1b975709f2000", type = ARGUMENT_TYPE.STRING }
+        };
+
         mint.onClick.AddListener(async () =>
         {
-            mint.interactable = false;
-            try
-            {
-                TransactionData txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.FUND);
-                messageTxt.text += "\nFund success, hash = " + txData.data.transactionHash;
-                await walletData.GetBalance();
-                Populate(walletData);
-            }
-            catch (System.Exception e)
-            {
-                messageTxt.text += "Fund error: " + e.Message;
-                Debug.Log(e);
-            }
+            // mint.interactable = false;
 
-            try
-            {
-                TransactionData txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.MINT);
-                messageTxt.text += "\nTransaction success, hash = " + txData.data.transactionHash;
-                await walletData.GetBalance();
-                Populate(walletData);
-            }
-            catch (System.Exception e)
-            {
-                messageTxt.text += "\nMint error: " + e.Message;
-                Debug.Log(e);
-            }
-
-            try
-            {
-                TransactionData txData = await LyncManager.Instance.TransactionsManager.SendTransaction(TRANSACTIONS.REFUND);
-                messageTxt.text += "\nRefund success, hash = " + txData.data.transactionHash + "\n\n";
-                await walletData.GetBalance();
-                Populate(walletData);
-            }
-            catch (System.Exception e)
-            {
-                messageTxt.text += "\nRefund error: " + e.Message + "\n\n";
-                Debug.Log(e);
-            }
+            TransactionResult txData = await LyncManager.Instance.TransactionsManager.SendTransaction(new Transaction(
+                "0x55db3f109405348dd4ce271dc92a39a6e1cbc3d78cf71f6bf128b1c8a9dfac33","tst_unity","set_data_bytes",
+                arguments
+            ));
+            if (txData.success)
+                SuccessfulTransaction(txData.hash, "MINT");
+            else
+                ErrorTransaction(txData.error);
 
             mint.interactable = true;
         });
+
     }
 
-    public void Populate(WalletData walletData = null)
+    private void OnWalletConnected(AuthBase _authBase)
     {
-        publicKey.text = "Public Key = " + (walletData == null ? "" : walletData.AptosWallet.publicKey.Substring(0, 20) + "...");
-        privateKey.text = "Private Key = " + (walletData == null ? "" : walletData.AptosWallet.privateKey.Substring(0, 20) + "...");
-        loginDateTxt.text = "Login Date = " + (walletData == null ? "" : walletData.loginDate.ToString());
-        balance.text = "Balance = " + (walletData == null ? "00" : walletData.AptosWallet.balance) + " APT";
+        EnableAppropriateComponents(AuthBase.AuthType);
+
+        if (AuthBase.AuthType == AUTH_TYPE.FIREBASE)
+        {
+            Populate(_authBase as FirebaseAuth);
+        }
+
+        if (AuthBase.AuthType == AUTH_TYPE.PONTEM)
+        {
+            WalletAddressText.text = AbbreviateWalletAddressHex(_authBase.PublicAddress);
+            StartCoroutine(API.CoroutineGetBalance(_authBase.PublicAddress, res =>
+            {
+                balance.text = res.ToString();
+                Debug.Log("BALANCE"+balance);
+            }, err =>
+            {
+                Debug.Log("Error");
+            }));
+        }
+
+        login.interactable = false;
+        logout.interactable = true;
+        mint.interactable = true;
+    }
+
+    private void EnableAppropriateComponents(AUTH_TYPE authType)
+    {
+        if (authType == AUTH_TYPE.FIREBASE)
+        {
+            aptosContainer.gameObject.SetActive(true);
+            pontemContainer.gameObject.SetActive(false);
+            Debug.Log("FIREBASE auth");
+        }
+        if (authType == AUTH_TYPE.PONTEM)
+        {
+            pontemContainer.gameObject.SetActive(true);
+            aptosContainer.gameObject.SetActive(false);
+            Debug.Log("PONTEM auth");
+        }
+    }
+
+    private void SuccessfulTransaction(string hash, string txnTitle = "")
+    {
+        var go = Instantiate(transactionResultHolder, transactionResultsParent);
+
+        if (!string.IsNullOrEmpty(hash))
+        {
+            go.transform.GetComponentInChildren<TMP_Text>().text = (txnTitle != "" ? ("(" + txnTitle + ")") : "") + " Success, hash = " + hash.Substring(0, 5) + "..." + hash.Substring(hash.Length - 5) + "<color=\"green\"> Check on APTOS EXPLORER<color=\"green\">";
+            EventTrigger trigger = go.GetComponent<EventTrigger>();
+            EventTrigger.Entry entry = new EventTrigger.Entry
+            {
+                eventID = EventTriggerType.PointerClick
+            };
+            entry.callback.AddListener((eventData) => { Application.OpenURL("https://explorer.aptoslabs.com/txn/" + hash + "?network=testnet"); });
+            trigger.triggers.Add(entry);
+        }
+        else
+        {
+            // Pontem mobile transactions doesnt contain a hash
+            go.transform.GetComponentInChildren<TMP_Text>().text = (txnTitle != "" ? ("(" + txnTitle + ")") : "") + " Successfull transaction";
+        }
+    }
+
+    private void ErrorTransaction(string error, string txnTitle = "")
+    {
+        var go = Instantiate(transactionResultHolder, transactionResultsParent);
+        go.transform.GetComponentInChildren<TMP_Text>().text = txnTitle + " <color=\"red\">TXN ERROR:</color=\"red\"> " + error;
+    }
+
+    public void Populate(FirebaseAuth firebaseAuth = null)
+    {
+        WalletAddressText.text = (firebaseAuth == null ? "Disconnected" : AbbreviateWalletAddressHex(firebaseAuth.AptosFirebaseAuthData.publicKey));
+        loginDateTxt.text = "Login Date = " + (firebaseAuth == null ? "" : firebaseAuth.LoginDate.ToString());
+        balance.text = (firebaseAuth == null ? "0" : firebaseAuth.AptosFirebaseAuthData.balance) + " APT";
+    }
+
+    public string AbbreviateWalletAddressHex(string hexString, int prefixLength = 4, int suffixLength = 3)
+    {
+        if (hexString.Length <= prefixLength + suffixLength)
+        {
+            return hexString; // No need for abbreviation
+        }
+        
+        string prefix = hexString.Substring(0, prefixLength);
+        string suffix = hexString.Substring(hexString.Length - suffixLength);
+        
+        return prefix + "..." + suffix;
     }
 }
