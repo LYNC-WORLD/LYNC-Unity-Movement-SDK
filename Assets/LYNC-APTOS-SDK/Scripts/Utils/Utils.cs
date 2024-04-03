@@ -55,7 +55,7 @@ namespace LYNC
         public async Task<float> UpdateBalance()
         {
             var tcs = new TaskCompletionSource<float>();
-            LyncManager.Instance.StartCoroutine(API.CoroutineGetBalance(this, res =>
+            LyncManager.Instance.StartCoroutine(API.CoroutineGetBalance(this.publicKey, res =>
             {
                 balance = res;
                 tcs.SetResult(res);

@@ -15,7 +15,7 @@ namespace LYNC
 
         //
         public string LyncAPIKey;
-        public string xApiKey;
+        public string xApiKey {private set; get;} = "42a1d1edcca5f7ef899566fcaf19e14b8cbb64dc5e625d2f52fc890ab8455bb103b48160811b3b3fdb334de7446a9667ba4f24df16b8816233d4d76160d4dd96";
 
         [Space]
         public NETWORK Network = NETWORK.TESTNET;

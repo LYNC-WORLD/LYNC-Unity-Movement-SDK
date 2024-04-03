@@ -13,7 +13,7 @@ public class APTOSExample : MonoBehaviour
     [Space]
     [Header("Aptos")]
     public Transform aptosContainer;
-    public TMP_Text publicKey, privateKey, loginDateTxt, balance;
+    public TMP_Text publicKey, loginDateTxt, balance;
 
     [Space]
     [Header("Pontem")]
@@ -118,6 +118,14 @@ public class APTOSExample : MonoBehaviour
         if (AuthBase.AuthType == AUTH_TYPE.PONTEM)
         {
             pontemPublicAddress.text = "Public address = " + _authBase.PublicAddress;
+            StartCoroutine(API.CoroutineGetBalance(_authBase.PublicAddress, res =>
+            {
+                balance.text = res.ToString();
+                Debug.Log("BALANCE"+balance);
+            }, err =>
+            {
+                Debug.Log("Error");
+            }));
         }
 
         login.interactable = false;
@@ -172,8 +180,7 @@ public class APTOSExample : MonoBehaviour
     public void Populate(FirebaseAuth firebaseAuth = null)
     {
         publicKey.text = "Public Key = " + (firebaseAuth == null ? "" : firebaseAuth.AptosFirebaseAuthData.publicKey.Substring(0, 20) + "...");
-        privateKey.text = "Private Key = " + (firebaseAuth == null ? "" : firebaseAuth.AptosFirebaseAuthData.privateKey.Substring(0, 20) + "...");
         loginDateTxt.text = "Login Date = " + (firebaseAuth == null ? "" : firebaseAuth.LoginDate.ToString());
-        balance.text = "Balance = " + (firebaseAuth == null ? "00" : firebaseAuth.AptosFirebaseAuthData.balance) + " APT";
+        balance.text = (firebaseAuth == null ? "0" : firebaseAuth.AptosFirebaseAuthData.balance) + " APT";
     }
 }

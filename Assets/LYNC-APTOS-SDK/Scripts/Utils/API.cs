@@ -71,13 +71,14 @@ public class API
     //     }
     // }
 
-    public static IEnumerator CoroutineGetBalance(AptosFirebaseAuthData aptosWallet, System.Action<float> onSuccess, System.Action<string> onError)
+    public static IEnumerator CoroutineGetBalance(string WalletAddress,System.Action<float> onSuccess, System.Action<string> onError)
     {
+        Debug.Log("HERE");
         string url = LyncManager.BaseServerURL + "/api/unity/balance";
         BalanceData jsonObject = new BalanceData
         {
             network = ((int)LyncManager.Instance.Network).ToString(),
-            publicKey = aptosWallet.publicKey
+            publicKey = WalletAddress
 
         };
 
