@@ -1410,7 +1410,7 @@ MonoBehaviour:
   logout: {fileID: 683790012}
   mint: {fileID: 238097004}
   aptosContainer: {fileID: 85537124}
-  publicKey: {fileID: 1717651156}
+  WalletAddressText: {fileID: 1965625341}
   loginDateTxt: {fileID: 1191776574}
   balance: {fileID: 541526068}
   pontemContainer: {fileID: 1946123145}

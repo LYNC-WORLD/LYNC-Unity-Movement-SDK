@@ -13,7 +13,7 @@ public class APTOSExample : MonoBehaviour
     [Space]
     [Header("Aptos")]
     public Transform aptosContainer;
-    public TMP_Text publicKey, loginDateTxt, balance;
+    public TMP_Text WalletAddressText, loginDateTxt, balance;
 
     [Space]
     [Header("Pontem")]
@@ -117,7 +117,7 @@ public class APTOSExample : MonoBehaviour
 
         if (AuthBase.AuthType == AUTH_TYPE.PONTEM)
         {
-            pontemPublicAddress.text = "Public address = " + _authBase.PublicAddress;
+            WalletAddressText.text = AbbreviateWalletAddressHex(_authBase.PublicAddress);
             StartCoroutine(API.CoroutineGetBalance(_authBase.PublicAddress, res =>
             {
                 balance.text = res.ToString();
@@ -179,8 +179,21 @@ public class APTOSExample : MonoBehaviour
 
     public void Populate(FirebaseAuth firebaseAuth = null)
     {
-        publicKey.text = "Public Key = " + (firebaseAuth == null ? "" : firebaseAuth.AptosFirebaseAuthData.publicKey.Substring(0, 20) + "...");
+        WalletAddressText.text = (firebaseAuth == null ? "" : AbbreviateWalletAddressHex(firebaseAuth.AptosFirebaseAuthData.publicKey));
         loginDateTxt.text = "Login Date = " + (firebaseAuth == null ? "" : firebaseAuth.LoginDate.ToString());
         balance.text = (firebaseAuth == null ? "0" : firebaseAuth.AptosFirebaseAuthData.balance) + " APT";
+    }
+
+    public string AbbreviateWalletAddressHex(string hexString, int prefixLength = 4, int suffixLength = 3)
+    {
+        if (hexString.Length <= prefixLength + suffixLength)
+        {
+            return hexString; // No need for abbreviation
+        }
+        
+        string prefix = hexString.Substring(0, prefixLength);
+        string suffix = hexString.Substring(hexString.Length - suffixLength);
+        
+        return prefix + "..." + suffix;
     }
 }
