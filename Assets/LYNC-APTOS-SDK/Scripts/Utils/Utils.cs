@@ -115,7 +115,8 @@ namespace LYNC
         private void AppendAuthData()
         {
             authBase = AuthBase.Instance;
-
+            usePaymaster = LyncManager.Instance.SponsorTransaction;
+            network = (int)LyncManager.Instance.Network;
 
             if (authBase is FirebaseAuth)
             {

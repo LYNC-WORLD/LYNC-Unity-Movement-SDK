@@ -19,6 +19,7 @@ namespace LYNC
 
         [Space]
         public NETWORK Network = NETWORK.TESTNET;
+        public bool SponsorTransaction = false;
 
         //
         private static readonly string apiKeyValidationUrl = "https://server.lync.world/user/check_api_key";
