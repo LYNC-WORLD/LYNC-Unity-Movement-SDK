@@ -20,6 +20,7 @@ namespace LYNC.DeepLink
             messagePath = messagePath.Replace("/", "");
             MessagePath = messagePath;
 
+
             // when redirected from pontem mobile, the host/path will be set to "" and should be handled manually
             // based on the message/url content
             // host/path support can be added to this SDK but will it require adding 2 more intent-filters for Android in the PostBuildProcessing class
@@ -39,6 +40,7 @@ namespace LYNC.DeepLink
                 case DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_TRANSACTION:
                     MessageData = unescapedUrl;
                     break;
+                case DEEPLINK_MESSAGE_PATH.KEYLESS_AUTH:
                 case DEEPLINK_MESSAGE_PATH.PONTEM_BROWSER_TRANSACTION:
                 case DEEPLINK_MESSAGE_PATH.PONTEM_BROWSER_AUTH:
                 case DEEPLINK_MESSAGE_PATH.FIREBASE:
@@ -47,6 +49,7 @@ namespace LYNC.DeepLink
                     break;
             }
 
+            Debug.Log(MessageData);
             HandleEvents();
         }
 
@@ -58,6 +61,7 @@ namespace LYNC.DeepLink
 
         public class TempAuthData { public string authType; }
         public class PontemData { public string publicAddress; }
+        public class KeylessData { public string accountAddress; public int expirationDateSeconds; public string publicKey; public string privateKey; }
 
         public AuthBase ExtractAndSaveWalletFromDLMessage()
         {
@@ -80,6 +84,13 @@ namespace LYNC.DeepLink
                     PontemData pontemData = JsonUtility.FromJson<PontemData>(MessageData);
                     authBase = new PontemAuth(pontemData.publicAddress);
                     break;
+                case DEEPLINK_MESSAGE_PATH.KEYLESS_AUTH:
+                    AuthBase.AuthType = AUTH_TYPE.KEYLESS;
+                    KeylessData keylessData = JsonUtility.FromJson<KeylessData>(MessageData);
+                    Debug.Log(keylessData.accountAddress);
+                    authBase = new KeylessAuth(keylessData.accountAddress, keylessData.publicKey, keylessData.privateKey, keylessData.expirationDateSeconds);
+                    break;
+
                 default:
                     throw new System.Exception("Unknown auth type");
             }
@@ -111,7 +122,7 @@ namespace LYNC.DeepLink
             if (registeredEvents.TryGetValue("auth", out var authCallback))
             {
                 HandleAuthMessage(authCallback as System.Action<AuthBase>);
-                registeredEvents.Remove("auth");
+                // registeredEvents.Remove("auth");
             }
 
             // Pontem browser transaction
@@ -160,5 +171,6 @@ namespace LYNC.DeepLink
         public const string PONTEM_BROWSER_AUTH = "pontem-browser";
         public const string PONTEM_BROWSER_TRANSACTION = "pontem-browser-transaction";
         public const string FIREBASE = "firebase";
+        public const string KEYLESS_AUTH = "keyless-auth";
     }
 }

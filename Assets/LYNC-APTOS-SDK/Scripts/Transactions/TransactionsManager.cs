@@ -11,7 +11,7 @@ namespace LYNC.Transactions
         {
             var tcs = new TaskCompletionSource<TransactionResult>();
 
-            if (AuthBase.Instance is FirebaseAuth) // Server transactions
+            if (AuthBase.Instance is FirebaseAuth || AuthBase.Instance is KeylessAuth) // Server transactions
             {
                 LyncManager.Instance.StartCoroutine(API.CoroutineTransaction(transaction, txData => tcs.SetResult(txData.ToTransactionResult()), err => tcs.SetResult(err)));
             }

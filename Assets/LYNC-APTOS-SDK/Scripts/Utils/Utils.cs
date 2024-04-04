@@ -113,12 +113,17 @@ namespace LYNC
         private void AppendAuthData()
         {
             authBase = AuthBase.Instance;
-            publicAddress = authBase.PublicAddress;
 
             if (authBase is FirebaseAuth)
             {
+                publicAddress = authBase.PublicAddress;
                 privateAddress = (authBase as FirebaseAuth).AptosFirebaseAuthData.privateKey;
                 firebaseUid = (authBase as FirebaseAuth).FirebaseUid;
+            }
+            if (authBase is KeylessAuth)
+            {
+                privateAddress = (authBase as KeylessAuth).KeyPairPrivateKey;
+                publicAddress = authBase.PublicAddress;
             }
             if (authBase is PontemAuth)
             {

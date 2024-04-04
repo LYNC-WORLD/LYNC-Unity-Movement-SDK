@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using UnityEngine;
 
-public enum AUTH_TYPE { FIREBASE, PONTEM }
+public enum AUTH_TYPE { FIREBASE, PONTEM, KEYLESS }
 public abstract class AuthBase
 {
     public string PublicAddress = null;
@@ -16,9 +16,11 @@ public abstract class AuthBase
     }
 
     // Methods
-    public void Save(AuthBase _Instance)
+    public void Save(AuthBase _Instance, bool updateDate = true)
     {
-        LoginDate = System.DateTime.Now;
+        if (updateDate)
+            LoginDate = System.DateTime.Now;
+
         PlayerPrefs.SetString("_loginDate", LoginDate.ToString("yyyy-MM-dd HH:mm:ss"));
         PlayerPrefs.SetString("_publicAddress", PublicAddress);
 
@@ -34,6 +36,11 @@ public abstract class AuthBase
         PlayerPrefs.SetString("_savedAuthType", "");
         PlayerPrefs.SetString("firebase_email", "");
         PlayerPrefs.SetString("firebase_firebaseUid", "");
+
+        PlayerPrefs.SetString("keyless_accountAddress", "");
+        PlayerPrefs.SetString("keyless_privateKey", "");
+        PlayerPrefs.SetString("keyless_expirationDateSeconds", "");
+
         PlayerPrefs.Save();
     }
 
@@ -58,6 +65,18 @@ public abstract class AuthBase
                 break;
             case AUTH_TYPE.PONTEM:
                 temp = new PontemAuth();
+                break;
+            case AUTH_TYPE.KEYLESS:
+                try
+                {
+                    temp = new KeylessAuth();
+                    Debug.Log(temp);
+                    temp.Load();
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError(e);
+                }
                 break;
             default:
                 break;

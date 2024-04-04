@@ -10,7 +10,7 @@ public class APTOSExample : MonoBehaviour
     public Button login, logout, mint;
 
     [Space]
-    [Header("Aptos")]
+    [Header("Firebase")]
     public Transform aptosContainer;
     public TMP_Text publicKey, privateKey, loginDateTxt, balance;
 
@@ -18,6 +18,11 @@ public class APTOSExample : MonoBehaviour
     [Header("Pontem")]
     public Transform pontemContainer;
     public TMP_Text pontemPublicAddress;
+
+    [Space]
+    [Header("Pontem")]
+    public Transform keylessContainer;
+    public TMP_Text accountAddress, keylessPublicKey, keylessPrivateKey, keylessLoginDate;
 
     [Space]
     [Header("Transactions")]
@@ -112,6 +117,15 @@ public class APTOSExample : MonoBehaviour
             pontemPublicAddress.text = "Public address = " + _authBase.PublicAddress;
         }
 
+        if (AuthBase.AuthType == AUTH_TYPE.KEYLESS)
+        {
+            var authData = _authBase as KeylessAuth;
+            accountAddress.text = authData.PublicAddress;
+            keylessPublicKey.text = authData.KeyPairPublicKey;
+            keylessPrivateKey.text = authData.KeyPairPrivateKey;
+            keylessLoginDate.text = authBase.LoginDate.ToString();
+        }
+
         login.interactable = false;
         logout.interactable = true;
         mint.interactable = true;
@@ -123,13 +137,22 @@ public class APTOSExample : MonoBehaviour
         {
             aptosContainer.gameObject.SetActive(true);
             pontemContainer.gameObject.SetActive(false);
+            keylessContainer.gameObject.SetActive(false);
             Debug.Log("FIREBASE auth");
         }
         if (authType == AUTH_TYPE.PONTEM)
         {
             pontemContainer.gameObject.SetActive(true);
             aptosContainer.gameObject.SetActive(false);
+            keylessContainer.gameObject.SetActive(false);
             Debug.Log("PONTEM auth");
+        }
+        if (authType == AUTH_TYPE.KEYLESS)
+        {
+            pontemContainer.gameObject.SetActive(false);
+            aptosContainer.gameObject.SetActive(false);
+            keylessContainer.gameObject.SetActive(true);
+            Debug.Log("KEYLESS auth");
         }
     }
 

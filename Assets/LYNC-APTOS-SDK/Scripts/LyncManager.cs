@@ -24,8 +24,8 @@ namespace LYNC
         private static readonly string apiKeyValidationUrl = "https://server.lync.world/user/check_api_key";
 
         // 
-        public static readonly string BaseFrontEndURL = "http://192.168.1.12:5173";
-        public static readonly string BaseServerURL = "http://192.168.1.12:5000";
+        public static readonly string BaseFrontEndURL = "http://localhost:5173";
+        public static readonly string BaseServerURL = "http://localhost:5000";
 
         private void Awake()
         {
@@ -46,6 +46,7 @@ namespace LYNC
             string savedAuthType = PlayerPrefs.GetString("_savedAuthType", "");
             System.Enum.TryParse(savedAuthType, true, out AUTH_TYPE authType);
             AuthBase.AuthType = authType;
+            Debug.Log(authType + " ////////////");
 
             void OnAPIKeyValidation(bool isValidAPIKey)
             {

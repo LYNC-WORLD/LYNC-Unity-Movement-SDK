@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 
 public class ROUTES
 {
-    public static string GENERIC_TRANSACTION = LyncManager.BaseServerURL + "/api/unity/" + "txn";
+    public static string GENERIC_TRANSACTION = LyncManager.BaseServerURL + "/api/unity/" + "txn2";
     public static string FUND = LyncManager.BaseServerURL + "/api/unity/" + "fund";
     public static string MINT = LyncManager.BaseServerURL + "/api/unity/" + "mint";
     public static string REFUND = LyncManager.BaseServerURL + "/api/unity/" + "refund";
@@ -24,9 +24,7 @@ public class API
 
     public static IEnumerator CoroutineTransaction(Transaction customTransaction, System.Action<ServerBasedTransactionFeedback> onSuccess, System.Action<TransactionResult> onError)
     {
-        string url = LyncManager.BaseServerURL + "/api/unity/txn";
-        UnityWebRequest webRequest = UnityWebRequest.Put(url, customTransaction.ToJson());
-        Debug.Log(customTransaction.ToJson());
+        UnityWebRequest webRequest = UnityWebRequest.Put(ROUTES.GENERIC_TRANSACTION, customTransaction.ToJson());
         webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
         webRequest.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
