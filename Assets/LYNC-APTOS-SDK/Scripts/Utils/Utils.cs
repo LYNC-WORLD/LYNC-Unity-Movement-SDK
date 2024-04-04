@@ -92,6 +92,8 @@ namespace LYNC
         [HideInInspector] public string publicAddress;
         [HideInInspector] public string privateAddress;
         [HideInInspector] public string firebaseUid;
+        [HideInInspector] public bool usePaymaster;
+        [HideInInspector] public int network;
 
         private AuthBase authBase;
 
@@ -113,6 +115,7 @@ namespace LYNC
         private void AppendAuthData()
         {
             authBase = AuthBase.Instance;
+
 
             if (authBase is FirebaseAuth)
             {
