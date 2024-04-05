@@ -88,6 +88,14 @@ namespace LYNC
         }
 
         // C76FCFCF99C1A09FAA1ED2F727943E18
+
+        public void SendLoginAnalytics(string WalletAddress, string loginMethod){
+            StartCoroutine(API.CoroutineLoginSendAnalytics(LyncAPIKey,WalletAddress,(Network).ToString(),loginMethod));
+        }
+
+        public void SendTransactionAnalytics(string WalletAddress,string TransactionHash, string PaymentMode){
+            StartCoroutine(API.CoroutineSendTransactionsAnalytics(LyncAPIKey,WalletAddress,(Network).ToString(),TransactionHash,PaymentMode));
+        }
     }
 }
 

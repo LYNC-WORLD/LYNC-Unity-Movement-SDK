@@ -143,6 +143,7 @@ namespace LYNC
 
     public enum ARGUMENT_TYPE { STRING = 0, NUMBER, BYTEARRAY }
     public enum NETWORK { MAINNET = 1, TESTNET }
+    public enum loginMethod { Firebase = 1, Pontem = 2 }
 
     [Serializable]
     public class TransactionArgument
@@ -158,5 +159,6 @@ namespace LYNC
         public string hash;
         public string transactionId;
         public string error;
+        public string value;
     }
 }

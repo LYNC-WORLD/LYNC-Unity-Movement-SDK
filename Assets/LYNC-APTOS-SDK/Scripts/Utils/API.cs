@@ -3,6 +3,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
+using System;
 
 public class ROUTES
 {
@@ -105,36 +106,6 @@ public class API
         }
     }
 
-    public static IEnumerator CoroutineSendAnalytics(string ApiKey, string eoaAddress, string smartContractAddress, string chainID)
-    {
-        AnalyticsData jsonObject = new AnalyticsData
-        {
-            apiKey = ApiKey,
-            eoaAddress = eoaAddress,
-            smartContractAddress = smartContractAddress,
-            chainId = chainID
-        };
-
-        var jsonData = JsonUtility.ToJson(jsonObject);
-        string RequestURL = "https://server.lync.world/account-abstraction-unity/insert";
-        using (UnityWebRequest www = UnityWebRequest.Put(RequestURL, jsonData))
-        {
-            www.method = "POST";
-            www.SetRequestHeader("Content-Type", "application/json");
-            yield return www.SendWebRequest();
-
-            if (www.isNetworkError || www.isHttpError)
-            {
-                //Debug.Log(www.error);
-            }
-            else
-            {
-                //Debug.Log("www" + www);
-                Debug.Log("Error!");
-            }
-        }
-
-    }
 
     public static IEnumerator CoroutineCheckAPIKey(string uri, string apiKey, System.Action<bool> onSuccess, System.Action<string> onError)
     {
@@ -204,6 +175,73 @@ public class API
             onError(webRequest.error);
         }
     }
+
+    public static IEnumerator CoroutineLoginSendAnalytics(string ApiKey, string walletAddress, string network, string loginMethod)
+    {
+        // Debug.Log("CoroutineLoginSendAnalytics");
+        AnalyticsData jsonObject = new AnalyticsData
+        {
+            apiKey = ApiKey,
+            walletAddress = walletAddress,
+            network = network,
+            loginMethod = loginMethod
+        };
+
+        var jsonData = JsonUtility.ToJson(jsonObject);
+        string RequestURL = "http://localhost:7410/aptos-unity-sdk/user-login";
+        using (UnityWebRequest www = UnityWebRequest.Put(RequestURL, jsonData))
+        {
+            www.method = "POST";
+            www.SetRequestHeader("Content-Type", "application/json");
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log("Invalid API Key: "+www.error);
+            }
+            else
+            {
+                //Debug.Log("www" + www);
+            }
+        }
+    }
+
+    public static IEnumerator CoroutineSendTransactionsAnalytics(string ApiKey, string walletAddress, string network, string txnHash, string paymentMode)
+    {
+        Debug.Log("CoroutineSendTransactionsAnalytics");
+
+        TransactionData jsonObject = new TransactionData
+        {
+            apiKey = ApiKey,
+            walletAddress = walletAddress,
+            network = network,
+            txnHash = txnHash,
+            paymentMode = paymentMode
+        };
+
+        var jsonData = JsonUtility.ToJson(jsonObject);
+
+        Debug.Log("jsonData"+jsonData);
+        Debug.Log("jsonObject"+ jsonObject);
+
+        string RequestURL = "http://localhost:7410/aptos-unity-sdk/user-transactions";
+        using (UnityWebRequest www = UnityWebRequest.Put(RequestURL, jsonData))
+        {
+            www.method = "POST";
+            www.SetRequestHeader("Content-Type", "application/json");
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log("Invalid API Key: "+www.error);
+            }
+            else
+            {
+                Debug.Log("www" + www);
+            }
+        }
+
+    }
 }
 
 public class ApiKeyValidator
@@ -258,15 +296,6 @@ public class APIKeyCheckBody
     public APIKeyCheckBody() { }
 }
 
-[System.Serializable]
-public class AnalyticsData
-{
-    public string apiKey;
-    public string eoaAddress;
-    public string smartContractAddress;
-
-    public string chainId;
-}
 
 [System.Serializable]
 public class BalanceData
@@ -281,7 +310,23 @@ public class BalanceDataOutput
     public string data;
 }
 
-// public enum TRANSACTIONS
-// {
-//     FUND, MINT, REFUND
-// }
+[Serializable]
+public class AnalyticsData
+{
+    public string apiKey;
+    public string walletAddress;
+    public string network;
+    public string loginMethod;
+}
+
+
+[Serializable]
+public class TransactionData
+{
+    public string apiKey;
+    public string walletAddress;
+    public string network;
+    public string txnHash;
+    public string paymentMode;
+
+}
