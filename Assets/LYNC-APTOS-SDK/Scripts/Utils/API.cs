@@ -188,7 +188,7 @@ public class API
         };
 
         var jsonData = JsonUtility.ToJson(jsonObject);
-        string RequestURL = "http://localhost:7410/aptos-unity-sdk/user-login";
+        string RequestURL = "https://server.lync.world/aptos-unity-sdk/user-login";
         using (UnityWebRequest www = UnityWebRequest.Put(RequestURL, jsonData))
         {
             www.method = "POST";
@@ -224,7 +224,7 @@ public class API
         Debug.Log("jsonData"+jsonData);
         Debug.Log("jsonObject"+ jsonObject);
 
-        string RequestURL = "http://localhost:7410/aptos-unity-sdk/user-transactions";
+        string RequestURL = "https://server.lync.world/aptos-unity-sdk/user-transactions";
         using (UnityWebRequest www = UnityWebRequest.Put(RequestURL, jsonData))
         {
             www.method = "POST";
