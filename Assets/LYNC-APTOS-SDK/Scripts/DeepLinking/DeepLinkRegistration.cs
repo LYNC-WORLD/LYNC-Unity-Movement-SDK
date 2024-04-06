@@ -12,7 +12,6 @@ namespace LYNC.Wallet
 
         private void Awake()
         {
-            Debug.Log("Starting...");
             DeepLinkRegistration.DeepLinkUrl = deepLinkUrl.ToLower();
 
             if (!string.IsNullOrEmpty(deepLinkUrl))

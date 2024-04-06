@@ -30,7 +30,6 @@ public class APTOSExample : MonoBehaviour
     public GameObject transactionResultHolder;
     public Transaction mintTxn;
 
-    private AuthBase authBase;
     public static APTOSExample Instance;
 
     private void OnEnable()
@@ -50,12 +49,12 @@ public class APTOSExample : MonoBehaviour
 
     private async void LyncReady(LyncManager Lync)
     {
+        AuthBase authBase;
         try
         {
             authBase = await AuthBase.LoadSavedAuth();
             if (authBase.WalletConnected)
             {
-                Debug.Log("Saved wallet successfully loaded");
                 OnWalletConnected(authBase);
             }
             else
@@ -73,8 +72,6 @@ public class APTOSExample : MonoBehaviour
         {
             Lync.WalletAuth.ConnectWallet((wallet) =>
             {
-                Debug.Log(wallet.WalletConnected);
-                Debug.Log(wallet.PublicAddress);
                 OnWalletConnected(wallet);
             });
         });
@@ -85,6 +82,10 @@ public class APTOSExample : MonoBehaviour
             login.interactable = true;
             logout.interactable = false;
             mint.interactable = false;
+            foreach (var item in keylessContainer.GetComponentsInChildren<TMP_Text>())
+            {
+                item.text = "";
+            }
             Populate();
         });
 
@@ -123,7 +124,7 @@ public class APTOSExample : MonoBehaviour
             accountAddress.text = authData.PublicAddress;
             keylessPublicKey.text = authData.KeyPairPublicKey;
             keylessPrivateKey.text = authData.KeyPairPrivateKey;
-            keylessLoginDate.text = authBase.LoginDate.ToString();
+            keylessLoginDate.text = authData.LoginDate.ToString();
         }
 
         login.interactable = false;
@@ -138,21 +139,18 @@ public class APTOSExample : MonoBehaviour
             aptosContainer.gameObject.SetActive(true);
             pontemContainer.gameObject.SetActive(false);
             keylessContainer.gameObject.SetActive(false);
-            Debug.Log("FIREBASE auth");
         }
         if (authType == AUTH_TYPE.PONTEM)
         {
             pontemContainer.gameObject.SetActive(true);
             aptosContainer.gameObject.SetActive(false);
             keylessContainer.gameObject.SetActive(false);
-            Debug.Log("PONTEM auth");
         }
         if (authType == AUTH_TYPE.KEYLESS)
         {
             pontemContainer.gameObject.SetActive(false);
             aptosContainer.gameObject.SetActive(false);
             keylessContainer.gameObject.SetActive(true);
-            Debug.Log("KEYLESS auth");
         }
     }
 

@@ -47,13 +47,11 @@ namespace LYNC
             string savedAuthType = PlayerPrefs.GetString("_savedAuthType", "");
             System.Enum.TryParse(savedAuthType, true, out AUTH_TYPE authType);
             AuthBase.AuthType = authType;
-            Debug.Log(authType + " ////////////");
 
             void OnAPIKeyValidation(bool isValidAPIKey)
             {
                 try
                 {
-                    Debug.Log("ApiKey is valid: " + isValidAPIKey);
                     if (!isValidAPIKey)
                     {
                         Debug.LogError("Invalid API Key. You are not allowed to use LYNC SDK.");

@@ -131,7 +131,6 @@ public class API
         webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
 
-        Debug.Log("Sending web request...");
         yield return webRequest.SendWebRequest();
 
         if (webRequest.result == UnityWebRequest.Result.Success)

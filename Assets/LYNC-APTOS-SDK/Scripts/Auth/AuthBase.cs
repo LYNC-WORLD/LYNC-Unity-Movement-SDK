@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -5,7 +6,7 @@ public enum AUTH_TYPE { FIREBASE, PONTEM, KEYLESS }
 public abstract class AuthBase
 {
     public string PublicAddress = null;
-    public System.DateTime LoginDate { protected set; get; }
+    public DateTime LoginDate { protected set; get; }
     public static AUTH_TYPE AuthType;
     public static AuthBase Instance = null;
 
@@ -16,16 +17,16 @@ public abstract class AuthBase
     }
 
     // Methods
-    public void Save(AuthBase _Instance, bool updateDate = true)
+    public void Save(AuthBase _Instance, bool insertDateNow = true)
     {
-        if (updateDate)
-            LoginDate = System.DateTime.Now;
+        if (insertDateNow)
+            LoginDate = DateTime.Now;
 
-        PlayerPrefs.SetString("_loginDate", LoginDate.ToString("yyyy-MM-dd HH:mm:ss"));
+        PlayerPrefs.SetString("_loginDate", LoginDate.Ticks.ToString());
         PlayerPrefs.SetString("_publicAddress", PublicAddress);
 
-        PlayerPrefs.Save();
         CustomeSave();
+        PlayerPrefs.Save();
         Instance = _Instance;
     }
 
@@ -42,52 +43,47 @@ public abstract class AuthBase
         PlayerPrefs.SetString("keyless_expirationDateSeconds", "");
 
         PlayerPrefs.Save();
+        Instance = null;
     }
 
     protected abstract void CustomeSave();
-    protected abstract Task Load(System.Action onSessionExpired = null);
+    protected abstract Task Load(Action onSessionExpired = null);
 
-    public static async Task<AuthBase> LoadSavedAuth()
+    public static async Task<AuthBase> LoadSavedAuth(Action onSessionExpired = null)
     {
         AuthBase temp = null;
-        switch (AuthType)
+        try
         {
-            case AUTH_TYPE.FIREBASE:
-                try
-                {
+            switch (AuthType)
+            {
+                case AUTH_TYPE.FIREBASE:
                     temp = new FirebaseAuth();
-                    await temp.Load();
-                }
-                catch (System.Exception e)
-                {
-                    Debug.LogError(e);
-                }
-                break;
-            case AUTH_TYPE.PONTEM:
-                temp = new PontemAuth();
-                break;
-            case AUTH_TYPE.KEYLESS:
-                try
-                {
-                    temp = new KeylessAuth();
-                    Debug.Log(temp);
-                    temp.Load();
-                }
-                catch (System.Exception e)
-                {
-                    Debug.LogError(e);
-                }
-                break;
-            default:
-                break;
-        }
+                    await temp.Load(onSessionExpired);
+                    break;
+                case AUTH_TYPE.PONTEM:
+                    temp = new PontemAuth();
+                    break;
+                case AUTH_TYPE.KEYLESS:
 
-        return temp;
+                    temp = new KeylessAuth();
+                    temp.Load(onSessionExpired);
+                    break;
+                default:
+                    break;
+            }
+
+            return temp;
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+            throw e;
+        }
     }
 
     // TO-DO fetch the sessionInSeconds param from the general setting 
-    public bool IsSessionExpired(int sessionInSeconds = 604800) // 604800 is 7 days
+    public bool IsSessionExpired(long sessionInSeconds = 604800) // 604800 is 7 days
     {
-        return System.DateTime.Now > LoginDate.AddSeconds(sessionInSeconds);
+        return DateTimeOffset.Now.ToUnixTimeSeconds() > new DateTimeOffset(LoginDate).AddSeconds(sessionInSeconds).ToUnixTimeSeconds();
     }
 }

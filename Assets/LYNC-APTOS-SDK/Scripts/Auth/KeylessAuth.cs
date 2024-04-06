@@ -8,6 +8,7 @@ public class KeylessAuth : AuthBase
     public string KeyPairPublicKey;
     public int ExpirationDateSeconds;
 
+    public KeylessAuth() { }
     public KeylessAuth(string accountAddress, string publicKey, string privateKey, int expirationDateSeconds)
     {
         PublicAddress = accountAddress;
@@ -17,7 +18,6 @@ public class KeylessAuth : AuthBase
 
         Save(this);
     }
-    public KeylessAuth() { }
 
     protected override void CustomeSave()
     {
@@ -35,15 +35,15 @@ public class KeylessAuth : AuthBase
             string _privateKey = PlayerPrefs.GetString("keyless_privateKey", "");
             string _expirationDateSeconds = PlayerPrefs.GetString("keyless_expirationDateSeconds", "0");
             string _accountAddress = PlayerPrefs.GetString("_publicAddress", "");
-            DateTime.TryParse(PlayerPrefs.GetString("_loginDate", ""), out DateTime loadedLoginDate);
-            LoginDate = loadedLoginDate;
+            long.TryParse(PlayerPrefs.GetString("_loginDate", "0"), out long ticks);
+            LoginDate = new DateTime(ticks);
 
-            int expSecondsDifference = int.Parse(_expirationDateSeconds) - DateTime.Now.Second;
-            if (expSecondsDifference < 0 || IsSessionExpired(expSecondsDifference))
+            long expSecondsDifference = long.Parse(_expirationDateSeconds) - DateTimeOffset.Now.ToUnixTimeSeconds();
+            if (IsSessionExpired(expSecondsDifference))
             {
-                Logout();
-                Debug.Log("Session expired");
                 onSessionExpired?.Invoke();
+                Logout();
+                Debug.Log("session expired");
                 return default;
             }
 

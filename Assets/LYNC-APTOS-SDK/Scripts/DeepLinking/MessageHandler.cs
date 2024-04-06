@@ -23,7 +23,7 @@ namespace LYNC.DeepLink
 
             // when redirected from pontem mobile, the host/path will be set to "" and should be handled manually
             // based on the message/url content
-            // host/path support can be added to this SDK but will it require adding 2 more intent-filters for Android in the PostBuildProcessing class
+            // host/path support can be added to this SDK but it will require adding 2 more intent-filters for Android in the PostBuildProcessing class
             if (MessagePath == "")
             {
                 if (unescapedUrl.IndexOf("?account=") != -1) // auth
@@ -49,7 +49,6 @@ namespace LYNC.DeepLink
                     break;
             }
 
-            Debug.Log(MessageData);
             HandleEvents();
         }
 
@@ -87,7 +86,6 @@ namespace LYNC.DeepLink
                 case DEEPLINK_MESSAGE_PATH.KEYLESS_AUTH:
                     AuthBase.AuthType = AUTH_TYPE.KEYLESS;
                     KeylessData keylessData = JsonUtility.FromJson<KeylessData>(MessageData);
-                    Debug.Log(keylessData.accountAddress);
                     authBase = new KeylessAuth(keylessData.accountAddress, keylessData.publicKey, keylessData.privateKey, keylessData.expirationDateSeconds);
                     break;
 
@@ -118,7 +116,6 @@ namespace LYNC.DeepLink
 
         private void HandleEvents()
         {
-            Debug.Log("Handling this message: " + MessageData);
             if (registeredEvents.TryGetValue("auth", out var authCallback))
             {
                 HandleAuthMessage(authCallback as System.Action<AuthBase>);
