@@ -94,6 +94,7 @@ namespace LYNC
         [HideInInspector] public string firebaseUid;
         [HideInInspector] public bool usePaymaster;
         [HideInInspector] public int network;
+        [HideInInspector] public string dataId;
 
         private AuthBase authBase;
 
@@ -127,6 +128,7 @@ namespace LYNC
             if (authBase is KeylessAuth)
             {
                 privateAddress = (authBase as KeylessAuth).KeyPairPrivateKey;
+                dataId = (authBase as KeylessAuth).dataId;
                 publicAddress = authBase.PublicAddress;
             }
             if (authBase is PontemAuth)
@@ -143,7 +145,7 @@ namespace LYNC
     }
 
     public enum ARGUMENT_TYPE { STRING = 0, NUMBER, BYTEARRAY }
-    public enum NETWORK { MAINNET = 1, TESTNET }
+    public enum NETWORK { MAINNET = 1, TESTNET, DEVNET }
 
     [Serializable]
     public class TransactionArgument

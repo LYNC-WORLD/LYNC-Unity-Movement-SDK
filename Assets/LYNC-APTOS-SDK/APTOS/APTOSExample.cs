@@ -166,7 +166,7 @@ public class APTOSExample : MonoBehaviour
             {
                 eventID = EventTriggerType.PointerClick
             };
-            entry.callback.AddListener((eventData) => { Application.OpenURL("https://explorer.aptoslabs.com/txn/" + hash + "?network=testnet"); });
+            entry.callback.AddListener((eventData) => { Application.OpenURL("https://explorer.aptoslabs.com/txn/" + hash + "?network=" + LyncManager.Instance.Network.ToString()); });
             trigger.triggers.Add(entry);
         }
         else

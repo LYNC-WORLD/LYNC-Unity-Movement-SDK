@@ -60,7 +60,7 @@ namespace LYNC.DeepLink
 
         public class TempAuthData { public string authType; }
         public class PontemData { public string publicAddress; }
-        public class KeylessData { public string accountAddress; public int expirationDateSeconds; public string publicKey; public string privateKey; }
+        public class KeylessData { public string accountAddress; public int expirationDateSeconds; public string publicKey; public string privateKey; public string dataId; }
 
         public AuthBase ExtractAndSaveWalletFromDLMessage()
         {
@@ -86,7 +86,8 @@ namespace LYNC.DeepLink
                 case DEEPLINK_MESSAGE_PATH.KEYLESS_AUTH:
                     AuthBase.AuthType = AUTH_TYPE.KEYLESS;
                     KeylessData keylessData = JsonUtility.FromJson<KeylessData>(MessageData);
-                    authBase = new KeylessAuth(keylessData.accountAddress, keylessData.publicKey, keylessData.privateKey, keylessData.expirationDateSeconds);
+                    authBase = new KeylessAuth(keylessData.accountAddress, keylessData.publicKey, keylessData.privateKey, keylessData.expirationDateSeconds, keylessData.dataId);
+                    Debug.Log(keylessData.dataId);
                     break;
 
                 default:

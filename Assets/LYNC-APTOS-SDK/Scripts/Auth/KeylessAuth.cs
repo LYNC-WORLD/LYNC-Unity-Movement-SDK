@@ -6,15 +6,17 @@ public class KeylessAuth : AuthBase
 {
     public string KeyPairPrivateKey;
     public string KeyPairPublicKey;
+    public string dataId;
     public int ExpirationDateSeconds;
 
     public KeylessAuth() { }
-    public KeylessAuth(string accountAddress, string publicKey, string privateKey, int expirationDateSeconds)
+    public KeylessAuth(string accountAddress, string publicKey, string privateKey, int expirationDateSeconds, string dataId)
     {
         PublicAddress = accountAddress;
         KeyPairPublicKey = publicKey;
         KeyPairPrivateKey = privateKey;
         ExpirationDateSeconds = expirationDateSeconds;
+        this.dataId = dataId;
 
         Save(this);
     }
@@ -24,6 +26,7 @@ public class KeylessAuth : AuthBase
         PlayerPrefs.SetString("keyless_publicKey", KeyPairPublicKey);
         PlayerPrefs.SetString("keyless_privateKey", KeyPairPrivateKey);
         PlayerPrefs.SetString("keyless_expirationDateSeconds", ExpirationDateSeconds.ToString());
+        PlayerPrefs.SetString("keyless_jwt", dataId);
         PlayerPrefs.SetString("_savedAuthType", AUTH_TYPE.KEYLESS.ToString().ToLower());
     }
 
@@ -33,6 +36,7 @@ public class KeylessAuth : AuthBase
         {
             string _publicKey = PlayerPrefs.GetString("keyless_publicKey", "");
             string _privateKey = PlayerPrefs.GetString("keyless_privateKey", "");
+            string _dataId = PlayerPrefs.GetString("keyless_jwt", "");
             string _expirationDateSeconds = PlayerPrefs.GetString("keyless_expirationDateSeconds", "0");
             string _accountAddress = PlayerPrefs.GetString("_publicAddress", "");
             long.TryParse(PlayerPrefs.GetString("_loginDate", "0"), out long ticks);
@@ -51,6 +55,7 @@ public class KeylessAuth : AuthBase
             KeyPairPublicKey = _publicKey;
             KeyPairPrivateKey = _privateKey;
             ExpirationDateSeconds = int.Parse(_expirationDateSeconds);
+            dataId = _dataId;
 
             Save(this, false);
         }
