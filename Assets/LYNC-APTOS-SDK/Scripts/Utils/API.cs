@@ -74,7 +74,6 @@ public class API
 
     public static IEnumerator CoroutineGetBalance(string WalletAddress,System.Action<float> onSuccess, System.Action<string> onError)
     {
-        Debug.Log("HERE");
         string url = LyncManager.BaseServerURL + "/api/unity/balance";
         BalanceData jsonObject = new BalanceData
         {
@@ -93,7 +92,7 @@ public class API
 
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
-            Debug.Log("webRequest.downloadHandler.text"+webRequest.downloadHandler.text);
+            // Debug.Log("webRequest.downloadHandler.text"+webRequest.downloadHandler.text);
             BalanceDataOutput balanceData = JsonUtility.FromJson<BalanceDataOutput>(webRequest.downloadHandler.text);
             string balance = balanceData.data;
                 onSuccess(float.Parse(balance));
@@ -139,12 +138,12 @@ public class API
         webRequest.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
 
 
-        Debug.Log($"Sending web request GET profile email: [{aptosProfileData.email}] - firebaseUid: [{aptosProfileData.firebaseUid}]");
+        // Debug.Log($"Sending web request GET profile email: [{aptosProfileData.email}] - firebaseUid: [{aptosProfileData.firebaseUid}]");
         yield return webRequest.SendWebRequest();
 
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
-            Debug.Log(webRequest.downloadHandler.text);
+            // Debug.Log(webRequest.downloadHandler.text);
             AptosFirebaseAuthData aptosResponse = JsonUtility.FromJson<AptosFirebaseSavedProfile>(webRequest.downloadHandler.text).data;
             onSuccess(aptosResponse);
         }
@@ -166,7 +165,7 @@ public class API
 
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
-            Debug.Log(webRequest.downloadHandler.text);
+            // Debug.Log(webRequest.downloadHandler.text);
             onSuccess(webRequest.downloadHandler.text);
         }
         else
@@ -208,8 +207,6 @@ public class API
 
     public static IEnumerator CoroutineSendTransactionsAnalytics(string ApiKey, string walletAddress, string network, string txnHash, string paymentMode)
     {
-        Debug.Log("CoroutineSendTransactionsAnalytics");
-
         TransactionData jsonObject = new TransactionData
         {
             apiKey = ApiKey,
@@ -221,8 +218,8 @@ public class API
 
         var jsonData = JsonUtility.ToJson(jsonObject);
 
-        Debug.Log("jsonData"+jsonData);
-        Debug.Log("jsonObject"+ jsonObject);
+        // Debug.Log("jsonData"+jsonData);
+        // Debug.Log("jsonObject"+ jsonObject);
 
         string RequestURL = "https://server.lync.world/aptos-unity-sdk/user-transactions";
         using (UnityWebRequest www = UnityWebRequest.Put(RequestURL, jsonData))
