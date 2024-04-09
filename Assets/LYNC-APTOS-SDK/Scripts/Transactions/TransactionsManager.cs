@@ -14,10 +14,6 @@ namespace LYNC.Transactions
             if (AuthBase.Instance is FirebaseAuth) // Server transactions
             {
                 LyncManager.Instance.StartCoroutine(API.CoroutineTransaction(transaction, 
-                    txData => tcs.SetResult(txData.ToTransactionResult()), err => tcs.SetResult(err))
-                );
-
-                LyncManager.Instance.StartCoroutine(API.CoroutineTransaction(transaction, 
                 txData => 
                     {
                         LyncManager.Instance.SendTransactionAnalytics(AuthBase.Instance.PublicAddress,txData.data.transactionHash, LyncManager.Instance.SponsorTransaction?"Gasless":"UserPaid");
