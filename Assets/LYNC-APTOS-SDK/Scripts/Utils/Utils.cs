@@ -106,8 +106,6 @@ namespace LYNC
             this.functionName = functionName;
             this.contractName = contractName;
             this.contractAddress = contractAddress;
-            this.usePaymaster = LyncManager.Instance.SponsorTransaction;
-            this.network = ((int)LyncManager.Instance.Network).ToString();
             this.apiKey = LyncManager.Instance.LyncAPIKey;
         }
 
@@ -116,8 +114,6 @@ namespace LYNC
             this.functionName = functionName;
             this.contractName = contractName;
             this.contractAddress = contractAddress;
-            this.usePaymaster = LyncManager.Instance.SponsorTransaction;
-            this.network = ((int)LyncManager.Instance.Network).ToString();
             this.apiKey = LyncManager.Instance.LyncAPIKey;
 
         }
@@ -126,6 +122,8 @@ namespace LYNC
         {
             authBase = AuthBase.Instance;
             publicAddress = authBase.PublicAddress;
+            usePaymaster = LyncManager.Instance.SponsorTransaction;
+            network = (int)LyncManager.Instance.Network;
 
             if (authBase is FirebaseAuth)
             {
