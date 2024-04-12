@@ -100,7 +100,7 @@ namespace LYNC.DeepLink
             {
                 registeredEvents.Remove((genericParam as Transaction).transactionId);
                 registeredEvents.Add((genericParam as Transaction).transactionId, callback);
-                GameObject.FindGameObjectWithTag("debug").GetComponent<TMPro.TMP_Text>().text += "\nListener added for transactionId: " + (genericParam as Transaction).transactionId;
+                // GameObject.FindGameObjectWithTag("debug").GetComponent<TMPro.TMP_Text>().text += "\nListener added for transactionId: " + (genericParam as Transaction).transactionId;
             }
             else
             {

@@ -23,7 +23,7 @@ namespace LYNC.DeepLink
                 string result = await tcs.Task;
 
                 PontemMobileAuthOutScheme appInfo = new PontemMobileAuthOutScheme();
-                GameObject.FindGameObjectWithTag("debug").GetComponent<TMPro.TMP_Text>().text += JsonUtility.ToJson(appInfo);
+                // GameObject.FindGameObjectWithTag("debug").GetComponent<TMPro.TMP_Text>().text += JsonUtility.ToJson(appInfo);
 
                 string temp = "pontem-wallet://mob2mob?payload=" + Utils.ToBase64(result) + "&app_info=" + appInfo.ToBase64();
                 Debug.Log(temp);

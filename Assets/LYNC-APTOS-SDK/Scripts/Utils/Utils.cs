@@ -88,7 +88,7 @@ namespace LYNC
         public string contractAddress;
         public string contractName;
         public string functionName;
-        public string network;
+        public int network;
         public string apiKey;
         public List<TransactionArgument> arguments;
 
@@ -115,7 +115,6 @@ namespace LYNC
             this.contractName = contractName;
             this.contractAddress = contractAddress;
             this.apiKey = LyncManager.Instance.LyncAPIKey;
-
         }
 
         private void AppendAuthData()
