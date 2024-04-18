@@ -87,6 +87,7 @@ namespace LYNC.DeepLink
                     AuthBase.AuthType = AUTH_TYPE.KEYLESS;
                     KeylessData keylessData = JsonUtility.FromJson<KeylessData>(MessageData);
                     authBase = new KeylessAuth(keylessData.accountAddress, keylessData.publicKey, keylessData.privateKey, keylessData.expirationDateSeconds, keylessData.dataId);
+                    Debug.Log(MessageData);
                     Debug.Log(keylessData.dataId);
                     break;
 
@@ -107,7 +108,7 @@ namespace LYNC.DeepLink
             {
                 registeredEvents.Remove((genericParam as Transaction).transactionId);
                 registeredEvents.Add((genericParam as Transaction).transactionId, callback);
-                GameObject.FindGameObjectWithTag("debug").GetComponent<TMPro.TMP_Text>().text += "\nListener added for transactionId: " + (genericParam as Transaction).transactionId;
+                // GameObject.FindGameObjectWithTag("debug").GetComponent<TMPro.TMP_Text>().text += "\nListener added for transactionId: " + (genericParam as Transaction).transactionId;
             }
             else
             {

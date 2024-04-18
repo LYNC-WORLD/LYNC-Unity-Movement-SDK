@@ -2831,19 +2831,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 375463546, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: Network
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 375463546, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
-      propertyPath: SponsorTransaction
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5805647402976630236, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
-      propertyPath: m_Enabled
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5805647402976630236, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: deepLinkUrl
-      value: lync
+      value: testtt
       objectReference: {fileID: 0}
     - target: {fileID: 8536144024681728995, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2889,9 +2881,7 @@ PrefabInstance:
       propertyPath: m_Name
       value: LYNC Manager
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 375463547, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
-    - {fileID: 6429189280026421520, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

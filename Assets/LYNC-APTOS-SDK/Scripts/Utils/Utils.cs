@@ -93,7 +93,7 @@ namespace LYNC
         [HideInInspector] public string privateAddress;
         [HideInInspector] public string firebaseUid;
         [HideInInspector] public bool usePaymaster;
-        [HideInInspector] public int network;
+        [HideInInspector] public string network;
         [HideInInspector] public string dataId;
 
         private AuthBase authBase;
@@ -117,7 +117,7 @@ namespace LYNC
         {
             authBase = AuthBase.Instance;
             usePaymaster = LyncManager.Instance.SponsorTransaction;
-            network = (int)LyncManager.Instance.Network;
+            network = LyncManager.Instance.Network.ToString();
 
             if (authBase is FirebaseAuth)
             {
@@ -145,7 +145,7 @@ namespace LYNC
     }
 
     public enum ARGUMENT_TYPE { STRING = 0, NUMBER, BYTEARRAY }
-    public enum NETWORK { MAINNET = 1, TESTNET, DEVNET }
+    public enum NETWORK { MAINNET, TESTNET, DEVNET }
 
     [Serializable]
     public class TransactionArgument

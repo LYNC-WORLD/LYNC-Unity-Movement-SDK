@@ -23,7 +23,7 @@ namespace LYNC.DeepLink
                 string result = await tcs.Task;
 
                 PontemMobileAuthOutScheme appInfo = new PontemMobileAuthOutScheme();
-                GameObject.FindGameObjectWithTag("debug").GetComponent<TMPro.TMP_Text>().text += JsonUtility.ToJson(appInfo);
+                // GameObject.FindGameObjectWithTag("debug").GetComponent<TMPro.TMP_Text>().text += JsonUtility.ToJson(appInfo);
 
                 string temp = "pontem-wallet://mob2mob?payload=" + Utils.ToBase64(result) + "&app_info=" + appInfo.ToBase64();
                 Debug.Log(temp);
@@ -38,7 +38,7 @@ namespace LYNC.DeepLink
 
         public static string BuildPontemBrowserTransactionUrl(Transaction transaction)
         {
-            return $"{LyncManager.BaseFrontEndURL}/pontem-transaction?scheme={DeepLinkRegistration.DeepLinkUrl}&transaction={Utils.ToBase64(transaction.ToJson())}&network={(int)LyncManager.Instance.Network}";
+            return $"{LyncManager.BaseFrontEndURL}/pontem-transaction?scheme={DeepLinkRegistration.DeepLinkUrl}&transaction={Utils.ToBase64(transaction.ToJson())}&network={LyncManager.Instance.Network.ToString()}";
         }
 
         public static string BuildBrowserAuthUrl()

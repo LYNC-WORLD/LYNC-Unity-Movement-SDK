@@ -57,6 +57,7 @@ namespace LYNC
                         Debug.LogError("Invalid API Key. You are not allowed to use LYNC SDK.");
                         return;
                     }
+                    Debug.Log("Valid API key");
 
                     if (WalletAuth.Instance == null)
                         WalletAuth = new WalletAuth();
@@ -83,6 +84,7 @@ namespace LYNC
                 Debug.LogError(error);
             }
 
+            Debug.Log("Checking API key...");
             StartCoroutine(API.CoroutineCheckAPIKey(apiKeyValidationUrl, LyncAPIKey, OnAPIKeyValidation, OnAPIKeyWebRequestError));
         }
 
