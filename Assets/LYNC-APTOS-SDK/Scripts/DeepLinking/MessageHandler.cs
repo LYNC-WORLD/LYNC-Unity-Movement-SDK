@@ -16,24 +16,9 @@ namespace LYNC.DeepLink
         {
             string unescapedUrl = System.Uri.UnescapeDataString(url);
             string messagePath = unescapedUrl.Substring(unescapedUrl.IndexOf("://") + 3);
-            messagePath = messagePath.Substring(0, messagePath.IndexOf("?"));
-            messagePath = messagePath.Replace("/", "");
-            MessagePath = messagePath;
+            messagePath = messagePath.Substring(messagePath.IndexOf("?") + 1, messagePath.IndexOf("=") - 1);
+            MessagePath = messagePath.Replace("=", "");
 
-
-            // when redirected from pontem mobile, the host/path will be set to "" and should be handled manually
-            // based on the message/url content
-            // host/path support can be added to this SDK but it will require adding 2 more intent-filters for Android in the PostBuildProcessing class
-            if (MessagePath == "")
-            {
-                if (unescapedUrl.IndexOf("?account=") != -1) // auth
-                    MessagePath = DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_AUTH;
-
-                if (unescapedUrl.IndexOf("?response=") != -1) // transaction
-                    MessagePath = DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_TRANSACTION;
-            }
-
-            // Pontem mobile wallet Auth
             switch (MessagePath)
             {
                 case DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_AUTH:
@@ -44,7 +29,7 @@ namespace LYNC.DeepLink
                 case DEEPLINK_MESSAGE_PATH.PONTEM_BROWSER_TRANSACTION:
                 case DEEPLINK_MESSAGE_PATH.PONTEM_BROWSER_AUTH:
                 case DEEPLINK_MESSAGE_PATH.FIREBASE:
-                    string rawJson = unescapedUrl.Substring(unescapedUrl.IndexOf("?") + 1);
+                    string rawJson = unescapedUrl.Substring(unescapedUrl.IndexOf("=") + 1);
                     MessageData = Utils.FromBase64(rawJson);
                     break;
             }
@@ -165,8 +150,8 @@ namespace LYNC.DeepLink
 
     public class DEEPLINK_MESSAGE_PATH
     {
-        public const string PONTEM_MOBILE_AUTH = "pontem-mobile-app-auth";
-        public const string PONTEM_MOBILE_TRANSACTION = "pontem-mobile-app-transaction";
+        public const string PONTEM_MOBILE_AUTH = "account";
+        public const string PONTEM_MOBILE_TRANSACTION = "response";
         public const string PONTEM_BROWSER_AUTH = "pontem-browser";
         public const string PONTEM_BROWSER_TRANSACTION = "pontem-browser-transaction";
         public const string FIREBASE = "firebase";
