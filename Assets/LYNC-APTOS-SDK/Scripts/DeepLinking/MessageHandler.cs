@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace LYNC.DeepLink
@@ -12,41 +13,32 @@ namespace LYNC.DeepLink
 
         private static Dictionary<string, System.Delegate> registeredEvents = new Dictionary<string, System.Delegate>();
 
-        public void HandleMessage(string url)
+        public async void HandleMessage(string url)
         {
             string unescapedUrl = System.Uri.UnescapeDataString(url);
             string messagePath = unescapedUrl.Substring(unescapedUrl.IndexOf("://") + 3);
-            messagePath = messagePath.Substring(0, messagePath.IndexOf("?"));
-            messagePath = messagePath.Replace("/", "");
-            MessagePath = messagePath;
+            messagePath = messagePath.Substring(messagePath.IndexOf("?") + 1, messagePath.IndexOf("=") - 1);
+            MessagePath = messagePath.Replace("=", "");
 
-            // when redirected from pontem mobile, the host/path will be set to "" and should be handled manually
-            // based on the message/url content
-            // host/path support can be added to this SDK but will it require adding 2 more intent-filters for Android in the PostBuildProcessing class
-            if (MessagePath == "")
-            {
-                if (unescapedUrl.IndexOf("?account=") != -1) // auth
-                    MessagePath = DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_AUTH;
-
-                if (unescapedUrl.IndexOf("?response=") != -1) // transaction
-                    MessagePath = DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_TRANSACTION;
-            }
-
-            // Pontem mobile wallet Auth
             switch (MessagePath)
             {
                 case DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_AUTH:
                 case DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_TRANSACTION:
                     MessageData = unescapedUrl;
                     break;
+                case DEEPLINK_MESSAGE_PATH.KEYLESS_AUTH:
                 case DEEPLINK_MESSAGE_PATH.PONTEM_BROWSER_TRANSACTION:
                 case DEEPLINK_MESSAGE_PATH.PONTEM_BROWSER_AUTH:
                 case DEEPLINK_MESSAGE_PATH.FIREBASE:
-                    string rawJson = unescapedUrl.Substring(unescapedUrl.IndexOf("?") + 1);
+                    string rawJson = unescapedUrl.Substring(unescapedUrl.IndexOf("=") + 1);
                     MessageData = Utils.FromBase64(rawJson);
                     break;
             }
 
+            await Task.Delay(5000);
+            Debug.Log(url);
+            Debug.Log(messagePath);
+            Debug.Log(MessageData);
             HandleEvents();
         }
 
@@ -74,7 +66,7 @@ namespace LYNC.DeepLink
                 case DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_AUTH:
                     AuthBase.AuthType = AUTH_TYPE.PONTEM;
                     pontemMobile.HandleAuthData(MessageData);
-                    LyncManager.Instance.SendLoginAnalytics(pontemMobile.authData.address,"Pontem");
+                    LyncManager.Instance.SendLoginAnalytics(pontemMobile.authData.address, "Pontem");
                     authBase = new PontemAuth(pontemMobile.authData.address);
                     break;
                 case DEEPLINK_MESSAGE_PATH.PONTEM_BROWSER_AUTH:
@@ -125,7 +117,7 @@ namespace LYNC.DeepLink
                 if (registeredEvents.TryGetValue(transactionId, out var transactionCallback))
                 {
                     (transactionCallback as System.Action<TransactionResult>)(JsonUtility.FromJson<TransactionResult>(MessageData));
-                    LyncManager.Instance.SendTransactionAnalytics(AuthBase.Instance.PublicAddress,transactionHash,"UserPaid");
+                    LyncManager.Instance.SendTransactionAnalytics(AuthBase.Instance.PublicAddress, transactionHash, "UserPaid");
                     registeredEvents.Remove(transactionId);
                 }
                 else
@@ -144,7 +136,7 @@ namespace LYNC.DeepLink
                     transactionResult.success = pontemMobile.transactionResult == "approved";
                     transactionResult.response = pontemMobile.transactionResult;
                     (transactionCallback as System.Action<TransactionResult>)(transactionResult);
-                    LyncManager.Instance.SendTransactionAnalytics(AuthBase.Instance.PublicAddress,transactionResult.hash,"UserPaid");
+                    LyncManager.Instance.SendTransactionAnalytics(AuthBase.Instance.PublicAddress, transactionResult.hash, "UserPaid");
                     registeredEvents.Remove(DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_TRANSACTION);
                 }
                 else
@@ -161,10 +153,11 @@ namespace LYNC.DeepLink
 
     public class DEEPLINK_MESSAGE_PATH
     {
-        public const string PONTEM_MOBILE_AUTH = "pontem-mobile-app-auth";
-        public const string PONTEM_MOBILE_TRANSACTION = "pontem-mobile-app-transaction";
+        public const string PONTEM_MOBILE_AUTH = "account";
+        public const string PONTEM_MOBILE_TRANSACTION = "response";
         public const string PONTEM_BROWSER_AUTH = "pontem-browser";
         public const string PONTEM_BROWSER_TRANSACTION = "pontem-browser-transaction";
         public const string FIREBASE = "firebase";
+        public const string KEYLESS_AUTH = "keyless-auth";
     }
 }
