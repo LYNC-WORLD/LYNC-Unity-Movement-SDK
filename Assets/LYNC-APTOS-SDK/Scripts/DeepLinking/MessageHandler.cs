@@ -13,7 +13,7 @@ namespace LYNC.DeepLink
 
         private static Dictionary<string, System.Delegate> registeredEvents = new Dictionary<string, System.Delegate>();
 
-        public async void HandleMessage(string url)
+        public void HandleMessage(string url)
         {
             string unescapedUrl = System.Uri.UnescapeDataString(url);
             string messagePath = unescapedUrl.Substring(unescapedUrl.IndexOf("://") + 3);
@@ -35,10 +35,6 @@ namespace LYNC.DeepLink
                     break;
             }
 
-            await Task.Delay(5000);
-            Debug.Log(url);
-            Debug.Log(messagePath);
-            Debug.Log(MessageData);
             HandleEvents();
         }
 
