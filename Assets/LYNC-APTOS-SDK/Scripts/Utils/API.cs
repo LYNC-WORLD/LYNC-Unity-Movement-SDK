@@ -27,6 +27,7 @@ public class API
     {
         string url = LyncManager.BaseServerURL + "/api/unity/txn2";
         UnityWebRequest webRequest = UnityWebRequest.Put(url, customTransaction.ToJson());
+        // Debug.LogError("TEST DATA:"+customTransaction.ToJson());
         webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
         webRequest.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
