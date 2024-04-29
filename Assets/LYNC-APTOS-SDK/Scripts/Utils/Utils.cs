@@ -88,8 +88,7 @@ namespace LYNC
         public string contractAddress;
         public string contractName;
         public string functionName;
-        public int network;
-        public string apiKey;
+        [HideInInspector] public int network;
         public List<TransactionArgument> arguments;
 
         [HideInInspector] public string transactionId;
@@ -106,7 +105,6 @@ namespace LYNC
             this.functionName = functionName;
             this.contractName = contractName;
             this.contractAddress = contractAddress;
-            this.apiKey = LyncManager.Instance.LyncAPIKey;
         }
 
         public Transaction(string contractAddress, string contractName, string functionName)
@@ -114,7 +112,6 @@ namespace LYNC
             this.functionName = functionName;
             this.contractName = contractName;
             this.contractAddress = contractAddress;
-            this.apiKey = LyncManager.Instance.LyncAPIKey;
         }
 
         private void AppendAuthData()
