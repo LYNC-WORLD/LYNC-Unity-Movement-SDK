@@ -141,7 +141,6 @@ public class APTOSExample : MonoBehaviour
             var authData = _authBase as KeylessAuth;
             accountAddress.text = authData.PublicAddress;
             keylessPublicKey.text = authData.KeyPairPublicKey;
-            keylessPrivateKey.text = authData.KeyPairPrivateKey;
             keylessLoginDate.text = authData.LoginDate.ToString();
         }
 
