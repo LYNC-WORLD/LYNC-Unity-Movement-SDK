@@ -88,7 +88,6 @@ namespace LYNC
         public string contractAddress;
         public string contractName;
         public string functionName;
-        [HideInInspector] public int network;
         public List<TransactionArgument> arguments;
 
         [HideInInspector] public string transactionId;
@@ -96,6 +95,8 @@ namespace LYNC
         [HideInInspector] public string privateAddress;
         [HideInInspector] public string firebaseUid;
         [HideInInspector] public bool usePaymaster;
+        [HideInInspector] public string network;
+        [HideInInspector] public string dataId;
 
         private AuthBase authBase;
 
@@ -117,14 +118,20 @@ namespace LYNC
         private void AppendAuthData()
         {
             authBase = AuthBase.Instance;
-            publicAddress = authBase.PublicAddress;
             usePaymaster = LyncManager.Instance.SponsorTransaction;
-            network = (int)LyncManager.Instance.Network;
+            network = LyncManager.Instance.Network.ToString();
 
             if (authBase is FirebaseAuth)
             {
+                publicAddress = authBase.PublicAddress;
                 privateAddress = (authBase as FirebaseAuth).AptosFirebaseAuthData.privateKey;
                 firebaseUid = (authBase as FirebaseAuth).FirebaseUid;
+            }
+            if (authBase is KeylessAuth)
+            {
+                privateAddress = (authBase as KeylessAuth).KeyPairPrivateKey;
+                dataId = (authBase as KeylessAuth).dataId;
+                publicAddress = authBase.PublicAddress;
             }
             if (authBase is PontemAuth)
             {
@@ -140,8 +147,7 @@ namespace LYNC
     }
 
     public enum ARGUMENT_TYPE { STRING = 0, NUMBER, BYTEARRAY }
-    public enum NETWORK { MAINNET = 1, TESTNET }
-    public enum loginMethod { Firebase = 1, Pontem = 2 }
+    public enum NETWORK { MAINNET, TESTNET, DEVNET }
 
     [Serializable]
     public class TransactionArgument

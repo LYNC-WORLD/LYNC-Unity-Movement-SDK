@@ -7,13 +7,11 @@ using System;
 
 public class ROUTES
 {
-    public static string GENERIC_TRANSACTION = LyncManager.BaseServerURL + "/api/unity/" + "txn";
-    // public static string FUND = LyncManager.BaseServerURL + "/api/unity/" + "fund";
-    // public static string MINT = LyncManager.BaseServerURL + "/api/unity/" + "mint";
-    // public static string REFUND = LyncManager.BaseServerURL + "/api/unity/" + "refund";
-    public static string BALANCE = LyncManager.BaseServerURL + "/api/unity/" + "balance";
-    public static string PROFILE = LyncManager.BaseServerURL + "/api/users/" + "profile";
-    public static string MOBILE_TRANSACTION = LyncManager.BaseServerURL + "/api/unity/" + "mobile-transaction-builder";
+    public readonly static string GENERIC_TRANSACTION = LyncManager.BaseServerURL + "/api/unity/" + "txn2";
+    public readonly static string KEYLESS_TRANSACTION = LyncManager.BaseServerURL + "/api/keyless/" + "transaction";
+    public readonly static string BALANCE = LyncManager.BaseServerURL + "/api/unity/" + "balance";
+    public readonly static string PROFILE = LyncManager.BaseServerURL + "/api/users/" + "profile";
+    public readonly static string MOBILE_TRANSACTION = LyncManager.BaseServerURL + "/api/unity/" + "mobile-transaction-builder";
 }
 
 public class API
@@ -23,11 +21,9 @@ public class API
     public delegate void OnSuccess(ServerBasedTransactionFeedback tsxData);
     public delegate void OnError(string error);
 
-    public static IEnumerator CoroutineTransaction(Transaction customTransaction, System.Action<ServerBasedTransactionFeedback> onSuccess, System.Action<TransactionResult> onError)
+    public static IEnumerator CoroutineTransaction(string url, Transaction customTransaction, System.Action<ServerBasedTransactionFeedback> onSuccess, System.Action<TransactionResult> onError)
     {
-        string url = LyncManager.BaseServerURL + "/api/unity/txn2";
         UnityWebRequest webRequest = UnityWebRequest.Put(url, customTransaction.ToJson());
-        // Debug.LogError("TEST DATA:"+customTransaction.ToJson());
         webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
         webRequest.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
@@ -112,7 +108,6 @@ public class API
         webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
 
-        Debug.Log("Sending web request...");
         yield return webRequest.SendWebRequest();
 
         if (webRequest.result == UnityWebRequest.Result.Success)

@@ -46,6 +46,7 @@ namespace LYNC.DeepLink
 
         public class TempAuthData { public string authType; }
         public class PontemData { public string publicAddress; }
+        public class KeylessData { public string accountAddress; public int expirationDateSeconds; public string publicKey; public string privateKey; public string dataId; }
 
         public AuthBase ExtractAndSaveWalletFromDLMessage()
         {
@@ -71,6 +72,14 @@ namespace LYNC.DeepLink
                     LyncManager.Instance.SendLoginAnalytics(pontemData.publicAddress, "Pontem");
                     authBase = new PontemAuth(pontemData.publicAddress);
                     break;
+                case DEEPLINK_MESSAGE_PATH.KEYLESS_AUTH:
+                    AuthBase.AuthType = AUTH_TYPE.KEYLESS;
+                    KeylessData keylessData = JsonUtility.FromJson<KeylessData>(MessageData);
+                    authBase = new KeylessAuth(keylessData.accountAddress, keylessData.publicKey, keylessData.privateKey, keylessData.expirationDateSeconds, keylessData.dataId);
+                    Debug.Log(MessageData);
+                    Debug.Log(keylessData.dataId);
+                    break;
+
                 default:
                     throw new System.Exception("Unknown auth type");
             }
@@ -98,11 +107,10 @@ namespace LYNC.DeepLink
 
         private void HandleEvents()
         {
-            Debug.Log("Handling this message: " + MessageData);
             if (registeredEvents.TryGetValue("auth", out var authCallback))
             {
                 HandleAuthMessage(authCallback as System.Action<AuthBase>);
-                registeredEvents.Remove("auth");
+                // registeredEvents.Remove("auth");
             }
 
             // Pontem browser transaction

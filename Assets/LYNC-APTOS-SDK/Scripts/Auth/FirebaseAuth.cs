@@ -7,10 +7,7 @@ public class FirebaseAuth : AuthBase
     public string FirebaseEmail, FirebaseUid;
     public AptosFirebaseAuthData AptosFirebaseAuthData = null;
 
-    public FirebaseAuth()
-    {
-    }
-
+    public FirebaseAuth() { }
     public FirebaseAuth(AptosFirebaseAuthData aptosWallet)
     {
         AptosFirebaseAuthData = aptosWallet;
@@ -38,8 +35,8 @@ public class FirebaseAuth : AuthBase
         {
             string firebaseEmail = PlayerPrefs.GetString("firebase_email", null);
             string firebaseUid = PlayerPrefs.GetString("firebase_firebaseUid", null);
-            System.DateTime.TryParse(PlayerPrefs.GetString("_loginDate", ""), out System.DateTime loadedLoginDate);
-            LoginDate = loadedLoginDate;
+            long.TryParse(PlayerPrefs.GetString("_loginDate", "0"), out long ticks);
+            LoginDate = new System.DateTime(ticks);
             FirebaseEmail = firebaseEmail;
             FirebaseUid = firebaseUid;
 
@@ -57,7 +54,7 @@ public class FirebaseAuth : AuthBase
             if (AptosFirebaseAuthData != null)
             {
                 tcs.SetResult(AptosFirebaseAuthData);
-                Save(this);
+                Save(this, false);
             }
             else
             {
@@ -70,7 +67,7 @@ public class FirebaseAuth : AuthBase
                         Debug.Log(JsonUtility.ToJson(wallet));
                         PublicAddress = AptosFirebaseAuthData.publicKey;
                         tcs.SetResult(AptosFirebaseAuthData);
-                        Save(this);
+                        Save(this, false);
                     }, msg =>
                     {
                         Debug.LogError(msg);
