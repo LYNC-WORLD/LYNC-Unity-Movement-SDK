@@ -147,7 +147,7 @@ namespace LYNC
     }
 
     public enum ARGUMENT_TYPE { STRING = 0, NUMBER, BYTEARRAY }
-    public enum NETWORK { MAINNET, TESTNET, DEVNET }
+    public enum NETWORK { MAINNET = 1, TESTNET = 2, DEVNET = 3}
 
     [Serializable]
     public class TransactionArgument

@@ -2559,7 +2559,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 375463546, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: Network
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 375463546, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: SponsorTransaction
