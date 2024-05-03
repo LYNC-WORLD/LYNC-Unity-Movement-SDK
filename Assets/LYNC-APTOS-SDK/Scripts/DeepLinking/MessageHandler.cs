@@ -106,7 +106,7 @@ namespace LYNC.DeepLink
             if (registeredEvents.TryGetValue("auth", out var authCallback))
             {
                 HandleAuthMessage(authCallback as System.Action<AuthBase>);
-                // registeredEvents.Remove("auth");
+                registeredEvents.Remove("auth");
             }
 
             // Pontem browser transaction
