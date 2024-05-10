@@ -84,6 +84,7 @@ public abstract class AuthBase
     // TO-DO fetch the sessionInSeconds param from the general setting 
     public bool IsSessionExpired(long sessionInSeconds = 604800) // 604800 is 7 days
     {
-        return DateTimeOffset.Now.ToUnixTimeSeconds() > new DateTimeOffset(LoginDate).AddSeconds(sessionInSeconds).ToUnixTimeSeconds();
+        DateTime expirationDate = LoginDate.AddSeconds(sessionInSeconds);
+        return DateTime.Now > expirationDate;
     }
 }

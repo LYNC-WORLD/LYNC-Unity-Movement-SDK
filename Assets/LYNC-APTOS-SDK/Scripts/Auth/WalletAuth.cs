@@ -42,6 +42,10 @@ namespace LYNC.Wallet
                 PontemMobileAuthOutScheme pontemMobile = new PontemMobileAuthOutScheme();
                 url += "&app_info=" + pontemMobile.ToBase64();
             }
+
+            // Append login options
+            url += Utils.GetLoginOptionsUrlFormat();
+            Debug.Log(url);
             DeepLinkManager.Instance.StartBrowserProcess(url);
         }
 

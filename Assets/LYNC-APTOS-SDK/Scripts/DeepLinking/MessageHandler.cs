@@ -15,6 +15,7 @@ namespace LYNC.DeepLink
 
         public void HandleMessage(string url)
         {
+            Debug.Log(url);
             string unescapedUrl = System.Uri.UnescapeDataString(url);
             string messagePath = unescapedUrl.Substring(unescapedUrl.IndexOf("://") + 3);
             messagePath = messagePath.Substring(messagePath.IndexOf("?") + 1, messagePath.IndexOf("=") - 1);

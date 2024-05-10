@@ -15,7 +15,7 @@ namespace LYNC
 
         //
         public string LyncAPIKey;
-        public string xApiKey {private set; get;} = "42a1d1edcca5f7ef899566fcaf19e14b8cbb64dc5e625d2f52fc890ab8455bb103b48160811b3b3fdb334de7446a9667ba4f24df16b8816233d4d76160d4dd96";
+        public string xApiKey { private set; get; } = "42a1d1edcca5f7ef899566fcaf19e14b8cbb64dc5e625d2f52fc890ab8455bb103b48160811b3b3fdb334de7446a9667ba4f24df16b8816233d4d76160d4dd96";
 
         [Space]
         public NETWORK Network = NETWORK.TESTNET;
@@ -29,6 +29,12 @@ namespace LYNC
         public static readonly string BaseFrontEndURL = "http://localhost:5173";
         // public static readonly string BaseServerURL = "https://server-aptos-sdk.lync.world";
         public static readonly string BaseServerURL = "http://localhost:5000";
+
+        [Space]
+        [Header("Login options")]
+        public bool LoginOptionFirebase = true;
+        public bool LoginOptionPontem = true;
+        public bool LoginOptionKeyless = true;
 
         private void Awake()
         {
@@ -92,12 +98,14 @@ namespace LYNC
 
         // C76FCFCF99C1A09FAA1ED2F727943E18
 
-        public void SendLoginAnalytics(string WalletAddress, string loginMethod){
-            StartCoroutine(API.CoroutineLoginSendAnalytics(LyncAPIKey,WalletAddress,(Network).ToString(),loginMethod));
+        public void SendLoginAnalytics(string WalletAddress, string loginMethod)
+        {
+            StartCoroutine(API.CoroutineLoginSendAnalytics(LyncAPIKey, WalletAddress, (Network).ToString(), loginMethod));
         }
 
-        public void SendTransactionAnalytics(string WalletAddress,string TransactionHash, string PaymentMode){
-            StartCoroutine(API.CoroutineSendTransactionsAnalytics(LyncAPIKey,WalletAddress,(Network).ToString(),TransactionHash,PaymentMode));
+        public void SendTransactionAnalytics(string WalletAddress, string TransactionHash, string PaymentMode)
+        {
+            StartCoroutine(API.CoroutineSendTransactionsAnalytics(LyncAPIKey, WalletAddress, (Network).ToString(), TransactionHash, PaymentMode));
         }
     }
 }

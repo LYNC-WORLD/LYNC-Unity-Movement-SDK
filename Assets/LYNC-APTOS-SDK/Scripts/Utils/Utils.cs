@@ -23,6 +23,9 @@ namespace LYNC
 
             return decodedString;
         }
+
+        public static string GetLoginOptionsUrlFormat() =>
+             "&loFirebase=" + LyncManager.Instance.LoginOptionFirebase + "&loPontem=" + LyncManager.Instance.LoginOptionPontem + "&loKeyless=" + LyncManager.Instance.LoginOptionKeyless;
     }
 
     public class AptosFirebaseSavedProfile
@@ -78,7 +81,7 @@ namespace LYNC
         {
             this.email = email;
             this.firebaseUid = firebaseUid;
-            this.network = ((int)LyncManager.Instance.Network).ToString();;
+            this.network = ((int)LyncManager.Instance.Network).ToString(); ;
         }
     }
 
@@ -147,7 +150,7 @@ namespace LYNC
     }
 
     public enum ARGUMENT_TYPE { STRING = 0, NUMBER, BYTEARRAY }
-    public enum NETWORK { MAINNET = 1, TESTNET = 2, DEVNET = 3}
+    public enum NETWORK { MAINNET = 1, TESTNET = 2, DEVNET = 3 }
 
     [Serializable]
     public class TransactionArgument
