@@ -100,6 +100,7 @@ namespace LYNC
         [HideInInspector] public bool usePaymaster;
         [HideInInspector] public string network;
         [HideInInspector] public string dataId;
+        [HideInInspector] public string apiKey;
 
         private AuthBase authBase;
 
@@ -123,7 +124,7 @@ namespace LYNC
             authBase = AuthBase.Instance;
             usePaymaster = LyncManager.Instance.SponsorTransaction;
             network = LyncManager.Instance.Network.ToString();
-
+            apiKey = LyncManager.Instance.LyncAPIKey;
             if (authBase is FirebaseAuth)
             {
                 publicAddress = authBase.PublicAddress;

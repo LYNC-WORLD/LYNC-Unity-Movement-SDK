@@ -213,8 +213,8 @@ public class API
 
         var jsonData = JsonUtility.ToJson(jsonObject);
 
-        // Debug.Log("jsonData"+jsonData);
-        // Debug.Log("jsonObject"+ jsonObject);
+        Debug.LogError("jsonData"+jsonData);
+        Debug.LogError("jsonObject"+ jsonObject);
 
         string RequestURL = "https://server.lync.world/aptos-unity-sdk/user-transactions";
         using (UnityWebRequest www = UnityWebRequest.Put(RequestURL, jsonData))

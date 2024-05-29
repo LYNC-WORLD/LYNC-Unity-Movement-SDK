@@ -23,7 +23,7 @@ public class APTOSExample : MonoBehaviour
     [Space]
     [Header("Pontem")]
     public Transform keylessContainer;
-    public TMP_Text accountAddress, keylessPublicKey, keylessPrivateKey, keylessLoginDate;
+    public TMP_Text accountAddress, keylessPublicKey, keylessLoginDate;
 
     [Space]
     [Header("Transactions")]
