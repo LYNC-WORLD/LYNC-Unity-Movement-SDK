@@ -2562,12 +2562,16 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 375463546, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
+      propertyPath: clientId
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 375463546, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: LoginOptionPontem
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 375463546, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: LoginOptionKeyless
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 375463546, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: SponsorTransaction
@@ -2579,7 +2583,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5805647402976630236, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: deepLinkUrl
-      value: lyncaptos123
+      value: lyncaptos122
       objectReference: {fileID: 0}
     - target: {fileID: 8536144024681728995, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: m_LocalPosition.x

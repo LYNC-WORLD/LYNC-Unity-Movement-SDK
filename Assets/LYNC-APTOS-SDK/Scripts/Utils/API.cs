@@ -23,6 +23,7 @@ public class API
 
     public static IEnumerator CoroutineTransaction(string url, Transaction customTransaction, System.Action<ServerBasedTransactionFeedback> onSuccess, System.Action<TransactionResult> onError)
     {
+        // Debug.LogError(customTransaction.ToJson());
         UnityWebRequest webRequest = UnityWebRequest.Put(url, customTransaction.ToJson());
         webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
@@ -213,8 +214,8 @@ public class API
 
         var jsonData = JsonUtility.ToJson(jsonObject);
 
-        Debug.LogError("jsonData"+jsonData);
-        Debug.LogError("jsonObject"+ jsonObject);
+        // Debug.LogError("jsonData"+jsonData);
+        // Debug.LogError("jsonObject"+ jsonObject);
 
         string RequestURL = "https://server.lync.world/aptos-unity-sdk/user-transactions";
         using (UnityWebRequest www = UnityWebRequest.Put(RequestURL, jsonData))
