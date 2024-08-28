@@ -62,4 +62,4 @@ MonoBehaviour:
   m_Script: {fileID: 1591778871, guid: f8d252eed08514f5586edfa6ab2c7c84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deepLinkUrl: lync
+  deepLinkUrl: lyncmovement

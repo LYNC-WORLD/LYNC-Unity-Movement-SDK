@@ -2557,14 +2557,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3601405177459690282, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
-      propertyPath: deepLinkUrl
-      value: lyncmovement
-      objectReference: {fileID: 0}
-    - target: {fileID: 6223635105196985164, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
-      propertyPath: LyncAPIKey
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 8536144024681728995, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
