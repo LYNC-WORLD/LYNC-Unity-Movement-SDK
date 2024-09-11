@@ -9,7 +9,7 @@ This release includes the following:
 - Custom Transactions in Social Login
 
 ## Download the SDK
-Download the SDK: [https://github.com/LYNC-WORLD/LYNC-Unity-AA/releases/](https://github.com/LYNC-WORLD/LYNC-Unity-Movement-SDK/releases)
+Download the SDK: [https://github.com/LYNC-WORLD/LYNC-Unity-Movement-SDK/releases](https://github.com/LYNC-WORLD/LYNC-Unity-Movement-SDK/releases)
 
 ## Get your API Key
 Please get your API key before downloading the SDK from [here](https://www.lync.world/form.html)
