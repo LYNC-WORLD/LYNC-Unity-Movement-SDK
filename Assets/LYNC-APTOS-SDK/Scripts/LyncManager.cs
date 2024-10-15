@@ -25,10 +25,10 @@ namespace LYNC
         private static readonly string apiKeyValidationUrl = "https://server.lync.world/user/check_api_key";
 
         // 
-        public static readonly string BaseFrontEndURL = "https://login-aptos-sdk.lync.world";
-        // public static readonly string BaseFrontEndURL = "http://localhost:5173";
-        public static readonly string BaseServerURL = "https://server-aptos-sdk.lync.world";
-        // public static readonly string BaseServerURL = "http://localhost:5001";
+        // public static readonly string BaseFrontEndURL = "https://login-aptos-sdk.lync.world";
+        public static readonly string BaseFrontEndURL = "http://localhost:5173";
+        // public static readonly string BaseServerURL = "https://server-aptos-sdk.lync.world";
+        public static readonly string BaseServerURL = "http://localhost:5000";
 
         [Space]
         [Header("Login options")]
@@ -71,7 +71,7 @@ namespace LYNC
                     if (WalletAuth.Instance == null)
                         WalletAuth = new WalletAuth();
                     if (DeepLinkManager.Instance == null)
-                        DeepLinkManager = new DeepLinkManager();
+                        DeepLinkManager = new DeepLinkManager(name);
 
                     // WalletAuth
                     WalletAuth = WalletAuth.Instance;
@@ -95,6 +95,11 @@ namespace LYNC
 
             Debug.Log("Checking API key...");
             StartCoroutine(API.CoroutineCheckAPIKey(apiKeyValidationUrl, LyncAPIKey, OnAPIKeyValidation, OnAPIKeyWebRequestError));
+        }
+
+        public void HandleWebGLMessage(string message)
+        {
+            DeepLinkManager.HandleWebGLMessage(message);
         }
 
         // C76FCFCF99C1A09FAA1ED2F727943E18

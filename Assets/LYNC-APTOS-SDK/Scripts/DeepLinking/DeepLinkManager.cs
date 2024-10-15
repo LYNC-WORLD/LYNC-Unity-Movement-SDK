@@ -2,6 +2,9 @@ using System.Collections;
 using UnityEngine;
 using System.IO;
 using LYNC.DeepLink;
+#if UNITY_WEBGL
+using System.Runtime.InteropServices;
+#endif
 
 namespace LYNC.Wallet
 {
@@ -12,17 +15,24 @@ namespace LYNC.Wallet
         private readonly string registerPath = (Application.streamingAssetsPath + "/Executables/register.reg").Replace("/", "\\");
         private readonly string sharedFilePath = @"C:\ProgramData\launcherdata.txt";
 
+#if UNITY_WEBGL
+        [DllImport("__Internal")]
+        private static extern void WebGLLogin(string url, string gameObjectName);
+#endif
+
         public static DeepLinkManager Instance { private set; get; } = null;
 
         private Coroutine runningCoroutine = null;
 
         private MessageHandler messageHandler = new MessageHandler();
+        private string gameObjectName = "";
 
-        public DeepLinkManager()
+        public DeepLinkManager(string gameObjectName)
         {
             if (Instance != null) return;
 
             Instance = this;
+            this.gameObjectName = gameObjectName;
 
             if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
             {
@@ -33,9 +43,18 @@ namespace LYNC.Wallet
             Application.deepLinkActivated += OnDeepLinkActivated;
         }
 
-        // Invokable 
         public void StartBrowserProcess(string url)
         {
+            // For WebGL
+#if UNITY_WEBGL
+            if (Application.isEditor)
+            {
+                Debug.LogWarning("Aborting WebGL process because Unity is running in the Editor.");
+                return;
+            }
+
+            WebGLLogin(url, gameObjectName);
+#else
             // Open auth page for standalone and mobile
             Application.OpenURL(url);
 
@@ -45,6 +64,7 @@ namespace LYNC.Wallet
                 OpenLauncher();
                 runningCoroutine = LyncManager.Instance.StartCoroutine(ListenForBrowserMessageWindows());
             }
+#endif
         }
 
         private void OnDeepLinkActivated(string url)
@@ -52,6 +72,8 @@ namespace LYNC.Wallet
             // Handle the message
             messageHandler.HandleMessage(url);
         }
+
+        public void HandleWebGLMessage(string message) => messageHandler.HandleMessage(message);
 
         #region Windows platform methods
         private IEnumerator ListenForBrowserMessageWindows()

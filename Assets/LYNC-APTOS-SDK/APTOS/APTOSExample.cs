@@ -100,9 +100,9 @@ public class APTOSExample : MonoBehaviour
 
             TransactionResult txData = await LyncManager.Instance.TransactionsManager.SendTransaction(
                 mintTxn
-                // new Transaction(
-                // "0x55db3f109405348dd4ce271dc92a39a6e1cbc3d78cf71f6bf128b1c8a9dfac33","tst_unity","set_data_bytes",
-                // arguments)
+            // new Transaction(
+            // "0x55db3f109405348dd4ce271dc92a39a6e1cbc3d78cf71f6bf128b1c8a9dfac33","tst_unity","set_data_bytes",
+            // arguments)
             );
             if (txData.success)
                 SuccessfulTransaction(txData.hash, "MINT");
@@ -129,7 +129,7 @@ public class APTOSExample : MonoBehaviour
             StartCoroutine(API.CoroutineGetBalance(_authBase.PublicAddress, res =>
             {
                 balance.text = res.ToString();
-                Debug.Log("BALANCE"+balance);
+                Debug.Log("BALANCE" + balance);
             }, err =>
             {
                 Debug.Log("Error");
@@ -178,13 +178,13 @@ public class APTOSExample : MonoBehaviour
         if (!string.IsNullOrEmpty(hash))
         {
             go.transform.GetComponentInChildren<TMP_Text>().text = (txnTitle != "" ? ("(" + txnTitle + ")") : "") + " Success, hash = " + hash.Substring(0, 5) + "..." + hash.Substring(hash.Length - 5) + "<color=\"green\"> Check on APTOS EXPLORER<color=\"green\">";
-            EventTrigger trigger = go.GetComponent<EventTrigger>();
-            EventTrigger.Entry entry = new EventTrigger.Entry
+            Button button = go.AddComponent<Button>();
+            button.onClick.AddListener(() =>
             {
-                eventID = EventTriggerType.PointerClick
-            };
-            entry.callback.AddListener((eventData) => { Application.OpenURL("https://explorer.aptoslabs.com/txn/" + hash + "?network=" + LyncManager.Instance.Network.ToString()); });
-            trigger.triggers.Add(entry);
+                Debug.Log("Opening explorer...");
+                Debug.Log(hash);
+                Application.OpenURL("https://explorer.aptoslabs.com/txn/" + hash + "?network=" + LyncManager.Instance.Network.ToString());
+            });
         }
         else
         {
@@ -212,10 +212,10 @@ public class APTOSExample : MonoBehaviour
         {
             return hexString; // No need for abbreviation
         }
-        
+
         string prefix = hexString.Substring(0, prefixLength);
         string suffix = hexString.Substring(hexString.Length - suffixLength);
-        
+
         return prefix + "..." + suffix;
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using LYNC.Wallet;
 using UnityEngine;
 
 namespace LYNC
@@ -168,5 +167,89 @@ namespace LYNC
         public string transactionId;
         public string error;
         public string value;
+    }
+
+    public class ApiKeyValidator
+    {
+        public bool IsValid
+        {
+            get { return this.status == 200; }
+        }
+        public int status;
+    }
+
+    [Serializable]
+    public class ServerBasedTransactionFeedback
+    {
+        public string message;
+        public bool success;
+        public int status;
+        public ServerBasedTransactionFeedbackDetails data;
+
+        [Serializable]
+        public class ServerBasedTransactionFeedbackDetails
+        {
+            public string transactionHash;
+        }
+
+        public TransactionResult ToTransactionResult()
+        {
+            var temp = new TransactionResult
+            {
+                success = success,
+                hash = data.transactionHash
+            };
+            return temp;
+        }
+    }
+
+    [Serializable]
+    public class APIKeyCheckData
+    {
+        public int status;
+    }
+
+    public class APIKeyCheckBody
+    {
+        public string apiKey;
+
+        public APIKeyCheckBody(string apiKey)
+        {
+            this.apiKey = apiKey;
+        }
+
+        public APIKeyCheckBody() { }
+    }
+
+    [Serializable]
+    public class BalanceData
+    {
+        public string network;
+        public string publicKey;
+    }
+
+    [Serializable]
+    public class BalanceDataOutput
+    {
+        public string data;
+    }
+
+    [Serializable]
+    public class AnalyticsData
+    {
+        public string apiKey;
+        public string walletAddress;
+        public string network;
+        public string loginMethod;
+    }
+
+    [Serializable]
+    public class TransactionData
+    {
+        public string apiKey;
+        public string walletAddress;
+        public string network;
+        public string txnHash;
+        public string paymentMode;
     }
 }

@@ -2236,11 +2236,11 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 312383503}
   - {fileID: 143702341}
   - {fileID: 385739990}
   - {fileID: 445304734}
   - {fileID: 1911465066}
-  - {fileID: 312383503}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2563,7 +2563,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 375463546, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: clientId
-      value: 
+      value: 335383702309-okoi94cho9s5dctvpe4ngng55iqgjbg5.apps.googleusercontent.com
       objectReference: {fileID: 0}
     - target: {fileID: 375463546, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: LoginOptionPontem
@@ -2571,7 +2571,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 375463546, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: LoginOptionKeyless
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 375463546, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: SponsorTransaction

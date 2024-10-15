@@ -46,30 +46,7 @@ public class API
         }
     }
 
-    // public static IEnumerator TempCoroutineTransaction(TRANSACTIONS txnType, AptosFirebaseAuthData aptosWallet, System.Action<ServerBasedTransactionFeedback> onSuccess, System.Action<string> onError)
-    // {
-    //     string url = LyncManager.BaseServerURL + "/api/unity/" + txnType.ToString().ToLower();
-    //     UnityWebRequest webRequest = UnityWebRequest.Put(url, JsonUtility.ToJson(aptosWallet));
-    //     webRequest.method = "POST";
-    //     webRequest.SetRequestHeader("Content-Type", "application/json");
-    //     webRequest.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
-    //     yield return webRequest.SendWebRequest();
-
-    //     if (webRequest.result == UnityWebRequest.Result.Success)
-    //     {
-    //         ServerBasedTransactionFeedback tsxData = JsonUtility.FromJson<ServerBasedTransactionFeedback>(webRequest.downloadHandler.text);
-    //         Debug.Log(webRequest.downloadHandler.text);
-    //         onSuccess(tsxData);
-    //     }
-    //     else
-    //     {
-    //         // ErrorDisplay.ShowError(webRequest.error);
-    //         onError(webRequest.downloadHandler.text);
-    //         Debug.Log(webRequest.error);
-    //     }
-    // }
-
-    public static IEnumerator CoroutineGetBalance(string WalletAddress,System.Action<float> onSuccess, System.Action<string> onError)
+    public static IEnumerator CoroutineGetBalance(string WalletAddress, System.Action<float> onSuccess, System.Action<string> onError)
     {
         string url = LyncManager.BaseServerURL + "/api/unity/balance";
         BalanceData jsonObject = new BalanceData
@@ -92,7 +69,7 @@ public class API
             // Debug.Log("webRequest.downloadHandler.text"+webRequest.downloadHandler.text);
             BalanceDataOutput balanceData = JsonUtility.FromJson<BalanceDataOutput>(webRequest.downloadHandler.text);
             string balance = balanceData.data;
-                onSuccess(float.Parse(balance));
+            onSuccess(float.Parse(balance));
         }
         else
         {
@@ -192,7 +169,7 @@ public class API
 
             if (www.isNetworkError || www.isHttpError)
             {
-                Debug.Log("Invalid API Key: "+www.error);
+                Debug.Log("Invalid API Key: " + www.error);
             }
             else
             {
@@ -226,100 +203,12 @@ public class API
 
             if (www.isNetworkError || www.isHttpError)
             {
-                Debug.Log("Invalid API Key: "+www.error);
+                Debug.Log("Invalid API Key: " + www.error);
             }
             else
             {
                 Debug.Log("www" + www);
             }
         }
-
     }
-}
-
-public class ApiKeyValidator
-{
-    public bool IsValid
-    {
-        get { return this.status == 200; }
-    }
-    public int status;
-}
-
-[System.Serializable]
-public class ServerBasedTransactionFeedback
-{
-    public string message;
-    public bool success;
-    public int status;
-    public ServerBasedTransactionFeedbackDetails data;
-
-    [System.Serializable]
-    public class ServerBasedTransactionFeedbackDetails
-    {
-        public string transactionHash;
-    }
-
-    public TransactionResult ToTransactionResult()
-    {
-        var temp = new TransactionResult
-        {
-            success = success,
-            hash = data.transactionHash
-        };
-        return temp;
-    }
-}
-
-[System.Serializable]
-public class APIKeyCheckData
-{
-    public int status;
-}
-
-public class APIKeyCheckBody
-{
-    public string apiKey;
-
-    public APIKeyCheckBody(string apiKey)
-    {
-        this.apiKey = apiKey;
-    }
-
-    public APIKeyCheckBody() { }
-}
-
-
-[System.Serializable]
-public class BalanceData
-{
-    public string network;
-    public string publicKey;
-}
-
-[System.Serializable]
-public class BalanceDataOutput
-{
-    public string data;
-}
-
-[Serializable]
-public class AnalyticsData
-{
-    public string apiKey;
-    public string walletAddress;
-    public string network;
-    public string loginMethod;
-}
-
-
-[Serializable]
-public class TransactionData
-{
-    public string apiKey;
-    public string walletAddress;
-    public string network;
-    public string txnHash;
-    public string paymentMode;
-
 }
