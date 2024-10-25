@@ -33,7 +33,7 @@ namespace LYNC.Wallet
             }
 
             MessageHandler.AddListener<AuthBase>(_onSuccess);
-            string url = LyncManager.BaseFrontEndURL + "/auth?scheme=" + DeepLinkRegistration.DeepLinkUrl + "&network=" + (int)LyncManager.Instance.Network + "&clientId=" + LyncManager.Instance.clientId;
+            string url = LyncManager.BaseFrontEndURL + "/auth?scheme=" + DeepLinkRegistration.DeepLinkUrl + "&network=" + (int)LyncManager.Instance.Network + "&clientId=" + LyncManager.Instance.clientId + "&apiKey=" + LyncManager.Instance.LyncAPIKey;
             // For mobile platforms, used to add app_info for interacting with Pontem Mobile App
             // app_info is also used in the front end to redirect to Pontem Mobile App
             if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
