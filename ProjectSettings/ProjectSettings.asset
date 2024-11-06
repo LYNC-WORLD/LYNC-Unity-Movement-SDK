@@ -228,7 +228,7 @@ PlayerSettings:
   iOSLaunchScreeniPadCustomStoryboardPath: 
   iOSDeviceRequirements: []
   iOSURLSchemes:
-  - lync
+  - lyncaptos122121
   macOSURLSchemes:
   - lyncaptos122121
   iOSBackgroundModes: 0

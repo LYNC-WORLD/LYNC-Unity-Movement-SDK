@@ -3,10 +3,21 @@ mergeInto(LibraryManager.library, {
     var _url = UTF8ToString(url);
     var _gameObjectName = UTF8ToString(gameObjectName);
     var windowName = "LYNC - Auth";
-    var windowFeatures = "width=600,height=400,top=200,left=200";
+    var windowFeatures =
+      "width=600,height=400,top=200,left=200,noopener=false,noreferrer=false";
 
     var origin = encodeURIComponent(window.location.origin);
-    window.open(_url + "&webGLOrigin=" + origin, windowName, windowFeatures);
+    var newChild = window.open(
+      _url + "&webGLOrigin=" + origin,
+      windowName,
+      windowFeatures
+    );
+
+    //console.log(newChild);
+    //if (!newChild.opener) newChild.opener = window;
+    // newChild.myOpener = window;
+    //console.log(newChild.opener);
+    // console.log(newChild.myOpener);
 
     var i = 0;
     function ReadMessage(e) {
