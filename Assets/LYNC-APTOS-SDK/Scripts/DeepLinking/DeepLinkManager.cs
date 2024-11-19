@@ -17,7 +17,7 @@ namespace LYNC.Wallet
 
 #if UNITY_WEBGL
         [DllImport("__Internal")]
-        private static extern void WebGLLogin(string url, string gameObjectName);
+        private static extern void WebGLLogin(string url, string websocketUrl, string gameObjectName);
 #endif
 
         public static DeepLinkManager Instance { private set; get; } = null;
@@ -53,7 +53,7 @@ namespace LYNC.Wallet
                 return;
             }
 
-            WebGLLogin(url, gameObjectName);
+            WebGLLogin(url, LyncManager.BaseServerURL.Replace("http", "ws"), gameObjectName);
 #else
             // Open auth page for standalone and mobile
             Application.OpenURL(url);

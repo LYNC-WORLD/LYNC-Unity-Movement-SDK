@@ -1,33 +1,41 @@
 mergeInto(LibraryManager.library, {
-  WebGLLogin: function (url, gameObjectName) {
+  WebGLLogin: function (url, websocketUrl, gameObjectName) {
     var _url = UTF8ToString(url);
+    var _websocketUrl = UTF8ToString(websocketUrl);
     var _gameObjectName = UTF8ToString(gameObjectName);
-    var windowName = "LYNC - Auth";
-    var windowFeatures =
-      "width=600,height=400,top=200,left=200,noopener=false,noreferrer=false";
+    window.UnityWebSocket = new WebSocket(_websocketUrl);
 
-    var origin = encodeURIComponent(window.location.origin);
-    var newChild = window.open(
-      _url + "&webGLOrigin=" + origin,
-      windowName,
-      windowFeatures
-    );
+    window.UnityWebSocket.onopen = function () {
+      console.log("WebSocket connected.");
+    };
 
-    //console.log(newChild);
-    //if (!newChild.opener) newChild.opener = window;
-    // newChild.myOpener = window;
-    //console.log(newChild.opener);
-    // console.log(newChild.myOpener);
+    window.UnityWebSocket.onmessage = function (event) {
+      var message = JSON.parse(event.data);
+      console.log("received message = " + JSON.stringify(message));
 
-    var i = 0;
-    function ReadMessage(e) {
-      if (e.data.target != "lync-auth" || i != 0) return;
-      i++;
-      SendMessage(_gameObjectName, "HandleWebGLMessage", e.data.message);
-    }
+      if (message.type == "id") {
+        var windowName = "LYNC - Auth";
+        var windowFeatures =
+          "width=600,height=400,top=200,left=200,noopener=false,noreferrer=false,rel=opener";
+        window.UnityWebSocket.id = message.id;
+        window.open(
+          _url + "&webGLOrigin=" + message.id,
+          windowName,
+          windowFeatures
+        );
+      }
 
-    window.removeEventListener("message", ReadMessage);
-    window.addEventListener("message", ReadMessage);
-    i = 0;
+      if (message.type == "broadcast") {
+        SendMessage(_gameObjectName, "HandleWebGLMessage", message.data);
+      }
+    };
+
+    window.UnityWebSocket.onclose = function () {
+      console.log("WebSocket closed.");
+    };
+
+    window.UnityWebSocket.onerror = function () {
+      console.log("WebSocket error occurred.");
+    };
   },
 });
