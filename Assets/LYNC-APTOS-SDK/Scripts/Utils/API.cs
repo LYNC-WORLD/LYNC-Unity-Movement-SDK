@@ -80,17 +80,17 @@ public class API
     }
 
 
-    public static IEnumerator CoroutineCheckAPIKey(string uri, string apiKey, System.Action<bool> onSuccess, System.Action<string> onError)
+    public static IEnumerator CoroutineCheckAPIKey(string uri, System.Action<bool> onSuccess, System.Action<string> onError)
     {
-        UnityWebRequest webRequest = UnityWebRequest.Put(uri, JsonUtility.ToJson(new APIKeyCheckBody(apiKey)));
-        webRequest.method = "POST";
+        UnityWebRequest webRequest = UnityWebRequest.Get(uri);
+        // webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
 
         yield return webRequest.SendWebRequest();
 
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
-            //Debug.Log(webRequest.downloadHandler.text);
+            Debug.Log(webRequest.downloadHandler.text);
             APIKeyCheckData apiResult = JsonUtility.FromJson<APIKeyCheckData>(webRequest.downloadHandler.text);
             onSuccess(apiResult.status == 200);
         }

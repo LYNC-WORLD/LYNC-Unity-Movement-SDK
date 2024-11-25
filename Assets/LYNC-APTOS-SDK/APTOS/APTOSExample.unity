@@ -2566,6 +2566,10 @@ PrefabInstance:
       value: 335383702309-okoi94cho9s5dctvpe4ngng55iqgjbg5.apps.googleusercontent.com
       objectReference: {fileID: 0}
     - target: {fileID: 375463546, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
+      propertyPath: LyncAPIKey
+      value: 7a853d27-d34a-4f6d-b2c9-63664749fab4
+      objectReference: {fileID: 0}
+    - target: {fileID: 375463546, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: LoginOptionPontem
       value: 1
       objectReference: {fileID: 0}

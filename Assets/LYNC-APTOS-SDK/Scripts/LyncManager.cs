@@ -22,7 +22,7 @@ namespace LYNC
         public bool SponsorTransaction = false;
 
         //
-        private static readonly string apiKeyValidationUrl = "https://server.lync.world/user/check_api_key";
+        private static readonly string apiKeyValidationUrl = "https://userservices.lync.world/api/v1/projects/verifyKey?apiKey=";
 
         // 
         // public static readonly string BaseFrontEndURL = "https://login-aptos-sdk.lync.world";
@@ -94,7 +94,7 @@ namespace LYNC
             }
 
             Debug.Log("Checking API key...");
-            StartCoroutine(API.CoroutineCheckAPIKey(apiKeyValidationUrl, LyncAPIKey, OnAPIKeyValidation, OnAPIKeyWebRequestError));
+            StartCoroutine(API.CoroutineCheckAPIKey(apiKeyValidationUrl+LyncAPIKey, OnAPIKeyValidation, OnAPIKeyWebRequestError));
         }
 
         public void HandleWebGLMessage(string message)
