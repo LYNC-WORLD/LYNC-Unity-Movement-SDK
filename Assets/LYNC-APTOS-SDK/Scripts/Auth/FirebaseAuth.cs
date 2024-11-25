@@ -50,7 +50,7 @@ public class FirebaseAuth : AuthBase
                 return;
             }
 
-            Debug.Log("Fetching firebase data from server...");
+            // Debug.Log("Fetching firebase data from server...");
             if (AptosFirebaseAuthData != null)
             {
                 tcs.SetResult(AptosFirebaseAuthData);
@@ -64,7 +64,7 @@ public class FirebaseAuth : AuthBase
                     wallet =>
                     {
                         AptosFirebaseAuthData = wallet;
-                        Debug.Log(JsonUtility.ToJson(wallet));
+                        // Debug.Log(JsonUtility.ToJson(wallet));
                         PublicAddress = AptosFirebaseAuthData.publicKey;
                         tcs.SetResult(AptosFirebaseAuthData);
                         Save(this, false);
