@@ -252,4 +252,13 @@ namespace LYNC
         public string txnHash;
         public string paymentMode;
     }
+    [Serializable]
+    public class ViewTransection{
+        public string contractAddress;
+        public string contractName;
+        public string functionName;
+        public string network;
+        public bool usePaymaster;
+        public List<TransactionArgument> arguments;
+    }
 }

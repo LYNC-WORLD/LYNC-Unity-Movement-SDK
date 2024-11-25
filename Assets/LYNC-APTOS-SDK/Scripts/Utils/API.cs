@@ -33,7 +33,7 @@ public class API
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
             ServerBasedTransactionFeedback tsxData = JsonUtility.FromJson<ServerBasedTransactionFeedback>(webRequest.downloadHandler.text);
-            Debug.Log(webRequest.downloadHandler.text);
+            // Debug.Log(webRequest.downloadHandler.text);
             onSuccess(tsxData);
         }
         else
@@ -45,7 +45,29 @@ public class API
             Debug.Log(webRequest.error);
         }
     }
+    public static IEnumerator CoroutineViewTransaction(ViewTransection customTransaction, System.Action<ServerBasedTransactionFeedback> onSuccess, System.Action<TransactionResult> onError)
+    {
+        string url = LyncManager.BaseServerURL + "/api/unity/view";
+        Debug.Log(JsonUtility.ToJson(customTransaction));
+        UnityWebRequest webRequest = UnityWebRequest.Put(url, JsonUtility.ToJson(customTransaction));
+        webRequest.method = "POST";
+        webRequest.SetRequestHeader("Content-Type", "application/json");
+        webRequest.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
+        yield return webRequest.SendWebRequest();
 
+        if (webRequest.result == UnityWebRequest.Result.Success)
+        {
+            ServerBasedTransactionFeedback tsxData = JsonUtility.FromJson<ServerBasedTransactionFeedback>(webRequest.downloadHandler.text);
+            Debug.Log(webRequest.downloadHandler.text);
+            onSuccess(tsxData);
+        }
+        else
+        {
+            TransactionResult tsxData = JsonUtility.FromJson<TransactionResult>(webRequest.downloadHandler.text);
+            tsxData.success = false;
+            onError(tsxData);
+        }
+    }
     public static IEnumerator CoroutineGetBalance(string WalletAddress, System.Action<float> onSuccess, System.Action<string> onError)
     {
         string url = LyncManager.BaseServerURL + "/api/unity/balance";
@@ -90,7 +112,7 @@ public class API
 
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
-            Debug.Log(webRequest.downloadHandler.text);
+            // Debug.Log(webRequest.downloadHandler.text);
             APIKeyCheckData apiResult = JsonUtility.FromJson<APIKeyCheckData>(webRequest.downloadHandler.text);
             onSuccess(apiResult.status == 200);
         }

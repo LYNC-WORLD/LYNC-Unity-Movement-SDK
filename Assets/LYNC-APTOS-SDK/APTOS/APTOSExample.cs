@@ -2,13 +2,13 @@ using UnityEngine;
 using TMPro;
 using LYNC;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public class APTOSExample : MonoBehaviour
 {
     [Header("General settings")]
-    public Button login, logout, mint;
+    public Button login, logout, mint, view;
 
     [Space]
     [Header("Firebase")]
@@ -30,6 +30,7 @@ public class APTOSExample : MonoBehaviour
     public Transform transactionResultsParent;
     public GameObject transactionResultHolder;
     public Transaction mintTxn;
+    public ViewTransection viewTransection;
 
     public static APTOSExample Instance;
 
@@ -45,6 +46,7 @@ public class APTOSExample : MonoBehaviour
         login.interactable = false;
         logout.interactable = false;
         mint.interactable = false;
+        view.interactable = false;
         Application.targetFrameRate = 30;
     }
 
@@ -112,6 +114,20 @@ public class APTOSExample : MonoBehaviour
             mint.interactable = true;
         });
 
+        view.onClick.AddListener(async () =>{
+            LyncManager.Instance.StartCoroutine(
+                API.CoroutineViewTransaction(
+                    viewTransection,
+                    tsxData => {
+                        Debug.Log(tsxData);
+                    },
+                    errorData => {
+                        Debug.Log("Error");
+                    }
+                )
+            );
+        });
+
     }
 
     private void OnWalletConnected(AuthBase _authBase)
@@ -147,6 +163,7 @@ public class APTOSExample : MonoBehaviour
         login.interactable = false;
         logout.interactable = true;
         mint.interactable = true;
+        view.interactable = true;
     }
 
     private void EnableAppropriateComponents(AUTH_TYPE authType)

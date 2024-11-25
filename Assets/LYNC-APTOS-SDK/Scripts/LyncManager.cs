@@ -25,10 +25,11 @@ namespace LYNC
         private static readonly string apiKeyValidationUrl = "https://userservices.lync.world/api/v1/projects/verifyKey?apiKey=";
 
         // 
-        // public static readonly string BaseFrontEndURL = "https://login-aptos-sdk.lync.world";
-        public static readonly string BaseFrontEndURL = "http://localhost:5173";
-        // public static readonly string BaseServerURL = "https://server-aptos-sdk.lync.world";
-        public static readonly string BaseServerURL = "http://localhost:5001";
+        public static readonly string BaseFrontEndURL = "https://login-aptos-sdk.lync.world/";
+        public static readonly string BaseServerURL = "https://server-aptos-sdk.lync.world";
+
+        // public static readonly string BaseFrontEndURL = "http://localhost:5173";
+        // public static readonly string BaseServerURL = "http://localhost:5001";
 
         [Space]
         [Header("Login options")]
@@ -93,7 +94,7 @@ namespace LYNC
                 Debug.LogError(error);
             }
 
-            Debug.Log("Checking API key...");
+            // Debug.Log("Checking API key...");
             StartCoroutine(API.CoroutineCheckAPIKey(apiKeyValidationUrl+LyncAPIKey, OnAPIKeyValidation, OnAPIKeyWebRequestError));
         }
 
