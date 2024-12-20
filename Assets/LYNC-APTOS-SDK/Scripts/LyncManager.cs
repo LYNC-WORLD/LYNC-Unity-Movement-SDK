@@ -100,7 +100,7 @@ namespace LYNC
 
         public void HandleWebGLMessage(string message)
         {
-            DeepLinkManager.HandleWebGLMessage(message);
+            DeepLinkManager.HandleMessage(message);
         }
 
         // C76FCFCF99C1A09FAA1ED2F727943E18
