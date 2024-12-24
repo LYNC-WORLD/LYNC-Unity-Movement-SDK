@@ -14,16 +14,16 @@ namespace LYNC.Transactions
             if (AuthBase.Instance is FirebaseAuth || AuthBase.Instance is KeylessAuth) // Server transactions
             {
                 string url = AuthBase.Instance is FirebaseAuth ? ROUTES.GENERIC_TRANSACTION : ROUTES.KEYLESS_TRANSACTION;
-                LyncManager.Instance.StartCoroutine(API.CoroutineTransaction(url,transaction, 
-                txData => 
-                    {
-                        LyncManager.Instance.SendTransactionAnalytics(AuthBase.Instance.PublicAddress,txData.data.transactionHash, LyncManager.Instance.SponsorTransaction?"Gasless":"UserPaid");
-                        tcs.SetResult(txData.ToTransactionResult());
-                    },
-                    err => 
-                    {
-                        tcs.SetResult(err);
-                    }));
+                LyncManager.Instance.StartCoroutine(API.CoroutineTransaction(url,transaction,
+                txData =>
+                {
+                    LyncManager.Instance.SendTransactionAnalytics(AuthBase.Instance.PublicAddress,txData.data.transactionHash, LyncManager.Instance.SponsorTransaction?"Gasless":"UserPaid");
+                    tcs.SetResult(txData.ToTransactionResult());
+                },
+                err => 
+                {
+                    tcs.SetResult(err);
+                }));
             }
             else if (AuthBase.Instance is PontemAuth) // Pontem
             {

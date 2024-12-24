@@ -2,13 +2,13 @@ using UnityEngine;
 using TMPro;
 using LYNC;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public class APTOSExample : MonoBehaviour
 {
     [Header("General settings")]
-    public Button login, logout, mint;
+    public Button login, logout, mint, view;
 
     [Space]
     [Header("Firebase")]
@@ -30,6 +30,7 @@ public class APTOSExample : MonoBehaviour
     public Transform transactionResultsParent;
     public GameObject transactionResultHolder;
     public Transaction mintTxn;
+    public ViewTransection viewTransection;
 
     public static APTOSExample Instance;
 
@@ -45,6 +46,7 @@ public class APTOSExample : MonoBehaviour
         login.interactable = false;
         logout.interactable = false;
         mint.interactable = false;
+        view.interactable = false;
         Application.targetFrameRate = 30;
     }
 
@@ -100,9 +102,9 @@ public class APTOSExample : MonoBehaviour
 
             TransactionResult txData = await LyncManager.Instance.TransactionsManager.SendTransaction(
                 mintTxn
-                // new Transaction(
-                // "0x55db3f109405348dd4ce271dc92a39a6e1cbc3d78cf71f6bf128b1c8a9dfac33","tst_unity","set_data_bytes",
-                // arguments)
+            // new Transaction(
+            // "0x55db3f109405348dd4ce271dc92a39a6e1cbc3d78cf71f6bf128b1c8a9dfac33","tst_unity","set_data_bytes",
+            // arguments)
             );
             if (txData.success)
                 SuccessfulTransaction(txData.hash, "MINT");
@@ -110,6 +112,20 @@ public class APTOSExample : MonoBehaviour
                 ErrorTransaction(txData.error);
 
             mint.interactable = true;
+        });
+
+        view.onClick.AddListener(async () =>{
+            LyncManager.Instance.StartCoroutine(
+                API.CoroutineViewTransaction(
+                    viewTransection,
+                    tsxData => {
+                        Debug.Log(tsxData);
+                    },
+                    errorData => {
+                        Debug.Log("Error");
+                    }
+                )
+            );
         });
 
     }
@@ -129,7 +145,7 @@ public class APTOSExample : MonoBehaviour
             StartCoroutine(API.CoroutineGetBalance(_authBase.PublicAddress, res =>
             {
                 balance.text = res.ToString();
-                Debug.Log("BALANCE"+balance);
+                Debug.Log("BALANCE" + balance);
             }, err =>
             {
                 Debug.Log("Error");
@@ -147,6 +163,7 @@ public class APTOSExample : MonoBehaviour
         login.interactable = false;
         logout.interactable = true;
         mint.interactable = true;
+        view.interactable = true;
     }
 
     private void EnableAppropriateComponents(AUTH_TYPE authType)
@@ -178,13 +195,13 @@ public class APTOSExample : MonoBehaviour
         if (!string.IsNullOrEmpty(hash))
         {
             go.transform.GetComponentInChildren<TMP_Text>().text = (txnTitle != "" ? ("(" + txnTitle + ")") : "") + " Success, hash = " + hash.Substring(0, 5) + "..." + hash.Substring(hash.Length - 5) + "<color=\"green\"> Check on APTOS EXPLORER<color=\"green\">";
-            EventTrigger trigger = go.GetComponent<EventTrigger>();
-            EventTrigger.Entry entry = new EventTrigger.Entry
+            Button button = go.AddComponent<Button>();
+            button.onClick.AddListener(() =>
             {
-                eventID = EventTriggerType.PointerClick
-            };
-            entry.callback.AddListener((eventData) => { Application.OpenURL("https://explorer.aptoslabs.com/txn/" + hash + "?network=" + LyncManager.Instance.Network.ToString()); });
-            trigger.triggers.Add(entry);
+                Debug.Log("Opening explorer...");
+                Debug.Log(hash);
+                Application.OpenURL("https://explorer.aptoslabs.com/txn/" + hash + "?network=" + LyncManager.Instance.Network.ToString());
+            });
         }
         else
         {
@@ -212,10 +229,10 @@ public class APTOSExample : MonoBehaviour
         {
             return hexString; // No need for abbreviation
         }
-        
+
         string prefix = hexString.Substring(0, prefixLength);
         string suffix = hexString.Substring(hexString.Length - suffixLength);
-        
+
         return prefix + "..." + suffix;
     }
 }
