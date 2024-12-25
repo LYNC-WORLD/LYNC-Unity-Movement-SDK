@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using LYNC.Wallet;
 using UnityEngine;
 
 namespace LYNC.DeepLink
@@ -15,12 +16,11 @@ namespace LYNC.DeepLink
 
         public void HandleMessage(string url)
         {
-            Debug.Log(url);
+            // Debug.Log(url);
             string unescapedUrl = System.Uri.UnescapeDataString(url);
             string messagePath = unescapedUrl.Substring(unescapedUrl.IndexOf("://") + 3);
             messagePath = messagePath.Substring(messagePath.IndexOf("?") + 1, messagePath.IndexOf("=") - 1);
             MessagePath = messagePath.Replace("=", "");
-
             switch (MessagePath)
             {
                 case DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_AUTH:
@@ -30,6 +30,7 @@ namespace LYNC.DeepLink
                 case DEEPLINK_MESSAGE_PATH.KEYLESS_AUTH:
                 case DEEPLINK_MESSAGE_PATH.PONTEM_BROWSER_TRANSACTION:
                 case DEEPLINK_MESSAGE_PATH.PONTEM_BROWSER_AUTH:
+                case DEEPLINK_MESSAGE_PATH.STARKEY:
                 case DEEPLINK_MESSAGE_PATH.FIREBASE:
                     string rawJson = unescapedUrl.Substring(unescapedUrl.IndexOf("=") + 1);
                     MessageData = Utils.FromBase64(rawJson);
@@ -47,12 +48,15 @@ namespace LYNC.DeepLink
 
         public class TempAuthData { public string authType; }
         public class PontemData { public string publicAddress; }
+        public class StarKey { public string publicKey; public string typeOfAuth; }
         public class KeylessData { public string accountAddress; public int expirationDateSeconds; public string publicKey; public string privateKey; public string dataId; }
 
         public AuthBase ExtractAndSaveWalletFromDLMessage()
         {
             // Save wallet
             AuthBase authBase;
+            // Debug.Log(MessagePath);
+            Debug.Log(MessageData);
             switch (MessagePath)
             {
                 case DEEPLINK_MESSAGE_PATH.FIREBASE:
@@ -61,26 +65,32 @@ namespace LYNC.DeepLink
                     LyncManager.Instance.SendLoginAnalytics(AptosFirebaseAuthData.publicKey, "Firebase");
                     authBase = new FirebaseAuth(AptosFirebaseAuthData);
                     break;
-                case DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_AUTH:
-                    AuthBase.AuthType = AUTH_TYPE.PONTEM;
-                    pontemMobile.HandleAuthData(MessageData);
-                    LyncManager.Instance.SendLoginAnalytics(pontemMobile.authData.address, "Pontem");
-                    authBase = new PontemAuth(pontemMobile.authData.address);
+                case DEEPLINK_MESSAGE_PATH.STARKEY:
+                    AuthBase.AuthType = AUTH_TYPE.STARKEY;
+                    StarKey starKey = JsonUtility.FromJson<StarKey>(MessageData);
+                    LyncManager.Instance.SendLoginAnalytics(starKey.publicKey, "Pontem");
+                    authBase = new StarKeyAuth(starKey.publicKey);
                     break;
-                case DEEPLINK_MESSAGE_PATH.PONTEM_BROWSER_AUTH:
-                    AuthBase.AuthType = AUTH_TYPE.PONTEM;
-                    PontemData pontemData = JsonUtility.FromJson<PontemData>(MessageData);
-                    LyncManager.Instance.SendLoginAnalytics(pontemData.publicAddress, "Pontem");
-                    authBase = new PontemAuth(pontemData.publicAddress);
-                    break;
-                case DEEPLINK_MESSAGE_PATH.KEYLESS_AUTH:
-                    AuthBase.AuthType = AUTH_TYPE.KEYLESS;
-                    KeylessData keylessData = JsonUtility.FromJson<KeylessData>(MessageData);
-                    authBase = new KeylessAuth(keylessData.accountAddress, keylessData.publicKey, keylessData.privateKey, keylessData.expirationDateSeconds, keylessData.dataId);
-                    LyncManager.Instance.SendLoginAnalytics(keylessData.publicKey, "Keyless");
-                    Debug.Log(MessageData);
-                    Debug.Log(keylessData.dataId);
-                    break;
+                // case DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_AUTH:
+                //     AuthBase.AuthType = AUTH_TYPE.PONTEM;
+                //     pontemMobile.HandleAuthData(MessageData);
+                //     LyncManager.Instance.SendLoginAnalytics(pontemMobile.authData.address, "Pontem");
+                //     authBase = new PontemAuth(pontemMobile.authData.address);
+                //     break;
+                // case DEEPLINK_MESSAGE_PATH.PONTEM_BROWSER_AUTH:
+                //     AuthBase.AuthType = AUTH_TYPE.PONTEM;
+                //     PontemData pontemData = JsonUtility.FromJson<PontemData>(MessageData);
+                //     LyncManager.Instance.SendLoginAnalytics(pontemData.publicAddress, "Pontem");
+                //     authBase = new PontemAuth(pontemData.publicAddress);
+                //     break;
+                // case DEEPLINK_MESSAGE_PATH.KEYLESS_AUTH:
+                //     AuthBase.AuthType = AUTH_TYPE.KEYLESS;
+                //     KeylessData keylessData = JsonUtility.FromJson<KeylessData>(MessageData);
+                //     authBase = new KeylessAuth(keylessData.accountAddress, keylessData.publicKey, keylessData.privateKey, keylessData.expirationDateSeconds, keylessData.dataId);
+                //     LyncManager.Instance.SendLoginAnalytics(keylessData.publicKey, "Keyless");
+                //     Debug.Log(MessageData);
+                //     Debug.Log(keylessData.dataId);
+                //     break;
 
                 default:
                     throw new System.Exception("Unknown auth type");
@@ -163,7 +173,8 @@ namespace LYNC.DeepLink
         public const string PONTEM_MOBILE_TRANSACTION = "response";
         public const string PONTEM_BROWSER_AUTH = "pontem-browser";
         public const string PONTEM_BROWSER_TRANSACTION = "pontem-browser-transaction";
-        public const string FIREBASE = "firebase";
+        public const string FIREBASE = "firebase-auth";
+        public const string STARKEY = "star-key-browser-auth";
         public const string KEYLESS_AUTH = "keyless-auth";
     }
 }

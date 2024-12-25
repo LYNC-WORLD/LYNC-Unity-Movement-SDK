@@ -35,6 +35,7 @@ namespace LYNC.Wallet
         {
             // Handle the message
             HandleMessage(url);
+            // Debug.Log(url);
         }
 
         public void HandleMessage(string message) => messageHandler.HandleMessage(message);

@@ -2,7 +2,8 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public enum AUTH_TYPE { FIREBASE, PONTEM, KEYLESS }
+public enum AUTH_TYPE { FIREBASE, STARKEY, PONTEM, KEYLESS}
+
 public abstract class AuthBase
 {
     public string PublicAddress = null;
@@ -60,14 +61,16 @@ public abstract class AuthBase
                     temp = new FirebaseAuth();
                     await temp.Load(onSessionExpired);
                     break;
-                case AUTH_TYPE.PONTEM:
-                    temp = new PontemAuth();
+                case AUTH_TYPE.STARKEY:
+                    temp = new StarKeyAuth();
                     break;
-                case AUTH_TYPE.KEYLESS:
-
-                    temp = new KeylessAuth();
-                    temp.Load(onSessionExpired);
-                    break;
+                // case AUTH_TYPE.PONTEM:
+                //     temp = new PontemAuth();
+                //     break;
+                // case AUTH_TYPE.KEYLESS:
+                //     temp = new KeylessAuth();
+                //     temp.Load(onSessionExpired);
+                //     break;
                 default:
                     break;
             }

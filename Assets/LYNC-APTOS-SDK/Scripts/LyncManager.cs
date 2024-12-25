@@ -25,10 +25,10 @@ namespace LYNC
         private static readonly string apiKeyValidationUrl = "https://userservices.lync.world/api/v1/projects/verifyKey?apiKey=";
 
         // 
-        public static readonly string BaseFrontEndURL = "https://login-aptos-sdk.lync.world/";
+        // public static readonly string BaseFrontEndURL = "https://login-aptos-sdk.lync.world/";
         public static readonly string BaseServerURL = "https://server-aptos-sdk.lync.world";
 
-        // public static readonly string BaseFrontEndURL = "http://localhost:5173";
+        public static readonly string BaseFrontEndURL = "http://localhost:5173";
         // public static readonly string BaseServerURL = "http://localhost:5001";
 
         [Space]

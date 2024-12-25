@@ -33,7 +33,7 @@ namespace LYNC.Wallet
             }
 
             MessageHandler.AddListener<AuthBase>(_onSuccess);
-            string url = LyncManager.BaseFrontEndURL + "/auth?scheme=" + DeepLinkRegistration.DeepLinkUrl + "&network=" + (int)LyncManager.Instance.Network + "&clientId=" + LyncManager.Instance.clientId + "&apiKey=" + LyncManager.Instance.LyncAPIKey;
+            string url = LyncManager.BaseFrontEndURL + "/auth?scheme=" + DeepLinkRegistration.DeepLinkUrl + "&network=" + (int)LyncManager.Instance.Network + "&apiKey=" + LyncManager.Instance.LyncAPIKey;
             // Debug.Log(url);
             // For mobile platforms, used to add app_info for interacting with Pontem Mobile App
             // app_info is also used in the front end to redirect to Pontem Mobile App
@@ -47,7 +47,6 @@ namespace LYNC.Wallet
             url += Utils.GetLoginOptionsUrlFormat();
             if (!LyncManager.Instance.LoginOptionFirebase && !LyncManager.Instance.LoginOptionKeyless && !LyncManager.Instance.LoginOptionPontem)
                 Debug.LogWarning("Warning, no login option was selected. Please select at least one login option from LyncManager Prefab.");
-
             DeepLinkManager.Instance.StartBrowserProcess(url);
         }
 

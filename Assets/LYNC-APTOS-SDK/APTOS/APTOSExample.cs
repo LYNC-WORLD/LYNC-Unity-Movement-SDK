@@ -139,8 +139,9 @@ public class APTOSExample : MonoBehaviour
             Populate(_authBase as FirebaseAuth);
         }
 
-        if (AuthBase.AuthType == AUTH_TYPE.PONTEM)
+        if (AuthBase.AuthType == AUTH_TYPE.STARKEY)
         {
+            Debug.Log(_authBase.PublicAddress);
             WalletAddressText.text = AbbreviateWalletAddressHex(_authBase.PublicAddress);
             StartCoroutine(API.CoroutineGetBalance(_authBase.PublicAddress, res =>
             {
@@ -174,7 +175,7 @@ public class APTOSExample : MonoBehaviour
             pontemContainer.gameObject.SetActive(false);
             keylessContainer.gameObject.SetActive(false);
         }
-        if (authType == AUTH_TYPE.PONTEM)
+        if (authType == AUTH_TYPE.STARKEY)
         {
             pontemContainer.gameObject.SetActive(true);
             aptosContainer.gameObject.SetActive(false);

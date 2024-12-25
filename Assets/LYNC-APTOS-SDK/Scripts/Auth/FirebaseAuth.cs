@@ -64,7 +64,7 @@ public class FirebaseAuth : AuthBase
                     wallet =>
                     {
                         AptosFirebaseAuthData = wallet;
-                        // Debug.Log(JsonUtility.ToJson(wallet));
+                        Debug.Log(JsonUtility.ToJson(wallet));
                         PublicAddress = AptosFirebaseAuthData.publicKey;
                         tcs.SetResult(AptosFirebaseAuthData);
                         Save(this, false);

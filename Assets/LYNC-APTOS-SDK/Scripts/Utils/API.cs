@@ -83,7 +83,7 @@ public class API
         webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
         webRequest.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
-        Debug.Log("Sending request " + url);
+        // Debug.Log("Sending request " + url);
         yield return webRequest.SendWebRequest();
 
         if (webRequest.result == UnityWebRequest.Result.Success)
@@ -191,7 +191,7 @@ public class API
 
             if (www.isNetworkError || www.isHttpError)
             {
-                Debug.Log("Invalid API Key: " + www.error);
+                // Debug.Log("Invalid API Key: " + www.error);
             }
             else
             {

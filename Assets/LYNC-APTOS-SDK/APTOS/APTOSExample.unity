@@ -440,7 +440,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: LYNC APTOS
+  m_text: LYNC Supra
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5bf2f5c1ff29a49bcb74a1987b9cba59, type: 2}
   m_sharedMaterial: {fileID: -6154756731860569102, guid: 5bf2f5c1ff29a49bcb74a1987b9cba59, type: 2}
@@ -2831,7 +2831,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 375463546, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: LyncAPIKey
-      value: 7a853d27-d34a-4f6d-b2c9-63664749fab4
+      value: bcfdc77d-2bb6-4a9b-bff5-c692a8615eca
       objectReference: {fileID: 0}
     - target: {fileID: 375463546, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: LoginOptionPontem
