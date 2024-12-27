@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace LYNC
@@ -26,17 +27,15 @@ namespace LYNC
         public static string GetLoginOptionsUrlFormat() =>
              "&loFirebase=" + LyncManager.Instance.LoginOptionFirebase + "&loPontem=" + LyncManager.Instance.LoginOptionPontem + "&loKeyless=" + LyncManager.Instance.LoginOptionKeyless;
     }
-
-    public class AptosFirebaseSavedProfile
-    {
-        public string message;
-        public bool success;
+    [Serializable]
+    public class SupraFirebaseAuthData{
         public int status;
-        public AptosFirebaseAuthData data;
+        public bool success;
+        public String message;
+        public SupraFirebaseAuthDetails data;
     }
-
     [System.Serializable]
-    public class AptosFirebaseAuthData
+    public class SupraFirebaseAuthDetails
     {
         public bool isFunded;
         public string mintingHash;
@@ -70,16 +69,16 @@ namespace LYNC
         }
     }
 
-    public class AptosProfileScheme
+    public class SupraProfileScheme
     {
         public string email;
-        public string firebaseUid;
+        // public string firebaseUid;
         public string network;
 
-        public AptosProfileScheme(string email, string firebaseUid)
+        public SupraProfileScheme(string email, string firebaseUid)
         {
             this.email = email;
-            this.firebaseUid = firebaseUid;
+            // this.firebaseUid = firebaseUid;
             this.network = ((int)LyncManager.Instance.Network).ToString(); ;
         }
     }
@@ -92,13 +91,13 @@ namespace LYNC
         public string functionName;
         public List<TransactionArgument> arguments;
 
-        [HideInInspector] public string transactionId;
-        [HideInInspector] public string publicAddress;
+        // [HideInInspector] public string transactionId;
+        [HideInInspector] public string accountAddress;
         [HideInInspector] public string privateAddress;
-        [HideInInspector] public string firebaseUid;
+        // [HideInInspector] public string firebaseUid;
         [HideInInspector] public bool usePaymaster;
-        [HideInInspector] public string network;
-        [HideInInspector] public string dataId;
+        [HideInInspector] public int network;
+        // [HideInInspector] public string dataId;
         [HideInInspector] public string apiKey;
 
         private AuthBase authBase;
@@ -122,19 +121,19 @@ namespace LYNC
         {
             authBase = AuthBase.Instance;
             usePaymaster = LyncManager.Instance.SponsorTransaction;
-            network = LyncManager.Instance.Network.ToString();
+            network = LyncManager.Instance.Network == NETWORK.TESTNET ? 2 : 1;
             apiKey = LyncManager.Instance.LyncAPIKey;
             if (authBase is FirebaseAuth)
             {
-                publicAddress = authBase.PublicAddress;
-                privateAddress = (authBase as FirebaseAuth).AptosFirebaseAuthData.privateKey;
-                firebaseUid = (authBase as FirebaseAuth).FirebaseUid;
+                accountAddress = authBase.PublicAddress;
+                privateAddress = (authBase as FirebaseAuth).supraFirebaseAuthDetails.privateKey;
+                // firebaseUid = (authBase as FirebaseAuth).FirebaseUid;
             }
             if (authBase is KeylessAuth)
             {
                 privateAddress = (authBase as KeylessAuth).KeyPairPrivateKey;
-                dataId = (authBase as KeylessAuth).dataId;
-                publicAddress = authBase.PublicAddress;
+                // dataId = (authBase as KeylessAuth).dataId;
+                // publicAddress = authBase.PublicAddress;
             }
             if (authBase is PontemAuth)
             {
@@ -149,7 +148,7 @@ namespace LYNC
         }
     }
 
-    public enum ARGUMENT_TYPE { STRING = 0, NUMBER, BYTEARRAY }
+    public enum ARGUMENT_TYPE { STRING = 1, NUMBER, BYTEARRAY }
     public enum NETWORK { MAINNET = 1, TESTNET = 2, DEVNET = 3 }
 
     [Serializable]
@@ -157,13 +156,16 @@ namespace LYNC
     {
         public string argument;
         public ARGUMENT_TYPE type;
+        public int bitSize = 8;
     }
 
     public class TransactionResult
     {
+        public int status;
         public bool success;
         public string response;
         public string hash;
+        // public TransactionData data;
         public string transactionId;
         public string error;
         public string value;
@@ -189,7 +191,7 @@ namespace LYNC
         [Serializable]
         public class ServerBasedTransactionFeedbackDetails
         {
-            public string transactionHash;
+            public TransactionHashClass transactionHash;
         }
 
         public TransactionResult ToTransactionResult()
@@ -197,10 +199,15 @@ namespace LYNC
             var temp = new TransactionResult
             {
                 success = success,
-                hash = data.transactionHash
+                hash = data.transactionHash.txHash
             };
             return temp;
         }
+    }
+    [Serializable]
+    public class TransactionHashClass{
+        public string status;
+        public string txHash;
     }
 
     [Serializable]
@@ -231,7 +238,14 @@ namespace LYNC
     [Serializable]
     public class BalanceDataOutput
     {
-        public string data;
+        public int status;
+        public bool success;
+        public bool message;
+        public BalanceDataOutputData data;
+    }
+    [Serializable]
+    public class BalanceDataOutputData{
+        public String data;
     }
 
     [Serializable]

@@ -20,7 +20,7 @@ namespace LYNC.Wallet
                 try
                 {
                     if (AuthBase.Instance is FirebaseAuth)
-                        await (authBase as FirebaseAuth).AptosFirebaseAuthData.UpdateBalance();
+                        await (authBase as FirebaseAuth).supraFirebaseAuthDetails.UpdateBalance();
                 }
                 catch (System.Exception e)
                 {

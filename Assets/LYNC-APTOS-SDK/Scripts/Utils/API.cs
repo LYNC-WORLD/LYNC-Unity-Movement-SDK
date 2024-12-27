@@ -7,10 +7,10 @@ using System;
 
 public class ROUTES
 {
-    public readonly static string GENERIC_TRANSACTION = LyncManager.BaseServerURL + "/api/unity/" + "txn2";
+    public readonly static string GENERIC_TRANSACTION = LyncManager.BaseServerURL + "transactions/send";
     public readonly static string KEYLESS_TRANSACTION = LyncManager.BaseServerURL + "/api/keyless/" + "transaction";
-    public readonly static string BALANCE = LyncManager.BaseServerURL + "/api/unity/" + "balance";
-    public readonly static string PROFILE = LyncManager.BaseServerURL + "/api/users/" + "profile";
+    public readonly static string BALANCE = LyncManager.BaseServerURL + "wallet/balance";
+    public readonly static string PROFILE = LyncManager.BaseServerURL + "users/profile";
     public readonly static string MOBILE_TRANSACTION = LyncManager.BaseServerURL + "/api/unity/" + "mobile-transaction-builder";
 }
 
@@ -23,8 +23,8 @@ public class API
 
     public static IEnumerator CoroutineTransaction(string url, Transaction customTransaction, System.Action<ServerBasedTransactionFeedback> onSuccess, System.Action<TransactionResult> onError)
     {
-        // Debug.LogError(customTransaction.ToJson());
         UnityWebRequest webRequest = UnityWebRequest.Put(url, customTransaction.ToJson());
+        Debug.Log(customTransaction.ToJson());
         webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
         webRequest.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
@@ -33,7 +33,7 @@ public class API
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
             ServerBasedTransactionFeedback tsxData = JsonUtility.FromJson<ServerBasedTransactionFeedback>(webRequest.downloadHandler.text);
-            // Debug.Log(webRequest.downloadHandler.text);
+            Debug.Log(webRequest.downloadHandler.text);
             onSuccess(tsxData);
         }
         else
@@ -70,27 +70,18 @@ public class API
     }
     public static IEnumerator CoroutineGetBalance(string WalletAddress, System.Action<float> onSuccess, System.Action<string> onError)
     {
-        string url = LyncManager.BaseServerURL + "/api/unity/balance";
-        BalanceData jsonObject = new BalanceData
-        {
-            network = ((int)LyncManager.Instance.Network).ToString(),
-            publicKey = WalletAddress
-
-        };
-
-        var jsonData = JsonUtility.ToJson(jsonObject);
-        UnityWebRequest webRequest = UnityWebRequest.Put(url, jsonData);
-        webRequest.method = "POST";
+        string url = $"{LyncManager.BaseServerURL}wallet/balance?network={(int)LyncManager.Instance.Network}&accountAddress={WalletAddress}";
+        UnityWebRequest webRequest = UnityWebRequest.Get(url);       
         webRequest.SetRequestHeader("Content-Type", "application/json");
         webRequest.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
-        // Debug.Log("Sending request " + url);
+        // Debug.Log("Sending request " + url); 
         yield return webRequest.SendWebRequest();
 
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
             // Debug.Log("webRequest.downloadHandler.text"+webRequest.downloadHandler.text);
             BalanceDataOutput balanceData = JsonUtility.FromJson<BalanceDataOutput>(webRequest.downloadHandler.text);
-            string balance = balanceData.data;
+            string balance = balanceData.data.data;
             onSuccess(float.Parse(balance));
         }
         else
@@ -125,9 +116,10 @@ public class API
         }
     }
 
-    public static IEnumerator CoroutineGetFirebaseProfile(AptosProfileScheme aptosProfileData, System.Action<AptosFirebaseAuthData> onSuccess, System.Action<string> onError)
+    public static IEnumerator CoroutineGetFirebaseProfile(SupraProfileScheme aptosProfileData, System.Action<SupraFirebaseAuthDetails> onSuccess, System.Action<string> onError)
     {
         UnityWebRequest webRequest = UnityWebRequest.Put(ROUTES.PROFILE, JsonUtility.ToJson(aptosProfileData));
+        Debug.Log(JsonUtility.ToJson(aptosProfileData));
         webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
         webRequest.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
@@ -139,7 +131,7 @@ public class API
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
             // Debug.Log(webRequest.downloadHandler.text);
-            AptosFirebaseAuthData aptosResponse = JsonUtility.FromJson<AptosFirebaseSavedProfile>(webRequest.downloadHandler.text).data;
+            SupraFirebaseAuthDetails aptosResponse = JsonUtility.FromJson<SupraFirebaseAuthData>(webRequest.downloadHandler.text).data;
             onSuccess(aptosResponse);
         }
         else

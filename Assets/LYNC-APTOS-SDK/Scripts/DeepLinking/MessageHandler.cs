@@ -61,9 +61,9 @@ namespace LYNC.DeepLink
             {
                 case DEEPLINK_MESSAGE_PATH.FIREBASE:
                     AuthBase.AuthType = AUTH_TYPE.FIREBASE;
-                    AptosFirebaseAuthData AptosFirebaseAuthData = JsonUtility.FromJson<AptosFirebaseAuthData>(MessageData);
-                    LyncManager.Instance.SendLoginAnalytics(AptosFirebaseAuthData.publicKey, "Firebase");
-                    authBase = new FirebaseAuth(AptosFirebaseAuthData);
+                    SupraFirebaseAuthDetails aptosFirebaseAuthData = JsonUtility.FromJson<SupraFirebaseAuthDetails>(MessageData);
+                    LyncManager.Instance.SendLoginAnalytics(aptosFirebaseAuthData.publicKey, "Firebase");
+                    authBase = new FirebaseAuth(aptosFirebaseAuthData);
                     break;
                 case DEEPLINK_MESSAGE_PATH.STARKEY:
                     AuthBase.AuthType = AUTH_TYPE.STARKEY;
@@ -107,8 +107,8 @@ namespace LYNC.DeepLink
             }
             else if (typeof(GenericType) == typeof(TransactionResult))
             {
-                registeredEvents.Remove((genericParam as Transaction).transactionId);
-                registeredEvents.Add((genericParam as Transaction).transactionId, callback);
+                // registeredEvents.Remove((genericParam as Transaction).transactionId);
+                // registeredEvents.Add((genericParam as Transaction).transactionId, callback);
                 // GameObject.FindGameObjectWithTag("debug").GetComponent<TMPro.TMP_Text>().text += "\nListener added for transactionId: " + (genericParam as Transaction).transactionId;
             }
             else

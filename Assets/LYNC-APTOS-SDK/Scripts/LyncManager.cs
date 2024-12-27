@@ -26,7 +26,7 @@ namespace LYNC
 
         // 
         // public static readonly string BaseFrontEndURL = "https://login-aptos-sdk.lync.world/";
-        public static readonly string BaseServerURL = "https://server-aptos-sdk.lync.world";
+        public static readonly string BaseServerURL = "https://server-supra-sdk.lync.world/api/v1/";
 
         public static readonly string BaseFrontEndURL = "http://localhost:5173";
         // public static readonly string BaseServerURL = "http://localhost:5001";

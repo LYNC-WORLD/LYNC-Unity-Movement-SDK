@@ -5,12 +5,12 @@ using UnityEngine;
 public class FirebaseAuth : AuthBase
 {
     public string FirebaseEmail, FirebaseUid;
-    public AptosFirebaseAuthData AptosFirebaseAuthData = null;
+    public SupraFirebaseAuthDetails supraFirebaseAuthDetails = null;
 
     public FirebaseAuth() { }
-    public FirebaseAuth(AptosFirebaseAuthData aptosWallet)
+    public FirebaseAuth(SupraFirebaseAuthDetails aptosWallet)
     {
-        AptosFirebaseAuthData = aptosWallet;
+        supraFirebaseAuthDetails = aptosWallet;
         FirebaseEmail = aptosWallet.email;
         FirebaseUid = aptosWallet.firebaseUid;
         PublicAddress = aptosWallet.publicKey;
@@ -26,10 +26,10 @@ public class FirebaseAuth : AuthBase
 
     protected override async Task Load(System.Action onSessionExpired = null)
     {
-        var tcs = new TaskCompletionSource<AptosFirebaseAuthData>();
+        var tcs = new TaskCompletionSource<SupraFirebaseAuthDetails>();
         if (Instance != null && Instance is FirebaseAuth)
         {
-            tcs.SetResult((Instance as FirebaseAuth).AptosFirebaseAuthData);
+            tcs.SetResult((Instance as FirebaseAuth).supraFirebaseAuthDetails);
         }
         else
         {
@@ -51,22 +51,22 @@ public class FirebaseAuth : AuthBase
             }
 
             // Debug.Log("Fetching firebase data from server...");
-            if (AptosFirebaseAuthData != null)
+            if (supraFirebaseAuthDetails != null)
             {
-                tcs.SetResult(AptosFirebaseAuthData);
+                tcs.SetResult(supraFirebaseAuthDetails);
                 Save(this, false);
             }
             else
             {
                 if (!string.IsNullOrEmpty(FirebaseEmail) && !string.IsNullOrEmpty(FirebaseUid))
                 {
-                    LyncManager.Instance.StartCoroutine(API.CoroutineGetFirebaseProfile(new AptosProfileScheme(FirebaseEmail, FirebaseUid),
+                    LyncManager.Instance.StartCoroutine(API.CoroutineGetFirebaseProfile(new SupraProfileScheme(FirebaseEmail, FirebaseUid),
                     wallet =>
                     {
-                        AptosFirebaseAuthData = wallet;
+                        supraFirebaseAuthDetails = wallet;
                         Debug.Log(JsonUtility.ToJson(wallet));
-                        PublicAddress = AptosFirebaseAuthData.publicKey;
-                        tcs.SetResult(AptosFirebaseAuthData);
+                        PublicAddress = supraFirebaseAuthDetails.publicKey;
+                        tcs.SetResult(supraFirebaseAuthDetails);
                         Save(this, false);
                     }, msg =>
                     {

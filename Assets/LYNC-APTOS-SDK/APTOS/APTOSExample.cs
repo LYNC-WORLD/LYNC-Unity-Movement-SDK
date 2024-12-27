@@ -98,13 +98,8 @@ public class APTOSExample : MonoBehaviour
 
         mint.onClick.AddListener(async () =>
         {
-            // mint.interactable = false;
-
             TransactionResult txData = await LyncManager.Instance.TransactionsManager.SendTransaction(
                 mintTxn
-            // new Transaction(
-            // "0x55db3f109405348dd4ce271dc92a39a6e1cbc3d78cf71f6bf128b1c8a9dfac33","tst_unity","set_data_bytes",
-            // arguments)
             );
             if (txData.success)
                 SuccessfulTransaction(txData.hash, "MINT");
@@ -195,13 +190,18 @@ public class APTOSExample : MonoBehaviour
 
         if (!string.IsNullOrEmpty(hash))
         {
-            go.transform.GetComponentInChildren<TMP_Text>().text = (txnTitle != "" ? ("(" + txnTitle + ")") : "") + " Success, hash = " + hash.Substring(0, 5) + "..." + hash.Substring(hash.Length - 5) + "<color=\"green\"> Check on APTOS EXPLORER<color=\"green\">";
+            go.transform.GetComponentInChildren<TMP_Text>().text = (txnTitle != "" ? ("(" + txnTitle + ")") : "") + " Success, hash = " + hash.Substring(0, 5) + "..." + hash.Substring(hash.Length - 5) + "<color=\"green\"> Check on Supra EXPLORER<color=\"green\">";
             Button button = go.AddComponent<Button>();
             button.onClick.AddListener(() =>
             {
                 Debug.Log("Opening explorer...");
                 Debug.Log(hash);
-                Application.OpenURL("https://explorer.aptoslabs.com/txn/" + hash + "?network=" + LyncManager.Instance.Network.ToString());
+                if(LyncManager.Instance.Network == NETWORK.TESTNET){
+                    Application.OpenURL("https://testnet.suprascan.io/tx/" + hash);
+                }
+                if(LyncManager.Instance.Network == NETWORK.MAINNET){
+                    Application.OpenURL("https://suprascan.io/tx/" + hash);
+                }
             });
         }
         else
@@ -219,9 +219,9 @@ public class APTOSExample : MonoBehaviour
 
     public void Populate(FirebaseAuth firebaseAuth = null)
     {
-        WalletAddressText.text = (firebaseAuth == null ? "Disconnected" : AbbreviateWalletAddressHex(firebaseAuth.AptosFirebaseAuthData.publicKey));
+        WalletAddressText.text = (firebaseAuth == null ? "Disconnected" : AbbreviateWalletAddressHex(firebaseAuth.supraFirebaseAuthDetails.publicKey));
         loginDateTxt.text = "Login Date = " + (firebaseAuth == null ? "" : firebaseAuth.LoginDate.ToString());
-        balance.text = (firebaseAuth == null ? "0" : firebaseAuth.AptosFirebaseAuthData.balance) + " APT";
+        balance.text = (firebaseAuth == null ? "0" : firebaseAuth.supraFirebaseAuthDetails.balance) + " APT";
     }
 
     public string AbbreviateWalletAddressHex(string hexString, int prefixLength = 4, int suffixLength = 3)

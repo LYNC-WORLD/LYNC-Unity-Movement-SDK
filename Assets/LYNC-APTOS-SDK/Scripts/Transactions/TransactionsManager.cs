@@ -11,13 +11,13 @@ namespace LYNC.Transactions
         {
             var tcs = new TaskCompletionSource<TransactionResult>();
 
-            if (AuthBase.Instance is FirebaseAuth || AuthBase.Instance is KeylessAuth) // Server transactions
+            if (AuthBase.Instance is FirebaseAuth) // Server transactions
             {
-                string url = AuthBase.Instance is FirebaseAuth ? ROUTES.GENERIC_TRANSACTION : ROUTES.KEYLESS_TRANSACTION;
+                string url = ROUTES.GENERIC_TRANSACTION;
                 LyncManager.Instance.StartCoroutine(API.CoroutineTransaction(url,transaction,
                 txData =>
                 {
-                    LyncManager.Instance.SendTransactionAnalytics(AuthBase.Instance.PublicAddress,txData.data.transactionHash, LyncManager.Instance.SponsorTransaction?"Gasless":"UserPaid");
+                    LyncManager.Instance.SendTransactionAnalytics(AuthBase.Instance.PublicAddress, txData.data.transactionHash.txHash, LyncManager.Instance.SponsorTransaction?"Gasless":"UserPaid");
                     tcs.SetResult(txData.ToTransactionResult());
                 },
                 err => 
@@ -31,12 +31,12 @@ namespace LYNC.Transactions
 
                 if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer) // Mobile Pontem
                 {
-                    transaction.transactionId = DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_TRANSACTION;
+                    // transaction.transactionId = DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_TRANSACTION;
                     transactionUrl = await UrlBuilder.BuildPontemMobileTransactionUrlAsync(transaction);
                 }
                 else // Web Pontem
                 {
-                    transaction.transactionId = System.Guid.NewGuid().ToString();
+                    // transaction.transactionId = System.Guid.NewGuid().ToString();
                     transactionUrl = UrlBuilder.BuildPontemBrowserTransactionUrl(transaction);
                 }
 
