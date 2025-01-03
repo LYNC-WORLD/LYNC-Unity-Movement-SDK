@@ -25,7 +25,7 @@ namespace LYNC.Transactions
                     tcs.SetResult(err);
                 }));
             }
-            else if (AuthBase.Instance is PontemAuth) // Pontem
+            else if (AuthBase.Instance is StarKeyAuth) // Pontem
             {
                 string transactionUrl;
 
@@ -41,10 +41,9 @@ namespace LYNC.Transactions
                 }
 
                 MessageHandler.AddListener<TransactionResult>(result =>
-                  {
-                      tcs.SetResult(result);
-                  }, transaction);
-
+                {
+                    tcs.SetResult(result);
+                }, transaction);
                 DeepLinkManager.Instance.StartBrowserProcess(transactionUrl);
             }
             else

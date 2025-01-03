@@ -18,25 +18,25 @@ namespace LYNC.DeepLink
         {
             // Debug.Log(url);
             string unescapedUrl = System.Uri.UnescapeDataString(url);
+            Debug.Log(unescapedUrl);
             string messagePath = unescapedUrl.Substring(unescapedUrl.IndexOf("://") + 3);
             messagePath = messagePath.Substring(messagePath.IndexOf("?") + 1, messagePath.IndexOf("=") - 1);
             MessagePath = messagePath.Replace("=", "");
+            Debug.Log(MessagePath);
             switch (MessagePath)
             {
                 case DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_AUTH:
-                case DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_TRANSACTION:
+                case DEEPLINK_MESSAGE_PATH.STARKEY_MOBILE_TRANSACTION:
                     MessageData = unescapedUrl;
                     break;
                 case DEEPLINK_MESSAGE_PATH.KEYLESS_AUTH:
-                case DEEPLINK_MESSAGE_PATH.PONTEM_BROWSER_TRANSACTION:
-                case DEEPLINK_MESSAGE_PATH.PONTEM_BROWSER_AUTH:
+                case DEEPLINK_MESSAGE_PATH.STARKEY_BROWSER_TRANSACTION:
                 case DEEPLINK_MESSAGE_PATH.STARKEY:
                 case DEEPLINK_MESSAGE_PATH.FIREBASE:
                     string rawJson = unescapedUrl.Substring(unescapedUrl.IndexOf("=") + 1);
                     MessageData = Utils.FromBase64(rawJson);
                     break;
             }
-
             HandleEvents();
         }
 
@@ -107,8 +107,8 @@ namespace LYNC.DeepLink
             }
             else if (typeof(GenericType) == typeof(TransactionResult))
             {
-                // registeredEvents.Remove((genericParam as Transaction).transactionId);
-                // registeredEvents.Add((genericParam as Transaction).transactionId, callback);
+                registeredEvents.Remove((genericParam as Transaction).transactionId);
+                registeredEvents.Add((genericParam as Transaction).transactionId, callback);
                 // GameObject.FindGameObjectWithTag("debug").GetComponent<TMPro.TMP_Text>().text += "\nListener added for transactionId: " + (genericParam as Transaction).transactionId;
             }
             else
@@ -126,7 +126,7 @@ namespace LYNC.DeepLink
             }
 
             // Pontem browser transaction
-            else if (MessagePath == DEEPLINK_MESSAGE_PATH.PONTEM_BROWSER_TRANSACTION)
+            else if (MessagePath == DEEPLINK_MESSAGE_PATH.STARKEY_BROWSER_TRANSACTION)
             {
                 string transactionId = JsonUtility.FromJson<TransactionResult>(MessageData).transactionId;
                 string transactionHash = JsonUtility.FromJson<TransactionResult>(MessageData).hash;
@@ -143,9 +143,9 @@ namespace LYNC.DeepLink
             }
 
             // Pontem mobile transaction
-            else if (MessagePath == DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_TRANSACTION)
+            else if (MessagePath == DEEPLINK_MESSAGE_PATH.STARKEY_MOBILE_TRANSACTION)
             {
-                if (registeredEvents.TryGetValue(DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_TRANSACTION, out var transactionCallback))
+                if (registeredEvents.TryGetValue(DEEPLINK_MESSAGE_PATH.STARKEY_MOBILE_TRANSACTION, out var transactionCallback))
                 {
                     pontemMobile.HandleTransactionData(MessageData);
                     TransactionResult transactionResult = new TransactionResult();
@@ -153,7 +153,7 @@ namespace LYNC.DeepLink
                     transactionResult.response = pontemMobile.transactionResult;
                     (transactionCallback as System.Action<TransactionResult>)(transactionResult);
                     LyncManager.Instance.SendTransactionAnalytics(AuthBase.Instance.PublicAddress, transactionResult.hash, "UserPaid");
-                    registeredEvents.Remove(DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_TRANSACTION);
+                    registeredEvents.Remove(DEEPLINK_MESSAGE_PATH.STARKEY_MOBILE_TRANSACTION);
                 }
                 else
                 {
@@ -170,9 +170,9 @@ namespace LYNC.DeepLink
     public class DEEPLINK_MESSAGE_PATH
     {
         public const string PONTEM_MOBILE_AUTH = "account";
-        public const string PONTEM_MOBILE_TRANSACTION = "response";
-        public const string PONTEM_BROWSER_AUTH = "pontem-browser";
-        public const string PONTEM_BROWSER_TRANSACTION = "pontem-browser-transaction";
+        public const string STARKEY_MOBILE_TRANSACTION = "response";
+        // public const string PONTEM_BROWSER_AUTH = "pontem-browser";
+        public const string STARKEY_BROWSER_TRANSACTION = "starkey-browser-transaction";
         public const string FIREBASE = "firebase-auth";
         public const string STARKEY = "star-key-browser-auth";
         public const string KEYLESS_AUTH = "keyless-auth";

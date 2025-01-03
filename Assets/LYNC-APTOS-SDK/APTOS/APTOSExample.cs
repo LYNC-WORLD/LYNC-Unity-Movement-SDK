@@ -56,6 +56,7 @@ public class APTOSExample : MonoBehaviour
         try
         {
             authBase = await AuthBase.LoadSavedAuth();
+            Debug.Log(authBase.WalletConnected);
             if (authBase.WalletConnected)
             {
                 OnWalletConnected(authBase);

@@ -14,6 +14,7 @@ public class FirebaseAuth : AuthBase
         FirebaseEmail = aptosWallet.email;
         FirebaseUid = aptosWallet.firebaseUid;
         PublicAddress = aptosWallet.publicKey;
+        Debug.Log(PublicAddress);
         Save(this);
     }
 
@@ -58,7 +59,8 @@ public class FirebaseAuth : AuthBase
             }
             else
             {
-                if (!string.IsNullOrEmpty(FirebaseEmail) && !string.IsNullOrEmpty(FirebaseUid))
+                // if (!string.IsNullOrEmpty(FirebaseEmail) && !string.IsNullOrEmpty(FirebaseUid))
+                if (!string.IsNullOrEmpty(FirebaseEmail))
                 {
                     LyncManager.Instance.StartCoroutine(API.CoroutineGetFirebaseProfile(new SupraProfileScheme(FirebaseEmail, FirebaseUid),
                     wallet =>
@@ -67,7 +69,7 @@ public class FirebaseAuth : AuthBase
                         Debug.Log(JsonUtility.ToJson(wallet));
                         PublicAddress = supraFirebaseAuthDetails.publicKey;
                         tcs.SetResult(supraFirebaseAuthDetails);
-                        Save(this, false);
+                        Save(this, true);
                     }, msg =>
                     {
                         Debug.LogError(msg);
@@ -81,7 +83,6 @@ public class FirebaseAuth : AuthBase
                 }
             }
         }
-
         await tcs.Task;
     }
 }

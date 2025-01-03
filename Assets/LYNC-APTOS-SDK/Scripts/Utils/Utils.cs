@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace LYNC
@@ -91,7 +90,7 @@ namespace LYNC
         public string functionName;
         public List<TransactionArgument> arguments;
 
-        // [HideInInspector] public string transactionId;
+        [HideInInspector] public string transactionId;
         [HideInInspector] public string accountAddress;
         [HideInInspector] public string privateAddress;
         // [HideInInspector] public string firebaseUid;
