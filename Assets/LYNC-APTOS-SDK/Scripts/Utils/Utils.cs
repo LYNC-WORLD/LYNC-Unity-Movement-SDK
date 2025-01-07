@@ -48,14 +48,14 @@ namespace LYNC
         public string providerId;
         public string createdAt;
         public string updatedAt;
-        public string privateKey;
-        public string publicKey;
+        public string privateAddress;
+        public string accountAddress;
         public float balance;
 
         public async Task<float> UpdateBalance()
         {
             var tcs = new TaskCompletionSource<float>();
-            LyncManager.Instance.StartCoroutine(API.CoroutineGetBalance(this.publicKey, res =>
+            LyncManager.Instance.StartCoroutine(API.CoroutineGetBalance(this.accountAddress, res =>
             {
                 balance = res;
                 tcs.SetResult(res);
@@ -124,8 +124,8 @@ namespace LYNC
             apiKey = LyncManager.Instance.LyncAPIKey;
             if (authBase is FirebaseAuth)
             {
-                accountAddress = authBase.PublicAddress;
-                privateAddress = (authBase as FirebaseAuth).supraFirebaseAuthDetails.privateKey;
+                accountAddress = authBase.accountAddress;
+                privateAddress = (authBase as FirebaseAuth).supraFirebaseAuthDetails.privateAddress;
                 // firebaseUid = (authBase as FirebaseAuth).FirebaseUid;
             }
             if (authBase is KeylessAuth)

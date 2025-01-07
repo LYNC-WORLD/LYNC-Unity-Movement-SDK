@@ -75,7 +75,7 @@ public class Example2 : MonoBehaviour
 
     private void OnWalletConnected(AuthBase _authBase)
     {
-        publicAddress.text = _authBase.PublicAddress;
+        publicAddress.text = _authBase.accountAddress;
         loginDateTxt.text = _authBase.LoginDate.ToString();
 
         login.interactable = false;

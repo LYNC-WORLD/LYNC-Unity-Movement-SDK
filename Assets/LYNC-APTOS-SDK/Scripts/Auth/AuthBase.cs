@@ -6,7 +6,7 @@ public enum AUTH_TYPE { FIREBASE, STARKEY, PONTEM, KEYLESS}
 
 public abstract class AuthBase
 {
-    public string PublicAddress = null;
+    public string accountAddress = null;
     public DateTime LoginDate { protected set; get; }
     public static AUTH_TYPE AuthType;
     public static AuthBase Instance = null;
@@ -14,7 +14,7 @@ public abstract class AuthBase
     public bool WalletConnected
     {
         private set { WalletConnected = value; }
-        get => !string.IsNullOrEmpty(PublicAddress);
+        get => !string.IsNullOrEmpty(accountAddress);
     }
 
     // Methods
@@ -24,7 +24,7 @@ public abstract class AuthBase
             LoginDate = DateTime.Now;
 
         PlayerPrefs.SetString("_loginDate", LoginDate.Ticks.ToString());
-        PlayerPrefs.SetString("_publicAddress", PublicAddress);
+        PlayerPrefs.SetString("_publicAddress", accountAddress);
 
         CustomeSave();
         PlayerPrefs.Save();

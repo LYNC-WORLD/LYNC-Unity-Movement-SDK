@@ -13,8 +13,8 @@ public class FirebaseAuth : AuthBase
         supraFirebaseAuthDetails = aptosWallet;
         FirebaseEmail = aptosWallet.email;
         FirebaseUid = aptosWallet.firebaseUid;
-        PublicAddress = aptosWallet.publicKey;
-        Debug.Log(PublicAddress);
+        accountAddress = aptosWallet.accountAddress;
+        Debug.Log(accountAddress);
         Save(this);
     }
 
@@ -67,7 +67,7 @@ public class FirebaseAuth : AuthBase
                     {
                         supraFirebaseAuthDetails = wallet;
                         Debug.Log(JsonUtility.ToJson(wallet));
-                        PublicAddress = supraFirebaseAuthDetails.publicKey;
+                        accountAddress = supraFirebaseAuthDetails.accountAddress;
                         tcs.SetResult(supraFirebaseAuthDetails);
                         Save(this, true);
                     }, msg =>

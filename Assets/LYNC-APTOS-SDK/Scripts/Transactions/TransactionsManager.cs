@@ -17,7 +17,7 @@ namespace LYNC.Transactions
                 LyncManager.Instance.StartCoroutine(API.CoroutineTransaction(url,transaction,
                 txData =>
                 {
-                    LyncManager.Instance.SendTransactionAnalytics(AuthBase.Instance.PublicAddress, txData.data.transactionHash.txHash, LyncManager.Instance.SponsorTransaction?"Gasless":"UserPaid");
+                    LyncManager.Instance.SendTransactionAnalytics(AuthBase.Instance.accountAddress, txData.data.transactionHash.txHash, LyncManager.Instance.SponsorTransaction?"Gasless":"UserPaid");
                     tcs.SetResult(txData.ToTransactionResult());
                 },
                 err => 

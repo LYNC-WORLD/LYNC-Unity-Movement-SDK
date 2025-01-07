@@ -56,7 +56,7 @@ public class APTOSExample : MonoBehaviour
         try
         {
             authBase = await AuthBase.LoadSavedAuth();
-            Debug.Log(authBase.WalletConnected);
+            // Debug.Log(authBase.WalletConnected);
             if (authBase.WalletConnected)
             {
                 OnWalletConnected(authBase);
@@ -137,9 +137,9 @@ public class APTOSExample : MonoBehaviour
 
         if (AuthBase.AuthType == AUTH_TYPE.STARKEY)
         {
-            Debug.Log(_authBase.PublicAddress);
-            WalletAddressText.text = AbbreviateWalletAddressHex(_authBase.PublicAddress);
-            StartCoroutine(API.CoroutineGetBalance(_authBase.PublicAddress, res =>
+            Debug.Log(_authBase.accountAddress);
+            WalletAddressText.text = AbbreviateWalletAddressHex(_authBase.accountAddress);
+            StartCoroutine(API.CoroutineGetBalance(_authBase.accountAddress, res =>
             {
                 balance.text = res.ToString();
                 Debug.Log("BALANCE" + balance);
@@ -152,7 +152,7 @@ public class APTOSExample : MonoBehaviour
         if (AuthBase.AuthType == AUTH_TYPE.KEYLESS)
         {
             var authData = _authBase as KeylessAuth;
-            accountAddress.text = authData.PublicAddress;
+            accountAddress.text = authData.accountAddress;
             keylessPublicKey.text = authData.KeyPairPublicKey;
             keylessLoginDate.text = authData.LoginDate.ToString();
         }
@@ -220,7 +220,7 @@ public class APTOSExample : MonoBehaviour
 
     public void Populate(FirebaseAuth firebaseAuth = null)
     {
-        WalletAddressText.text = (firebaseAuth == null ? "Disconnected" : AbbreviateWalletAddressHex(firebaseAuth.supraFirebaseAuthDetails.publicKey));
+        WalletAddressText.text = (firebaseAuth == null ? "Disconnected" : AbbreviateWalletAddressHex(firebaseAuth.supraFirebaseAuthDetails.accountAddress));
         loginDateTxt.text = "Login Date = " + (firebaseAuth == null ? "" : firebaseAuth.LoginDate.ToString());
         balance.text = (firebaseAuth == null ? "0" : firebaseAuth.supraFirebaseAuthDetails.balance) + " APT";
     }

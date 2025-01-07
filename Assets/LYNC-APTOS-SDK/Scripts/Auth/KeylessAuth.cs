@@ -12,7 +12,7 @@ public class KeylessAuth : AuthBase
     public KeylessAuth() { }
     public KeylessAuth(string accountAddress, string publicKey, string privateKey, int expirationDateSeconds, string dataId)
     {
-        PublicAddress = accountAddress;
+        base.accountAddress = accountAddress;
         KeyPairPublicKey = publicKey;
         KeyPairPrivateKey = privateKey;
         ExpirationDateSeconds = expirationDateSeconds;
@@ -51,7 +51,7 @@ public class KeylessAuth : AuthBase
                 return default;
             }
 
-            PublicAddress = _accountAddress;
+            accountAddress = _accountAddress;
             KeyPairPublicKey = _publicKey;
             KeyPairPrivateKey = _privateKey;
             ExpirationDateSeconds = int.Parse(_expirationDateSeconds);

@@ -48,7 +48,7 @@ namespace LYNC.DeepLink
 
         public class TempAuthData { public string authType; }
         public class PontemData { public string publicAddress; }
-        public class StarKey { public string publicKey; public string typeOfAuth; }
+        public class StarKey { public string accountAddress; public string typeOfAuth; }
         public class KeylessData { public string accountAddress; public int expirationDateSeconds; public string publicKey; public string privateKey; public string dataId; }
 
         public AuthBase ExtractAndSaveWalletFromDLMessage()
@@ -62,14 +62,14 @@ namespace LYNC.DeepLink
                 case DEEPLINK_MESSAGE_PATH.FIREBASE:
                     AuthBase.AuthType = AUTH_TYPE.FIREBASE;
                     SupraFirebaseAuthDetails aptosFirebaseAuthData = JsonUtility.FromJson<SupraFirebaseAuthDetails>(MessageData);
-                    LyncManager.Instance.SendLoginAnalytics(aptosFirebaseAuthData.publicKey, "Firebase");
+                    LyncManager.Instance.SendLoginAnalytics(aptosFirebaseAuthData.accountAddress, "Firebase");
                     authBase = new FirebaseAuth(aptosFirebaseAuthData);
                     break;
                 case DEEPLINK_MESSAGE_PATH.STARKEY:
                     AuthBase.AuthType = AUTH_TYPE.STARKEY;
                     StarKey starKey = JsonUtility.FromJson<StarKey>(MessageData);
-                    LyncManager.Instance.SendLoginAnalytics(starKey.publicKey, "Pontem");
-                    authBase = new StarKeyAuth(starKey.publicKey);
+                    LyncManager.Instance.SendLoginAnalytics(starKey.accountAddress, "Pontem");
+                    authBase = new StarKeyAuth(starKey.accountAddress);
                     break;
                 // case DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_AUTH:
                 //     AuthBase.AuthType = AUTH_TYPE.PONTEM;
@@ -133,7 +133,7 @@ namespace LYNC.DeepLink
                 if (registeredEvents.TryGetValue(transactionId, out var transactionCallback))
                 {
                     (transactionCallback as System.Action<TransactionResult>)(JsonUtility.FromJson<TransactionResult>(MessageData));
-                    LyncManager.Instance.SendTransactionAnalytics(AuthBase.Instance.PublicAddress, transactionHash, "UserPaid");
+                    LyncManager.Instance.SendTransactionAnalytics(AuthBase.Instance.accountAddress, transactionHash, "UserPaid");
                     registeredEvents.Remove(transactionId);
                 }
                 else
@@ -152,7 +152,7 @@ namespace LYNC.DeepLink
                     transactionResult.success = pontemMobile.transactionResult == "approved";
                     transactionResult.response = pontemMobile.transactionResult;
                     (transactionCallback as System.Action<TransactionResult>)(transactionResult);
-                    LyncManager.Instance.SendTransactionAnalytics(AuthBase.Instance.PublicAddress, transactionResult.hash, "UserPaid");
+                    LyncManager.Instance.SendTransactionAnalytics(AuthBase.Instance.accountAddress, transactionResult.hash, "UserPaid");
                     registeredEvents.Remove(DEEPLINK_MESSAGE_PATH.STARKEY_MOBILE_TRANSACTION);
                 }
                 else

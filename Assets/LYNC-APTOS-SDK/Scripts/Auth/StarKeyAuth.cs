@@ -6,13 +6,13 @@ public class StarKeyAuth : AuthBase
 {
     public StarKeyAuth(string publicAddress)
     {
-        PublicAddress = publicAddress;
+        accountAddress = publicAddress;
         Save(this);
     }
     public StarKeyAuth()
     {
-        PublicAddress = PlayerPrefs.GetString("_publicAddress", "");
-        if (!string.IsNullOrEmpty(PublicAddress)) Save(this);
+        accountAddress = PlayerPrefs.GetString("_publicAddress", "");
+        if (!string.IsNullOrEmpty(accountAddress)) Save(this);
     }
     protected override void CustomeSave()
     {
@@ -21,8 +21,8 @@ public class StarKeyAuth : AuthBase
 
     protected override Task Load(Action onSessionExpired = null)
     {
-        PublicAddress = PlayerPrefs.GetString("_savedAuthType", "");
-        if (!string.IsNullOrEmpty(PublicAddress)) Save(this);
+        accountAddress = PlayerPrefs.GetString("_savedAuthType", "");
+        if (!string.IsNullOrEmpty(accountAddress)) Save(this);
         return default;
     }
 }

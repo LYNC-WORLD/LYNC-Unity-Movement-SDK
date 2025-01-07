@@ -45,6 +45,7 @@ namespace LYNC.Wallet
 
             // Append login options
             url += Utils.GetLoginOptionsUrlFormat();
+            Debug.Log(url);
             if (!LyncManager.Instance.LoginOptionFirebase && !LyncManager.Instance.LoginOptionKeyless && !LyncManager.Instance.LoginOptionPontem)
                 Debug.LogWarning("Warning, no login option was selected. Please select at least one login option from LyncManager Prefab.");
             DeepLinkManager.Instance.StartBrowserProcess(url);
