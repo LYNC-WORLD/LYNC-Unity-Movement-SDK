@@ -34,8 +34,7 @@ namespace LYNC
         [Space]
         [Header("Login options")]
         public bool LoginOptionFirebase = true;
-        public bool LoginOptionPontem = true;
-        public bool LoginOptionKeyless = true;
+        public bool LoginOptionStarKey = true;
         public string clientId;
 
         private void Awake()
