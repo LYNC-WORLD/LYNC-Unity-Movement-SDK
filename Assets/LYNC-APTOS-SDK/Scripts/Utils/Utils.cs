@@ -24,7 +24,7 @@ namespace LYNC
         }
 
         public static string GetLoginOptionsUrlFormat() =>
-             "&loFirebase=" + LyncManager.Instance.LoginOptionFirebase + "&loStarKey=" + LyncManager.Instance.LoginOptionStarKey;
+             "&loginFirebase=" + LyncManager.Instance.LoginOptionFirebase + "&loginStarKey=" + LyncManager.Instance.LoginOptionStarKey;
     }
     [Serializable]
     public class SupraFirebaseAuthData{
