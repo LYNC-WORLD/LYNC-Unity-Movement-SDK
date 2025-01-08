@@ -8,22 +8,23 @@ using System.Threading.Tasks;
 public class APTOSExample : MonoBehaviour
 {
     [Header("General settings")]
-    public Button login, logout, mint, view;
+    public Button login;
+    public Button logout, mint, view;
 
     [Space]
     [Header("Firebase")]
-    public Transform aptosContainer;
+    public Transform supraContainer;
     public TMP_Text WalletAddressText, loginDateTxt, balance;
 
-    [Space]
-    [Header("Pontem")]
-    public Transform pontemContainer;
-    public TMP_Text pontemPublicAddress;
+    // [Space]
+    // [Header("StarKey")]
+    // public Transform StarKeyContainer;
+    // public TMP_Text StarKeyPublicAddress;
 
     [Space]
-    [Header("Pontem")]
-    public Transform keylessContainer;
-    public TMP_Text accountAddress, keylessPublicKey, keylessLoginDate;
+    [Header("StarKey")]
+    public TMP_Text accountAddress;
+    public TMP_Text keylessPublicKey, keylessLoginDate;
 
     [Space]
     [Header("Transactions")]
@@ -86,10 +87,6 @@ public class APTOSExample : MonoBehaviour
             login.interactable = true;
             logout.interactable = false;
             mint.interactable = false;
-            foreach (var item in keylessContainer.GetComponentsInChildren<TMP_Text>())
-            {
-                item.text = "";
-            }
             Populate();
         });
 
@@ -167,21 +164,13 @@ public class APTOSExample : MonoBehaviour
     {
         if (authType == AUTH_TYPE.FIREBASE)
         {
-            aptosContainer.gameObject.SetActive(true);
-            pontemContainer.gameObject.SetActive(false);
-            keylessContainer.gameObject.SetActive(false);
+            supraContainer.gameObject.SetActive(true);
+            // StarKeyContainer.gameObject.SetActive(false);
         }
         if (authType == AUTH_TYPE.STARKEY)
         {
-            pontemContainer.gameObject.SetActive(true);
-            aptosContainer.gameObject.SetActive(false);
-            keylessContainer.gameObject.SetActive(false);
-        }
-        if (authType == AUTH_TYPE.KEYLESS)
-        {
-            pontemContainer.gameObject.SetActive(false);
-            aptosContainer.gameObject.SetActive(false);
-            keylessContainer.gameObject.SetActive(true);
+            // StarKeyContainer.gameObject.SetActive(true);
+            supraContainer.gameObject.SetActive(false);
         }
     }
 

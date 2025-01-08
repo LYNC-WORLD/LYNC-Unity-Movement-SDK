@@ -46,9 +46,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LyncAPIKey: B30D905974544D082BFEA8A727534195
-  xApiKey: 42a1d1edcca5f7ef899566fcaf19e14b8cbb64dc5e625d2f52fc890ab8455bb103b48160811b3b3fdb334de7446a9667ba4f24df16b8816233d4d76160d4dd96
   Network: 2
   SponsorTransaction: 1
+  LoginOptionFirebase: 1
+  LoginOptionPontem: 1
+  LoginOptionKeyless: 1
+  clientId: 
 --- !u!114 &5805647402976630236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,4 +64,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c02012e941de34e49b415e7c44b845df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deepLinkUrl: lync
+  deepLinkUrl: LYNCSupra

@@ -15,13 +15,8 @@ public class BoolBasedStringEditor : Editor
 
         EditorGUILayout.LabelField("Login options", EditorStyles.boldLabel);
         lyncManager.LoginOptionFirebase = EditorGUILayout.Toggle("Login Option Firebase", lyncManager.LoginOptionFirebase);
-        lyncManager.LoginOptionPontem = EditorGUILayout.Toggle("Login Option Pontem", lyncManager.LoginOptionPontem);
-        lyncManager.LoginOptionKeyless = EditorGUILayout.Toggle("Login Option Keyless", lyncManager.LoginOptionKeyless);
+        lyncManager.LoginOptionStarKey = EditorGUILayout.Toggle("Login Option Pontem", lyncManager.LoginOptionStarKey);
 
-        if (lyncManager.LoginOptionKeyless)
-        {
-            lyncManager.clientId = EditorGUILayout.TextField("Client Id", lyncManager.clientId);
-        }
 
         if (GUI.changed)
         {
