@@ -27,7 +27,7 @@ public class KeylessAuth : AuthBase
         PlayerPrefs.SetString("keyless_privateKey", KeyPairPrivateKey);
         PlayerPrefs.SetString("keyless_expirationDateSeconds", ExpirationDateSeconds.ToString());
         PlayerPrefs.SetString("keyless_jwt", dataId);
-        PlayerPrefs.SetString("_savedAuthType", AUTH_TYPE.KEYLESS.ToString().ToLower());
+        // PlayerPrefs.SetString("_savedAuthType", AUTH_TYPE.KEYLESS.ToString().ToLower());
     }
 
     protected override Task Load(Action onSessionExpired = null)

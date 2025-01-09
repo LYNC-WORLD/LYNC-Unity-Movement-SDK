@@ -3,7 +3,6 @@ using TMPro;
 using LYNC;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 public class APTOSExample : MonoBehaviour
 {
@@ -15,16 +14,6 @@ public class APTOSExample : MonoBehaviour
     [Header("Firebase")]
     public Transform supraContainer;
     public TMP_Text WalletAddressText, loginDateTxt, balance;
-
-    // [Space]
-    // [Header("StarKey")]
-    // public Transform StarKeyContainer;
-    // public TMP_Text StarKeyPublicAddress;
-
-    [Space]
-    [Header("StarKey")]
-    public TMP_Text accountAddress;
-    public TMP_Text keylessPublicKey, keylessLoginDate;
 
     [Space]
     [Header("Transactions")]
@@ -87,6 +76,11 @@ public class APTOSExample : MonoBehaviour
             login.interactable = true;
             logout.interactable = false;
             mint.interactable = false;
+            foreach (Transform child in transactionResultsParent.transform)
+            {
+                // Debug.Log(child.name);
+                Destroy(child.gameObject);
+            }
             Populate();
         });
 
@@ -96,11 +90,15 @@ public class APTOSExample : MonoBehaviour
 
         mint.onClick.AddListener(async () =>
         {
+            if(AuthBase.AuthType == AUTH_TYPE.FIREBASE)
+                mint.interactable = false;
             TransactionResult txData = await LyncManager.Instance.TransactionsManager.SendTransaction(
                 mintTxn
             );
-            if (txData.success)
+            if (txData.success){
+                // Debug.Log(txData.hash);
                 SuccessfulTransaction(txData.hash, "MINT");
+            }
             else
                 ErrorTransaction(txData.error);
 
@@ -112,7 +110,7 @@ public class APTOSExample : MonoBehaviour
                 API.CoroutineViewTransaction(
                     viewTransection,
                     tsxData => {
-                        Debug.Log(tsxData);
+                        Debug.Log(JsonUtility.ToJson(tsxData));
                     },
                     errorData => {
                         Debug.Log("Error");
@@ -134,25 +132,15 @@ public class APTOSExample : MonoBehaviour
 
         if (AuthBase.AuthType == AUTH_TYPE.STARKEY)
         {
-            Debug.Log(_authBase.accountAddress);
             WalletAddressText.text = AbbreviateWalletAddressHex(_authBase.accountAddress);
-            StartCoroutine(API.CoroutineGetBalance(_authBase.accountAddress, res =>
-            {
-                balance.text = res.ToString();
-                Debug.Log("BALANCE" + balance);
-            }, err =>
-            {
-                Debug.Log("Error");
-            }));
         }
-
-        if (AuthBase.AuthType == AUTH_TYPE.KEYLESS)
+        StartCoroutine(API.CoroutineGetBalance(_authBase.accountAddress, res =>
         {
-            var authData = _authBase as KeylessAuth;
-            accountAddress.text = authData.accountAddress;
-            keylessPublicKey.text = authData.KeyPairPublicKey;
-            keylessLoginDate.text = authData.LoginDate.ToString();
-        }
+            balance.text = res.ToString();
+        }, err =>
+        {
+            Debug.Log("Error");
+        }));
 
         login.interactable = false;
         logout.interactable = true;
@@ -185,7 +173,6 @@ public class APTOSExample : MonoBehaviour
             button.onClick.AddListener(() =>
             {
                 Debug.Log("Opening explorer...");
-                Debug.Log(hash);
                 if(LyncManager.Instance.Network == NETWORK.TESTNET){
                     Application.OpenURL("https://testnet.suprascan.io/tx/" + hash);
                 }

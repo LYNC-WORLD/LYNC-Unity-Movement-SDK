@@ -18,11 +18,9 @@ namespace LYNC.DeepLink
         {
             // Debug.Log(url);
             string unescapedUrl = System.Uri.UnescapeDataString(url);
-            Debug.Log(unescapedUrl);
             string messagePath = unescapedUrl.Substring(unescapedUrl.IndexOf("://") + 3);
             messagePath = messagePath.Substring(messagePath.IndexOf("?") + 1, messagePath.IndexOf("=") - 1);
             MessagePath = messagePath.Replace("=", "");
-            Debug.Log(MessagePath);
             switch (MessagePath)
             {
                 case DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_AUTH:
@@ -55,8 +53,6 @@ namespace LYNC.DeepLink
         {
             // Save wallet
             AuthBase authBase;
-            // Debug.Log(MessagePath);
-            Debug.Log(MessageData);
             switch (MessagePath)
             {
                 case DEEPLINK_MESSAGE_PATH.FIREBASE:

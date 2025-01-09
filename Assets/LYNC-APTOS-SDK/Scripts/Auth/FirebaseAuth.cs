@@ -14,7 +14,7 @@ public class FirebaseAuth : AuthBase
         FirebaseEmail = aptosWallet.email;
         FirebaseUid = aptosWallet.firebaseUid;
         accountAddress = aptosWallet.accountAddress;
-        Debug.Log(accountAddress);
+        // Debug.Log(accountAddress);
         Save(this);
     }
 
@@ -66,7 +66,7 @@ public class FirebaseAuth : AuthBase
                     wallet =>
                     {
                         supraFirebaseAuthDetails = wallet;
-                        Debug.Log(JsonUtility.ToJson(wallet));
+                        // Debug.Log(JsonUtility.ToJson(wallet));
                         accountAddress = supraFirebaseAuthDetails.accountAddress;
                         tcs.SetResult(supraFirebaseAuthDetails);
                         Save(this, true);
