@@ -129,16 +129,6 @@ namespace LYNC
                 privateAddress = (authBase as FirebaseAuth).supraFirebaseAuthDetails.privateAddress;
                 // firebaseUid = (authBase as FirebaseAuth).FirebaseUid;
             }
-            if (authBase is KeylessAuth)
-            {
-                privateAddress = (authBase as KeylessAuth).KeyPairPrivateKey;
-                // dataId = (authBase as KeylessAuth).dataId;
-                // publicAddress = authBase.PublicAddress;
-            }
-            if (authBase is PontemAuth)
-            {
-
-            }
         }
 
         public string ToJson()

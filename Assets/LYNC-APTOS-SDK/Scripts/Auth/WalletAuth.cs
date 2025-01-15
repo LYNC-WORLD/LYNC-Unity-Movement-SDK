@@ -39,8 +39,8 @@ namespace LYNC.Wallet
             // app_info is also used in the front end to redirect to Pontem Mobile App
             if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
             {
-                PontemMobileAuthOutScheme pontemMobile = new PontemMobileAuthOutScheme();
-                url += "&app_info=" + pontemMobile.ToBase64();
+                // PontemMobileAuthOutScheme pontemMobile = new PontemMobileAuthOutScheme();
+                url += "&app_info=";
             }
 
             // Append login options

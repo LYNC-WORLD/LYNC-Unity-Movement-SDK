@@ -10,7 +10,7 @@ namespace LYNC.DeepLink
         public string MessagePath;
         public string MessageData;
 
-        private PontemMobileDeepLinkHandler pontemMobile = new PontemMobileDeepLinkHandler();
+        // private PontemMobileDeepLinkHandler pontemMobile = new PontemMobileDeepLinkHandler();
 
         private static Dictionary<string, System.Delegate> registeredEvents = new Dictionary<string, System.Delegate>();
 
@@ -67,27 +67,6 @@ namespace LYNC.DeepLink
                     LyncManager.Instance.SendLoginAnalytics(starKey.accountAddress, "Pontem");
                     authBase = new StarKeyAuth(starKey.accountAddress);
                     break;
-                // case DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_AUTH:
-                //     AuthBase.AuthType = AUTH_TYPE.PONTEM;
-                //     pontemMobile.HandleAuthData(MessageData);
-                //     LyncManager.Instance.SendLoginAnalytics(pontemMobile.authData.address, "Pontem");
-                //     authBase = new PontemAuth(pontemMobile.authData.address);
-                //     break;
-                // case DEEPLINK_MESSAGE_PATH.PONTEM_BROWSER_AUTH:
-                //     AuthBase.AuthType = AUTH_TYPE.PONTEM;
-                //     PontemData pontemData = JsonUtility.FromJson<PontemData>(MessageData);
-                //     LyncManager.Instance.SendLoginAnalytics(pontemData.publicAddress, "Pontem");
-                //     authBase = new PontemAuth(pontemData.publicAddress);
-                //     break;
-                // case DEEPLINK_MESSAGE_PATH.KEYLESS_AUTH:
-                //     AuthBase.AuthType = AUTH_TYPE.KEYLESS;
-                //     KeylessData keylessData = JsonUtility.FromJson<KeylessData>(MessageData);
-                //     authBase = new KeylessAuth(keylessData.accountAddress, keylessData.publicKey, keylessData.privateKey, keylessData.expirationDateSeconds, keylessData.dataId);
-                //     LyncManager.Instance.SendLoginAnalytics(keylessData.publicKey, "Keyless");
-                //     Debug.Log(MessageData);
-                //     Debug.Log(keylessData.dataId);
-                //     break;
-
                 default:
                     throw new System.Exception("Unknown auth type");
             }
@@ -143,13 +122,13 @@ namespace LYNC.DeepLink
             {
                 if (registeredEvents.TryGetValue(DEEPLINK_MESSAGE_PATH.STARKEY_MOBILE_TRANSACTION, out var transactionCallback))
                 {
-                    pontemMobile.HandleTransactionData(MessageData);
-                    TransactionResult transactionResult = new TransactionResult();
-                    transactionResult.success = pontemMobile.transactionResult == "approved";
-                    transactionResult.response = pontemMobile.transactionResult;
-                    (transactionCallback as System.Action<TransactionResult>)(transactionResult);
-                    LyncManager.Instance.SendTransactionAnalytics(AuthBase.Instance.accountAddress, transactionResult.hash, "UserPaid");
-                    registeredEvents.Remove(DEEPLINK_MESSAGE_PATH.STARKEY_MOBILE_TRANSACTION);
+                    // pontemMobile.HandleTransactionData(MessageData);
+                    // TransactionResult transactionResult = new TransactionResult();
+                    // transactionResult.success = pontemMobile.transactionResult == "approved";
+                    // transactionResult.response = pontemMobile.transactionResult;
+                    // (transactionCallback as System.Action<TransactionResult>)(transactionResult);
+                    // LyncManager.Instance.SendTransactionAnalytics(AuthBase.Instance.accountAddress, transactionResult.hash, "UserPaid");
+                    // registeredEvents.Remove(DEEPLINK_MESSAGE_PATH.STARKEY_MOBILE_TRANSACTION);
                 }
                 else
                 {
