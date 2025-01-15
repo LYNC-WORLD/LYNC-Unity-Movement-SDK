@@ -170,15 +170,15 @@ namespace LYNC
         public int status;
     }
     [Serializable]
-    public class ViewTransectionResult
+    public class ViewTransactionResult
     {
         public string message;
         public bool success;
         public int status;
-        public ViewTransectionResultData data;
+        public ViewTransactionResultData data;
     }
     [Serializable]
-    public class ViewTransectionResultData
+    public class ViewTransactionResultData
     {
         public object result;
     }
@@ -270,7 +270,7 @@ namespace LYNC
         public string paymentMode;
     }
     [Serializable]
-    public class ViewTransection{
+    public class ViewTransaction{
         public string contractAddress;
         public string contractName;
         public string functionName;

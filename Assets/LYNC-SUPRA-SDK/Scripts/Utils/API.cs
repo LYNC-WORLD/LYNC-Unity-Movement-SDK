@@ -42,7 +42,7 @@ public class API
             Debug.Log(webRequest.error);
         }
     }
-    public static IEnumerator CoroutineViewTransaction(ViewTransection customTransaction, System.Action<ViewTransectionResult> onSuccess, System.Action<TransactionResult> onError)
+    public static IEnumerator CoroutineViewTransaction(ViewTransaction customTransaction, System.Action<ViewTransactionResult> onSuccess, System.Action<TransactionResult> onError)
     {
         string url = LyncManager.BaseServerURL + "transactions/view";
         UnityWebRequest webRequest = UnityWebRequest.Put(url, JsonUtility.ToJson(customTransaction));
@@ -53,7 +53,7 @@ public class API
 
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
-            ViewTransectionResult tsxData = JsonUtility.FromJson<ViewTransectionResult>(webRequest.downloadHandler.text);
+            ViewTransactionResult tsxData = JsonUtility.FromJson<ViewTransactionResult>(webRequest.downloadHandler.text);
             Debug.Log(webRequest.downloadHandler.text);
             // Debug.Log(tsxData.ToString());
             onSuccess(tsxData);

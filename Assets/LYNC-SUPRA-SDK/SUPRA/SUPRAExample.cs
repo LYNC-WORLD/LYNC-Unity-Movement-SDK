@@ -4,7 +4,7 @@ using LYNC;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class APTOSExample : MonoBehaviour
+public class SUPRAExample : MonoBehaviour
 {
     [Header("General settings")]
     public Button login;
@@ -20,9 +20,9 @@ public class APTOSExample : MonoBehaviour
     public Transform transactionResultsParent;
     public GameObject transactionResultHolder;
     public Transaction mintTxn;
-    public ViewTransection viewTransection;
+    public ViewTransaction viewTransaction;
 
-    public static APTOSExample Instance;
+    public static SUPRAExample Instance;
 
     private void OnEnable()
     {
@@ -108,7 +108,7 @@ public class APTOSExample : MonoBehaviour
         view.onClick.AddListener(async () =>{
             LyncManager.Instance.StartCoroutine(
                 API.CoroutineViewTransaction(
-                    viewTransection,
+                    viewTransaction,
                     tsxData => {
                         Debug.Log(JsonUtility.ToJson(tsxData));
                     },
