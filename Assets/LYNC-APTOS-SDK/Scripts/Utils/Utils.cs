@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace LYNC
@@ -128,16 +129,6 @@ namespace LYNC
                 privateAddress = (authBase as FirebaseAuth).supraFirebaseAuthDetails.privateAddress;
                 // firebaseUid = (authBase as FirebaseAuth).FirebaseUid;
             }
-            if (authBase is KeylessAuth)
-            {
-                privateAddress = (authBase as KeylessAuth).KeyPairPrivateKey;
-                // dataId = (authBase as KeylessAuth).dataId;
-                // publicAddress = authBase.PublicAddress;
-            }
-            if (authBase is PontemAuth)
-            {
-
-            }
         }
 
         public string ToJson()
@@ -148,7 +139,7 @@ namespace LYNC
     }
 
     public enum ARGUMENT_TYPE { STRING = 1, NUMBER, BYTEARRAY }
-    public enum NETWORK { MAINNET = 1, TESTNET = 2, DEVNET = 3 }
+    public enum NETWORK { MAINNET = 1, TESTNET = 2}
 
     [Serializable]
     public class TransactionArgument
@@ -177,6 +168,19 @@ namespace LYNC
             get { return this.status == 200; }
         }
         public int status;
+    }
+    [Serializable]
+    public class ViewTransectionResult
+    {
+        public string message;
+        public bool success;
+        public int status;
+        public ViewTransectionResultData data;
+    }
+    [Serializable]
+    public class ViewTransectionResultData
+    {
+        public object result;
     }
 
     [Serializable]
@@ -271,7 +275,6 @@ namespace LYNC
         public string contractName;
         public string functionName;
         public string network;
-        public bool usePaymaster;
         public List<TransactionArgument> arguments;
     }
 }

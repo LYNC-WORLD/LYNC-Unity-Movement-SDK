@@ -39,13 +39,12 @@ namespace LYNC.Wallet
             // app_info is also used in the front end to redirect to Pontem Mobile App
             if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
             {
-                PontemMobileAuthOutScheme pontemMobile = new PontemMobileAuthOutScheme();
-                url += "&app_info=" + pontemMobile.ToBase64();
+                // PontemMobileAuthOutScheme pontemMobile = new PontemMobileAuthOutScheme();
+                url += "&app_info=";
             }
 
             // Append login options
             url += Utils.GetLoginOptionsUrlFormat();
-            Debug.Log(url);
             if (!LyncManager.Instance.LoginOptionFirebase && !LyncManager.Instance.LoginOptionStarKey)
                 Debug.LogWarning("Warning, no login option was selected. Please select at least one login option from LyncManager Prefab.");
             DeepLinkManager.Instance.StartBrowserProcess(url);

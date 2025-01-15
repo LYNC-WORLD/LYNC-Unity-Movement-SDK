@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public enum AUTH_TYPE { FIREBASE, STARKEY, PONTEM, KEYLESS}
+public enum AUTH_TYPE { FIREBASE, STARKEY}
 
 public abstract class AuthBase
 {

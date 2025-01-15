@@ -32,7 +32,8 @@ namespace LYNC.Transactions
                 if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer) // Mobile Pontem
                 {
                     // transaction.transactionId = DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_TRANSACTION;
-                    transactionUrl = await UrlBuilder.BuildPontemMobileTransactionUrlAsync(transaction);
+                    // transactionUrl = await UrlBuilder.BuildPontemMobileTransactionUrlAsync(transaction);
+                    transactionUrl = "";
                 }
                 else // Web Pontem
                 {
