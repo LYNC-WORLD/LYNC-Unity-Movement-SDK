@@ -175,7 +175,7 @@ namespace LYNC
         public string message;
         public bool success;
         public int status;
-        public ViewTransactionResultData data;
+        public string data;
     }
     [Serializable]
     public class ViewTransactionResultData
@@ -256,7 +256,7 @@ namespace LYNC
     {
         public string apiKey;
         public string walletAddress;
-        public string network;
+        public int network;
         public string loginMethod;
     }
 
@@ -265,7 +265,7 @@ namespace LYNC
     {
         public string apiKey;
         public string walletAddress;
-        public string network;
+        public int network;
         public string txnHash;
         public string paymentMode;
     }
@@ -274,7 +274,7 @@ namespace LYNC
         public string contractAddress;
         public string contractName;
         public string functionName;
-        public string network;
+        [HideInInspector] public string network;
         public List<TransactionArgument> arguments;
     }
 }

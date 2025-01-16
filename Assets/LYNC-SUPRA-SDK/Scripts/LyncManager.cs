@@ -100,12 +100,12 @@ namespace LYNC
 
         public void SendLoginAnalytics(string WalletAddress, string loginMethod)
         {
-            // StartCoroutine(API.CoroutineLoginSendAnalytics(LyncAPIKey, WalletAddress, (Network).ToString(), loginMethod));
+            StartCoroutine(API.CoroutineLoginSendAnalytics(LyncAPIKey, WalletAddress, loginMethod));
         }
 
         public void SendTransactionAnalytics(string WalletAddress, string TransactionHash, string PaymentMode)
         {
-            // StartCoroutine(API.CoroutineSendTransactionsAnalytics(LyncAPIKey, WalletAddress, (Network).ToString(), TransactionHash, PaymentMode));
+            StartCoroutine(API.CoroutineSendTransactionsAnalytics(LyncAPIKey, WalletAddress, (Network).ToString(), TransactionHash, PaymentMode));
         }
     }
 }

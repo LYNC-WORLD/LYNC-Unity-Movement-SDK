@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/LYNC-APTOS-SDK/APTOS/APTOSExample.unity
+    path: Assets/LYNC-SUPRA-SDK/SUPRA/SUPRAExample.unity
     guid: 40194e638248348739ddb6431c212a90
   m_configObjects: {}

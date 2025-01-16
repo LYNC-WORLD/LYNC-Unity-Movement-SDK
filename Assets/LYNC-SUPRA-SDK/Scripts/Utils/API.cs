@@ -23,6 +23,7 @@ public class API
 
     public static IEnumerator CoroutineTransaction(string url, Transaction customTransaction, System.Action<ServerBasedTransactionFeedback> onSuccess, System.Action<TransactionResult> onError)
     {
+        // Debug.Log(customTransaction.ToJson());
         UnityWebRequest webRequest = UnityWebRequest.Put(url, customTransaction.ToJson());
         webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
@@ -42,9 +43,11 @@ public class API
             Debug.Log(webRequest.error);
         }
     }
-    public static IEnumerator CoroutineViewTransaction(ViewTransaction customTransaction, System.Action<ViewTransactionResult> onSuccess, System.Action<TransactionResult> onError)
+    public static IEnumerator CoroutineViewTransaction(ViewTransaction customTransaction, System.Action<string> onSuccess, System.Action<TransactionResult> onError)
     {
+        customTransaction.network = (LyncManager.Instance.Network == NETWORK.TESTNET ? 2 : 1).ToString();
         string url = LyncManager.BaseServerURL + "transactions/view";
+        // Debug.Log(JsonUtility.ToJson(customTransaction));
         UnityWebRequest webRequest = UnityWebRequest.Put(url, JsonUtility.ToJson(customTransaction));
         webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
@@ -53,10 +56,7 @@ public class API
 
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
-            ViewTransactionResult tsxData = JsonUtility.FromJson<ViewTransactionResult>(webRequest.downloadHandler.text);
-            Debug.Log(webRequest.downloadHandler.text);
-            // Debug.Log(tsxData.ToString());
-            onSuccess(tsxData);
+            onSuccess(webRequest.downloadHandler.text);
         }
         else
         {
@@ -158,33 +158,34 @@ public class API
         }
     }
 
-    public static IEnumerator CoroutineLoginSendAnalytics(string ApiKey, string walletAddress, string network, string loginMethod)
+    public static IEnumerator CoroutineLoginSendAnalytics(string ApiKey, string walletAddress, string loginMethod)
     {
         // Debug.Log("CoroutineLoginSendAnalytics");
         AnalyticsData jsonObject = new AnalyticsData
         {
             apiKey = ApiKey,
             walletAddress = walletAddress,
-            network = network,
+            network = LyncManager.Instance.Network == NETWORK.TESTNET ? 2 : 1,
             loginMethod = loginMethod
         };
 
         var jsonData = JsonUtility.ToJson(jsonObject);
-        string RequestURL = "https://server.lync.world/aptos-unity-sdk/user-login";
+        string RequestURL = "https://server-supra-sdk.lync.world/api/v1/unity/users/login";
         using (UnityWebRequest www = UnityWebRequest.Put(RequestURL, jsonData))
         {
             www.method = "POST";
             www.SetRequestHeader("Content-Type", "application/json");
+            www.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
             yield return www.SendWebRequest();
 
             if (www.isNetworkError || www.isHttpError)
             {
-                // Debug.Log("Invalid API Key: " + www.error);
+                Debug.Log("AnalyticsError: " + www.error);
             }
-            else
-            {
-                //Debug.Log("www" + www);
-            }
+            // else
+            // {
+            //     Debug.Log("www" + www);
+            // }
         }
     }
 
@@ -194,31 +195,31 @@ public class API
         {
             apiKey = ApiKey,
             walletAddress = walletAddress,
-            network = network,
+            network = LyncManager.Instance.Network == NETWORK.TESTNET ? 2 : 1,
             txnHash = txnHash,
             paymentMode = paymentMode
         };
 
         var jsonData = JsonUtility.ToJson(jsonObject);
 
-        // Debug.LogError("jsonData"+jsonData);
-        // Debug.LogError("jsonObject"+ jsonObject);
+        Debug.Log("jsonData"+jsonData);
 
-        string RequestURL = "https://server.lync.world/aptos-unity-sdk/user-transactions";
+        string RequestURL = "https://server-supra-sdk.lync.world/api/v1/unity/users/transactions";
         using (UnityWebRequest www = UnityWebRequest.Put(RequestURL, jsonData))
         {
             www.method = "POST";
             www.SetRequestHeader("Content-Type", "application/json");
+            www.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
             yield return www.SendWebRequest();
 
             if (www.isNetworkError || www.isHttpError)
             {
-                Debug.Log("Invalid API Key: " + www.error);
+                Debug.Log("AnalyticsError: " + www.error);
             }
-            else
-            {
-                Debug.Log("www" + www);
-            }
+            // else
+            // {
+            //     // Debug.Log("www" + www);
+            // }
         }
     }
 }

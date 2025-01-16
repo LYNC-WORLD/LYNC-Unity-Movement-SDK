@@ -23,7 +23,6 @@ namespace LYNC.DeepLink
             MessagePath = messagePath.Replace("=", "");
             switch (MessagePath)
             {
-                case DEEPLINK_MESSAGE_PATH.PONTEM_MOBILE_AUTH:
                 case DEEPLINK_MESSAGE_PATH.STARKEY_MOBILE_TRANSACTION:
                     MessageData = unescapedUrl;
                     break;
@@ -64,7 +63,7 @@ namespace LYNC.DeepLink
                 case DEEPLINK_MESSAGE_PATH.STARKEY:
                     AuthBase.AuthType = AUTH_TYPE.STARKEY;
                     StarKey starKey = JsonUtility.FromJson<StarKey>(MessageData);
-                    LyncManager.Instance.SendLoginAnalytics(starKey.accountAddress, "Pontem");
+                    LyncManager.Instance.SendLoginAnalytics(starKey.accountAddress, "StarKey");
                     authBase = new StarKeyAuth(starKey.accountAddress);
                     break;
                 default:
@@ -99,8 +98,6 @@ namespace LYNC.DeepLink
                 HandleAuthMessage(authCallback as System.Action<AuthBase>);
                 registeredEvents.Remove("auth");
             }
-
-            // Pontem browser transaction
             else if (MessagePath == DEEPLINK_MESSAGE_PATH.STARKEY_BROWSER_TRANSACTION)
             {
                 string transactionId = JsonUtility.FromJson<TransactionResult>(MessageData).transactionId;
@@ -144,7 +141,6 @@ namespace LYNC.DeepLink
 
     public class DEEPLINK_MESSAGE_PATH
     {
-        public const string PONTEM_MOBILE_AUTH = "account";
         public const string STARKEY_MOBILE_TRANSACTION = "response";
         // public const string PONTEM_BROWSER_AUTH = "pontem-browser";
         public const string STARKEY_BROWSER_TRANSACTION = "starkey-browser-transaction";

@@ -9,16 +9,19 @@ public class SUPRAExample : MonoBehaviour
     [Header("General settings")]
     public Button login;
     public Button logout, mint, view;
+    public GameObject LoadingScreen;
 
     [Space]
     [Header("Firebase")]
     public Transform supraContainer;
     public TMP_Text WalletAddressText, loginDateTxt, balance;
+    public Button WalletAddressButton;
 
     [Space]
     [Header("Transactions")]
     public Transform transactionResultsParent;
     public GameObject transactionResultHolder;
+    public GameObject ViewResultHolder;
     public Transaction mintTxn;
     public ViewTransaction viewTransaction;
 
@@ -32,7 +35,7 @@ public class SUPRAExample : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-
+        LoadingScreen.SetActive(true);
         login.interactable = false;
         logout.interactable = false;
         mint.interactable = false;
@@ -55,6 +58,7 @@ public class SUPRAExample : MonoBehaviour
             {
                 login.interactable = true;
             }
+            LoadingScreen.SetActive(false);
         }
         catch (System.Exception e)
         {
@@ -84,14 +88,28 @@ public class SUPRAExample : MonoBehaviour
             Populate();
         });
 
+        WalletAddressButton.onClick.AddListener(() =>{
+            string _address = PlayerPrefs.GetString("_publicAddress");
+            if(string.IsNullOrEmpty(_address))
+                return;
+            if(LyncManager.Instance.Network == NETWORK.TESTNET){
+                Application.OpenURL("https://testnet.suprascan.io/address/" + _address);
+            }
+            if(LyncManager.Instance.Network == NETWORK.MAINNET){
+                Application.OpenURL("https://suprascan.io/address/" + _address);
+            }
+        });
+
         List<TransactionArgument> arguments = new List<TransactionArgument>{
             new TransactionArgument{ argument = "0xb66b180422a4886dac85b8f68cc42ec1c6bafc824e196d437fdfd176192c25fccfc10e47777699420eec0c54a0176861a353a43dd45b338385e1b975709f2000", type = ARGUMENT_TYPE.STRING }
         };
 
         mint.onClick.AddListener(async () =>
         {
-            if(AuthBase.AuthType == AUTH_TYPE.FIREBASE)
+            if(AuthBase.AuthType == AUTH_TYPE.FIREBASE){
+                LoadingScreen.SetActive(true);
                 mint.interactable = false;
+            }
             TransactionResult txData = await LyncManager.Instance.TransactionsManager.SendTransaction(
                 mintTxn
             );
@@ -103,17 +121,21 @@ public class SUPRAExample : MonoBehaviour
                 ErrorTransaction(txData.error);
 
             mint.interactable = true;
+            LoadingScreen.SetActive(false);
         });
 
         view.onClick.AddListener(async () =>{
+            LoadingScreen.SetActive(true);
             LyncManager.Instance.StartCoroutine(
                 API.CoroutineViewTransaction(
                     viewTransaction,
                     tsxData => {
-                        Debug.Log(JsonUtility.ToJson(tsxData));
+                        SuccessfulViewTransaction(tsxData.Substring(57));
+                        LoadingScreen.SetActive(false);
                     },
                     errorData => {
-                        Debug.Log("Error");
+                        LoadingScreen.SetActive(false);
+                        SuccessfulViewTransaction("Error  ");
                     }
                 )
             );
@@ -186,6 +208,11 @@ public class SUPRAExample : MonoBehaviour
             // Pontem mobile transactions doesnt contain a hash
             go.transform.GetComponentInChildren<TMP_Text>().text = (txnTitle != "" ? ("(" + txnTitle + ")") : "") + " Successfull transaction";
         }
+    }
+
+    private void SuccessfulViewTransaction(string result){
+        var Holder = Instantiate(ViewResultHolder, transactionResultsParent);
+        Holder.transform.GetComponentInChildren<TMP_Text>().text = $"ViewResults: {result.Substring(0, result.Length - 2)}";
     }
 
     private void ErrorTransaction(string error, string txnTitle = "")
