@@ -25,17 +25,17 @@ namespace LYNC
         }
 
         public static string GetLoginOptionsUrlFormat() =>
-             "&loginFirebase=" + LyncManager.Instance.LoginOptionFirebase + "&loginStarKey=" + LyncManager.Instance.LoginOptionStarKey;
+             "&loginFirebase=" + LyncManager.Instance.LoginOptionFirebase;
     }
     [Serializable]
     public class SupraFirebaseAuthData{
         public int status;
         public bool success;
         public String message;
-        public SupraFirebaseAuthDetails data;
+        public MovementFirebaseAuthDetails data;
     }
     [System.Serializable]
-    public class SupraFirebaseAuthDetails
+    public class MovementFirebaseAuthDetails
     {
         public bool isFunded;
         public string mintingHash;
@@ -49,7 +49,7 @@ namespace LYNC
         public string providerId;
         public string createdAt;
         public string updatedAt;
-        public string privateAddress;
+        public string privateKey;
         public string accountAddress;
         public float balance;
 
@@ -69,13 +69,13 @@ namespace LYNC
         }
     }
 
-    public class SupraProfileScheme
+    public class MovementProfileScheme
     {
         public string email;
         // public string firebaseUid;
         public string network;
 
-        public SupraProfileScheme(string email, string firebaseUid)
+        public MovementProfileScheme(string email, string firebaseUid)
         {
             this.email = email;
             // this.firebaseUid = firebaseUid;
@@ -93,7 +93,7 @@ namespace LYNC
 
         [HideInInspector] public string transactionId;
         [HideInInspector] public string accountAddress;
-        [HideInInspector] public string privateAddress;
+        [HideInInspector] public string privateKey;
         // [HideInInspector] public string firebaseUid;
         [HideInInspector] public bool usePaymaster;
         [HideInInspector] public int network;
@@ -126,7 +126,7 @@ namespace LYNC
             if (authBase is FirebaseAuth)
             {
                 accountAddress = authBase.accountAddress;
-                privateAddress = (authBase as FirebaseAuth).supraFirebaseAuthDetails.privateAddress;
+                privateKey = (authBase as FirebaseAuth).supraFirebaseAuthDetails.privateKey;
                 // firebaseUid = (authBase as FirebaseAuth).FirebaseUid;
             }
         }
@@ -138,7 +138,7 @@ namespace LYNC
         }
     }
 
-    public enum ARGUMENT_TYPE { STRING = 1, NUMBER, BYTEARRAY }
+    public enum ARGUMENT_TYPE { STRING = 0, NUMBER, BYTEARRAY, SIGNATURE }
     public enum NETWORK { MAINNET = 1, TESTNET = 2}
 
     [Serializable]
@@ -146,7 +146,7 @@ namespace LYNC
     {
         public string argument;
         public ARGUMENT_TYPE type;
-        public int bitSize = 8;
+        // public int bitSize = 8;
     }
 
     public class TransactionResult
@@ -194,7 +194,7 @@ namespace LYNC
         [Serializable]
         public class ServerBasedTransactionFeedbackDetails
         {
-            public TransactionHashClass transactionHash;
+            public string transactionHash;
         }
 
         public TransactionResult ToTransactionResult()
@@ -202,7 +202,7 @@ namespace LYNC
             var temp = new TransactionResult
             {
                 success = success,
-                hash = data.transactionHash.txHash
+                hash = data.transactionHash
             };
             return temp;
         }
@@ -234,7 +234,7 @@ namespace LYNC
     [Serializable]
     public class BalanceData
     {
-        public string network;
+        public int network;
         public string publicKey;
     }
 
@@ -243,14 +243,9 @@ namespace LYNC
     {
         public int status;
         public bool success;
-        public bool message;
-        public BalanceDataOutputData data;
+        public string message;
+        public float data;
     }
-    [Serializable]
-    public class BalanceDataOutputData{
-        public String data;
-    }
-
     [Serializable]
     public class AnalyticsData
     {
@@ -274,7 +269,7 @@ namespace LYNC
         public string contractAddress;
         public string contractName;
         public string functionName;
-        [HideInInspector] public string network;
+        [HideInInspector] public int network;
         public List<TransactionArgument> arguments;
     }
 }

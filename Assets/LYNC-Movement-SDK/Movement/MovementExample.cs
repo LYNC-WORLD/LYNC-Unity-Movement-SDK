@@ -13,7 +13,7 @@ public class SUPRAExample : MonoBehaviour
 
     [Space]
     [Header("Firebase")]
-    public Transform supraContainer;
+    public Transform MovementContainer;
     public TMP_Text WalletAddressText, loginDateTxt, balance;
     public Button WalletAddressButton;
 
@@ -130,7 +130,7 @@ public class SUPRAExample : MonoBehaviour
                 API.CoroutineViewTransaction(
                     viewTransaction,
                     tsxData => {
-                        SuccessfulViewTransaction(tsxData.Substring(57));
+                        SuccessfulViewTransaction(tsxData.Substring(74));
                         LoadingScreen.SetActive(false);
                     },
                     errorData => {
@@ -174,13 +174,13 @@ public class SUPRAExample : MonoBehaviour
     {
         if (authType == AUTH_TYPE.FIREBASE)
         {
-            supraContainer.gameObject.SetActive(true);
+            MovementContainer.gameObject.SetActive(true);
             // StarKeyContainer.gameObject.SetActive(false);
         }
         if (authType == AUTH_TYPE.STARKEY)
         {
             // StarKeyContainer.gameObject.SetActive(true);
-            supraContainer.gameObject.SetActive(false);
+            MovementContainer.gameObject.SetActive(false);
         }
     }
 
@@ -190,16 +190,16 @@ public class SUPRAExample : MonoBehaviour
 
         if (!string.IsNullOrEmpty(hash))
         {
-            go.transform.GetComponentInChildren<TMP_Text>().text = (txnTitle != "" ? ("(" + txnTitle + ")") : "") + " Success, hash = " + hash.Substring(0, 5) + "..." + hash.Substring(hash.Length - 5) + "<color=\"green\"> Check on Supra EXPLORER<color=\"green\">";
+            go.transform.GetComponentInChildren<TMP_Text>().text = (txnTitle != "" ? ("(" + txnTitle + ")") : "") + " Success, hash = " + hash.Substring(0, 5) + "..." + hash.Substring(hash.Length - 5) + "<color=\"green\"> Check on Movement EXPLORER<color=\"green\">";
             Button button = go.AddComponent<Button>();
             button.onClick.AddListener(() =>
             {
                 Debug.Log("Opening explorer...");
                 if(LyncManager.Instance.Network == NETWORK.TESTNET){
-                    Application.OpenURL("https://testnet.suprascan.io/tx/" + hash);
+                    Application.OpenURL($"https://explorer.movementlabs.xyz/txn/{hash}?network=testnet");
                 }
                 if(LyncManager.Instance.Network == NETWORK.MAINNET){
-                    Application.OpenURL("https://suprascan.io/tx/" + hash);
+                    Application.OpenURL($"https://explorer.movementlabs.xyz/txn/{hash}?network=mainnet");
                 }
             });
         }

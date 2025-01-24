@@ -4,13 +4,14 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System;
 using System.Collections.Generic;
+using LYNC.Wallet;
 
 public class ROUTES
 {
-    public readonly static string GENERIC_TRANSACTION = LyncManager.BaseServerURL + "transactions/send";
-    public readonly static string KEYLESS_TRANSACTION = LyncManager.BaseServerURL + "/api/keyless/" + "transaction";
-    public readonly static string BALANCE = LyncManager.BaseServerURL + "wallet/balance";
-    public readonly static string PROFILE = LyncManager.BaseServerURL + "users/profile";
+    public readonly static string GENERIC_TRANSACTION = LyncManager.BaseServerURL + "/api/transaction/generic";
+    public readonly static string VIEW_TRANSACTION = LyncManager.BaseServerURL + "/api/transaction/view";
+    public readonly static string BALANCE = LyncManager.BaseServerURL + "/api/unity/balance";
+    public readonly static string PROFILE = LyncManager.BaseServerURL + "/api/user/profile";
     public readonly static string MOBILE_TRANSACTION = LyncManager.BaseServerURL + "/api/unity/" + "mobile-transaction-builder";
 }
 
@@ -21,9 +22,10 @@ public class API
     public delegate void OnSuccess(ServerBasedTransactionFeedback tsxData);
     public delegate void OnError(string error);
 
-    public static IEnumerator CoroutineTransaction(string url, Transaction customTransaction, System.Action<ServerBasedTransactionFeedback> onSuccess, System.Action<TransactionResult> onError)
+    public static IEnumerator CoroutineTransaction(Transaction customTransaction, System.Action<ServerBasedTransactionFeedback> onSuccess, System.Action<TransactionResult> onError)
     {
-        // Debug.Log(customTransaction.ToJson());
+        string url = ROUTES.GENERIC_TRANSACTION;
+        customTransaction.network = (int)LyncManager.Instance.Network;
         UnityWebRequest webRequest = UnityWebRequest.Put(url, customTransaction.ToJson());
         webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
@@ -37,17 +39,19 @@ public class API
         }
         else
         {
+            Debug.Log(webRequest.downloadHandler.text);
             TransactionResult tsxData = JsonUtility.FromJson<TransactionResult>(webRequest.downloadHandler.text);
             tsxData.success = false;
             onError(tsxData);
             Debug.Log(webRequest.error);
         }
     }
+
     public static IEnumerator CoroutineViewTransaction(ViewTransaction customTransaction, System.Action<string> onSuccess, System.Action<TransactionResult> onError)
     {
-        customTransaction.network = (LyncManager.Instance.Network == NETWORK.TESTNET ? 2 : 1).ToString();
-        string url = LyncManager.BaseServerURL + "transactions/view";
-        // Debug.Log(JsonUtility.ToJson(customTransaction));
+        string url = ROUTES.VIEW_TRANSACTION;
+
+        customTransaction.network = (int)LyncManager.Instance.Network;
         UnityWebRequest webRequest = UnityWebRequest.Put(url, JsonUtility.ToJson(customTransaction));
         webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
@@ -65,30 +69,32 @@ public class API
             onError(tsxData);
         }
     }
+
     public static IEnumerator CoroutineGetBalance(string WalletAddress, System.Action<float> onSuccess, System.Action<string> onError)
     {
-        string url = $"{LyncManager.BaseServerURL}wallet/balance?network={(int)LyncManager.Instance.Network}&accountAddress={WalletAddress}";
-        UnityWebRequest webRequest = UnityWebRequest.Get(url);       
+        string url = ROUTES.BALANCE;
+        BalanceData balanceData = new BalanceData();
+        balanceData.network = (int)LyncManager.Instance.Network;
+        balanceData.publicKey = WalletAddress;
+
+        string jsonData = JsonUtility.ToJson(balanceData);
+        UnityWebRequest webRequest = UnityWebRequest.Put(url, jsonData);   
+        webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
         webRequest.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
-        // Debug.Log("Sending request " + url); 
         yield return webRequest.SendWebRequest();
-
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
-            // Debug.Log("webRequest.downloadHandler.text"+webRequest.downloadHandler.text);
-            BalanceDataOutput balanceData = JsonUtility.FromJson<BalanceDataOutput>(webRequest.downloadHandler.text);
-            string balance = balanceData.data.data;
+            BalanceDataOutput balanceResult = JsonUtility.FromJson<BalanceDataOutput>(webRequest.downloadHandler.text);
+            string balance = balanceResult.data.ToString();
             onSuccess(float.Parse(balance));
         }
         else
         {
-            // Debug.Log(webRequest.downloadHandler.text);
             onError("Error when getting balance");
             Debug.LogError(webRequest.error);
         }
     }
-
 
     public static IEnumerator CoroutineCheckAPIKey(string uri, System.Action<bool> onSuccess, System.Action<string> onError)
     {
@@ -100,34 +106,30 @@ public class API
 
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
-            // Debug.Log(webRequest.downloadHandler.text);
             APIKeyCheckData apiResult = JsonUtility.FromJson<APIKeyCheckData>(webRequest.downloadHandler.text);
             onSuccess(apiResult.status == 200);
         }
         else
         {
-            // Debug.Log(webRequest.downloadHandler.text);
             onError(webRequest.error);
             Debug.LogError(webRequest.error);
         }
     }
 
-    public static IEnumerator CoroutineGetFirebaseProfile(SupraProfileScheme aptosProfileData, System.Action<SupraFirebaseAuthDetails> onSuccess, System.Action<string> onError)
+    public static IEnumerator CoroutineGetFirebaseProfile(MovementProfileScheme aptosProfileData, System.Action<MovementFirebaseAuthDetails> onSuccess, System.Action<string> onError)
     {
         UnityWebRequest webRequest = UnityWebRequest.Put(ROUTES.PROFILE, JsonUtility.ToJson(aptosProfileData));
-        // Debug.Log(JsonUtility.ToJson(aptosProfileData));
         webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
         webRequest.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
 
 
-        // Debug.Log($"Sending web request GET profile email: [{aptosProfileData.email}] - firebaseUid: [{aptosProfileData.firebaseUid}]");
         yield return webRequest.SendWebRequest();
 
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
             // Debug.Log(webRequest.downloadHandler.text);
-            SupraFirebaseAuthDetails aptosResponse = JsonUtility.FromJson<SupraFirebaseAuthData>(webRequest.downloadHandler.text).data;
+            MovementFirebaseAuthDetails aptosResponse = JsonUtility.FromJson<SupraFirebaseAuthData>(webRequest.downloadHandler.text).data;
             onSuccess(aptosResponse);
         }
         else
@@ -148,7 +150,6 @@ public class API
 
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
-            // Debug.Log(webRequest.downloadHandler.text);
             onSuccess(webRequest.downloadHandler.text);
         }
         else
@@ -160,7 +161,6 @@ public class API
 
     public static IEnumerator CoroutineLoginSendAnalytics(string ApiKey, string walletAddress, string loginMethod)
     {
-        // Debug.Log("CoroutineLoginSendAnalytics");
         AnalyticsData jsonObject = new AnalyticsData
         {
             apiKey = ApiKey,
@@ -182,10 +182,6 @@ public class API
             {
                 Debug.Log("AnalyticsError: " + www.error);
             }
-            // else
-            // {
-            //     Debug.Log("www" + www);
-            // }
         }
     }
 
@@ -202,8 +198,6 @@ public class API
 
         var jsonData = JsonUtility.ToJson(jsonObject);
 
-        Debug.Log("jsonData"+jsonData);
-
         string RequestURL = "https://server-supra-sdk.lync.world/api/v1/unity/users/transactions";
         using (UnityWebRequest www = UnityWebRequest.Put(RequestURL, jsonData))
         {
@@ -216,10 +210,6 @@ public class API
             {
                 Debug.Log("AnalyticsError: " + www.error);
             }
-            // else
-            // {
-            //     // Debug.Log("www" + www);
-            // }
         }
     }
 }

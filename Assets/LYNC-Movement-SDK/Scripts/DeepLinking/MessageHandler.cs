@@ -26,12 +26,11 @@ namespace LYNC.DeepLink
                 case DEEPLINK_MESSAGE_PATH.STARKEY_MOBILE_TRANSACTION:
                     MessageData = unescapedUrl;
                     break;
-                case DEEPLINK_MESSAGE_PATH.KEYLESS_AUTH:
                 case DEEPLINK_MESSAGE_PATH.STARKEY_BROWSER_TRANSACTION:
-                case DEEPLINK_MESSAGE_PATH.STARKEY:
                 case DEEPLINK_MESSAGE_PATH.FIREBASE:
                     string rawJson = unescapedUrl.Substring(unescapedUrl.IndexOf("=") + 1);
                     MessageData = Utils.FromBase64(rawJson);
+                    // Debug.Log(MessageData);
                     break;
             }
             HandleEvents();
@@ -56,16 +55,16 @@ namespace LYNC.DeepLink
             {
                 case DEEPLINK_MESSAGE_PATH.FIREBASE:
                     AuthBase.AuthType = AUTH_TYPE.FIREBASE;
-                    SupraFirebaseAuthDetails aptosFirebaseAuthData = JsonUtility.FromJson<SupraFirebaseAuthDetails>(MessageData);
+                    MovementFirebaseAuthDetails aptosFirebaseAuthData = JsonUtility.FromJson<MovementFirebaseAuthDetails>(MessageData);
                     LyncManager.Instance.SendLoginAnalytics(aptosFirebaseAuthData.accountAddress, "Firebase");
                     authBase = new FirebaseAuth(aptosFirebaseAuthData);
                     break;
-                case DEEPLINK_MESSAGE_PATH.STARKEY:
-                    AuthBase.AuthType = AUTH_TYPE.STARKEY;
-                    StarKey starKey = JsonUtility.FromJson<StarKey>(MessageData);
-                    LyncManager.Instance.SendLoginAnalytics(starKey.accountAddress, "StarKey");
-                    authBase = new StarKeyAuth(starKey.accountAddress);
-                    break;
+                // case DEEPLINK_MESSAGE_PATH.STARKEY:
+                //     AuthBase.AuthType = AUTH_TYPE.STARKEY;
+                //     StarKey starKey = JsonUtility.FromJson<StarKey>(MessageData);
+                //     LyncManager.Instance.SendLoginAnalytics(starKey.accountAddress, "StarKey");
+                //     authBase = new StarKeyAuth(starKey.accountAddress);
+                //     break;
                 default:
                     throw new System.Exception("Unknown auth type");
             }
@@ -144,8 +143,6 @@ namespace LYNC.DeepLink
         public const string STARKEY_MOBILE_TRANSACTION = "response";
         // public const string PONTEM_BROWSER_AUTH = "pontem-browser";
         public const string STARKEY_BROWSER_TRANSACTION = "starkey-browser-transaction";
-        public const string FIREBASE = "firebase-auth";
-        public const string STARKEY = "star-key-browser-auth";
-        public const string KEYLESS_AUTH = "keyless-auth";
+        public const string FIREBASE = "firebase";
     }
 }

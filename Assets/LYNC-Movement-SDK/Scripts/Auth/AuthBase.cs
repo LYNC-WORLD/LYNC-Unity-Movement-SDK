@@ -61,16 +61,6 @@ public abstract class AuthBase
                     temp = new FirebaseAuth();
                     await temp.Load(onSessionExpired);
                     break;
-                case AUTH_TYPE.STARKEY:
-                    temp = new StarKeyAuth();
-                    break;
-                // case AUTH_TYPE.PONTEM:
-                //     temp = new PontemAuth();
-                //     break;
-                // case AUTH_TYPE.KEYLESS:
-                //     temp = new KeylessAuth();
-                //     temp.Load(onSessionExpired);
-                //     break;
                 default:
                     break;
             }

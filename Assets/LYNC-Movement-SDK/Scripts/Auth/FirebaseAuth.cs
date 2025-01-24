@@ -5,10 +5,10 @@ using UnityEngine;
 public class FirebaseAuth : AuthBase
 {
     public string FirebaseEmail, FirebaseUid;
-    public SupraFirebaseAuthDetails supraFirebaseAuthDetails = null;
+    public MovementFirebaseAuthDetails supraFirebaseAuthDetails = null;
 
     public FirebaseAuth() { }
-    public FirebaseAuth(SupraFirebaseAuthDetails aptosWallet)
+    public FirebaseAuth(MovementFirebaseAuthDetails aptosWallet)
     {
         supraFirebaseAuthDetails = aptosWallet;
         FirebaseEmail = aptosWallet.email;
@@ -27,7 +27,7 @@ public class FirebaseAuth : AuthBase
 
     protected override async Task Load(System.Action onSessionExpired = null)
     {
-        var tcs = new TaskCompletionSource<SupraFirebaseAuthDetails>();
+        var tcs = new TaskCompletionSource<MovementFirebaseAuthDetails>();
         if (Instance != null && Instance is FirebaseAuth)
         {
             tcs.SetResult((Instance as FirebaseAuth).supraFirebaseAuthDetails);
@@ -62,7 +62,7 @@ public class FirebaseAuth : AuthBase
                 // if (!string.IsNullOrEmpty(FirebaseEmail) && !string.IsNullOrEmpty(FirebaseUid))
                 if (!string.IsNullOrEmpty(FirebaseEmail))
                 {
-                    LyncManager.Instance.StartCoroutine(API.CoroutineGetFirebaseProfile(new SupraProfileScheme(FirebaseEmail, FirebaseUid),
+                    LyncManager.Instance.StartCoroutine(API.CoroutineGetFirebaseProfile(new MovementProfileScheme(FirebaseEmail, FirebaseUid),
                     wallet =>
                     {
                         supraFirebaseAuthDetails = wallet;

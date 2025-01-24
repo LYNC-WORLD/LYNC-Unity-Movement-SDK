@@ -21,14 +21,12 @@ namespace LYNC
         public NETWORK Network = NETWORK.TESTNET;
         public bool SponsorTransaction = false;
         private static readonly string apiKeyValidationUrl = "https://userservices.lync.world/api/v1/projects/verifyKey?apiKey=";
-        public static readonly string BaseServerURL = "https://server-supra-sdk.lync.world/api/v1/";
-        // public static readonly string BaseFrontEndURL = "http://192.168.1.12:5173";
-        public static readonly string BaseFrontEndURL = "https://aptos-collection-git-unity-sdk-supra-lync-world.vercel.app";
+        public static readonly string BaseServerURL = "https://movement-sdk.lync.world";
+        public static readonly string BaseFrontEndURL = "https://login-movement-sdk.lync.world/";
 
         [Space]
         [Header("Login options")]
         public bool LoginOptionFirebase = true;
-        public bool LoginOptionStarKey = true;
         public string clientId;
 
         private void Awake()
@@ -100,12 +98,12 @@ namespace LYNC
 
         public void SendLoginAnalytics(string WalletAddress, string loginMethod)
         {
-            StartCoroutine(API.CoroutineLoginSendAnalytics(LyncAPIKey, WalletAddress, loginMethod));
+            // StartCoroutine(API.CoroutineLoginSendAnalytics(LyncAPIKey, WalletAddress, loginMethod));
         }
 
         public void SendTransactionAnalytics(string WalletAddress, string TransactionHash, string PaymentMode)
         {
-            StartCoroutine(API.CoroutineSendTransactionsAnalytics(LyncAPIKey, WalletAddress, (Network).ToString(), TransactionHash, PaymentMode));
+            // StartCoroutine(API.CoroutineSendTransactionsAnalytics(LyncAPIKey, WalletAddress, (Network).ToString(), TransactionHash, PaymentMode));
         }
     }
 }
