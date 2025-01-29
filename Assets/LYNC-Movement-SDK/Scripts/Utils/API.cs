@@ -8,10 +8,10 @@ using LYNC.Wallet;
 
 public class ROUTES
 {
-    public readonly static string GENERIC_TRANSACTION = LyncManager.BaseServerURL + "/api/transaction/generic";
-    public readonly static string VIEW_TRANSACTION = LyncManager.BaseServerURL + "/api/transaction/view";
-    public readonly static string BALANCE = LyncManager.BaseServerURL + "/api/unity/balance";
-    public readonly static string PROFILE = LyncManager.BaseServerURL + "/api/user/profile";
+    public readonly static string GENERIC_TRANSACTION = LyncManager.BaseServerURL + "/api/v1/transactions/send";
+    public readonly static string VIEW_TRANSACTION = LyncManager.BaseServerURL + "/api/v1/transactions/view";
+    public readonly static string BALANCE = LyncManager.BaseServerURL + "/api/v1/wallet/balance";
+    public readonly static string PROFILE = LyncManager.BaseServerURL + "/api/v1/user/profile";
     public readonly static string MOBILE_TRANSACTION = LyncManager.BaseServerURL + "/api/unity/" + "mobile-transaction-builder";
 }
 
@@ -27,6 +27,7 @@ public class API
         string url = ROUTES.GENERIC_TRANSACTION;
         customTransaction.network = (int)LyncManager.Instance.Network;
         UnityWebRequest webRequest = UnityWebRequest.Put(url, customTransaction.ToJson());
+        // Debug.Log($"{url} , {customTransaction.ToJson()}");
         webRequest.method = "POST";
         webRequest.SetRequestHeader("Content-Type", "application/json");
         webRequest.SetRequestHeader("x-api-key", LyncManager.Instance.xApiKey);
@@ -75,7 +76,7 @@ public class API
         string url = ROUTES.BALANCE;
         BalanceData balanceData = new BalanceData();
         balanceData.network = (int)LyncManager.Instance.Network;
-        balanceData.publicKey = WalletAddress;
+        balanceData.accountAddress = WalletAddress;
 
         string jsonData = JsonUtility.ToJson(balanceData);
         UnityWebRequest webRequest = UnityWebRequest.Put(url, jsonData);   
@@ -86,13 +87,14 @@ public class API
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
             BalanceDataOutput balanceResult = JsonUtility.FromJson<BalanceDataOutput>(webRequest.downloadHandler.text);
-            string balance = balanceResult.data.ToString();
+            // Debug.Log(JsonUtility.ToJson(balanceResult));
+            string balance = balanceResult.data.data.ToString();
             onSuccess(float.Parse(balance));
         }
         else
         {
-            onError("Error when getting balance");
-            Debug.LogError(webRequest.error);
+            // onError("Error when getting balance");
+            Debug.Log(webRequest.downloadHandler.text);
         }
     }
 

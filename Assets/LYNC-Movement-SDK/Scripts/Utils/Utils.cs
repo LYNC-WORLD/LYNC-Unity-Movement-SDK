@@ -37,20 +37,23 @@ namespace LYNC
     [System.Serializable]
     public class MovementFirebaseAuthDetails
     {
+        public string firebaseUid;
+        public string email;
         public bool isFunded;
+        public string privateAddress;
+        public string accountAddress;
+        public string authType;
+
+
         public string mintingHash;
         public string fundingHash;
         public string _id;
-        public string firebaseUid;
-        public string email;
         public string name;
         public string avatar;
         public string lastLoginAt;
         public string providerId;
         public string createdAt;
         public string updatedAt;
-        public string privateKey;
-        public string accountAddress;
         public float balance;
 
         public async Task<float> UpdateBalance()
@@ -93,7 +96,7 @@ namespace LYNC
 
         [HideInInspector] public string transactionId;
         [HideInInspector] public string accountAddress;
-        [HideInInspector] public string privateKey;
+        [HideInInspector] public string privateAddress;
         // [HideInInspector] public string firebaseUid;
         [HideInInspector] public bool usePaymaster;
         [HideInInspector] public int network;
@@ -126,7 +129,7 @@ namespace LYNC
             if (authBase is FirebaseAuth)
             {
                 accountAddress = authBase.accountAddress;
-                privateKey = (authBase as FirebaseAuth).supraFirebaseAuthDetails.privateKey;
+                privateAddress = (authBase as FirebaseAuth).supraFirebaseAuthDetails.privateAddress;
                 // firebaseUid = (authBase as FirebaseAuth).FirebaseUid;
             }
         }
@@ -235,7 +238,7 @@ namespace LYNC
     public class BalanceData
     {
         public int network;
-        public string publicKey;
+        public string accountAddress;
     }
 
     [Serializable]
@@ -244,6 +247,10 @@ namespace LYNC
         public int status;
         public bool success;
         public string message;
+        public BalanceDataClass data;
+    }
+    [Serializable]
+    public class BalanceDataClass {
         public float data;
     }
     [Serializable]

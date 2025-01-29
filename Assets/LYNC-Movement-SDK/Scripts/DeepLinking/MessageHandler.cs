@@ -43,8 +43,8 @@ namespace LYNC.DeepLink
         }
 
         public class TempAuthData { public string authType; }
-        public class PontemData { public string publicAddress; }
-        public class StarKey { public string accountAddress; public string typeOfAuth; }
+        // public class PontemData { public string publicAddress; }
+        // public class StarKey { public string accountAddress; public string typeOfAuth; }
         public class KeylessData { public string accountAddress; public int expirationDateSeconds; public string publicKey; public string privateKey; public string dataId; }
 
         public AuthBase ExtractAndSaveWalletFromDLMessage()
@@ -58,6 +58,7 @@ namespace LYNC.DeepLink
                     MovementFirebaseAuthDetails aptosFirebaseAuthData = JsonUtility.FromJson<MovementFirebaseAuthDetails>(MessageData);
                     LyncManager.Instance.SendLoginAnalytics(aptosFirebaseAuthData.accountAddress, "Firebase");
                     authBase = new FirebaseAuth(aptosFirebaseAuthData);
+                    // Debug.Log(JsonUtility.ToJson(authBase));
                     break;
                 // case DEEPLINK_MESSAGE_PATH.STARKEY:
                 //     AuthBase.AuthType = AUTH_TYPE.STARKEY;

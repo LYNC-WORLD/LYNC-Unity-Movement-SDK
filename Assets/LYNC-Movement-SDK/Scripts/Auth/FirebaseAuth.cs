@@ -8,12 +8,12 @@ public class FirebaseAuth : AuthBase
     public MovementFirebaseAuthDetails supraFirebaseAuthDetails = null;
 
     public FirebaseAuth() { }
-    public FirebaseAuth(MovementFirebaseAuthDetails aptosWallet)
+    public FirebaseAuth(MovementFirebaseAuthDetails movementWallet)
     {
-        supraFirebaseAuthDetails = aptosWallet;
-        FirebaseEmail = aptosWallet.email;
-        FirebaseUid = aptosWallet.firebaseUid;
-        accountAddress = aptosWallet.accountAddress;
+        supraFirebaseAuthDetails = movementWallet;
+        FirebaseEmail = movementWallet.email;
+        FirebaseUid = movementWallet.firebaseUid;
+        accountAddress = movementWallet.accountAddress;
         // Debug.Log(accountAddress);
         Save(this);
     }
