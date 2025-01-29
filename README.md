@@ -12,7 +12,7 @@ This release includes the following:
 Download the SDK: [https://github.com/LYNC-WORLD/LYNC-Unity-Movement-SDK/releases](https://github.com/LYNC-WORLD/LYNC-Unity-Movement-SDK/releases)
 
 ## Get your API Key
-Please get your API key before downloading the SDK from [here](https://www.lync.world/form.html)
+Please get your API key before downloading the SDK from [here](https://dashboard.lync.world/)
 
 ## Installation
 Import the SDK .unitypackage file to your project. or simply drag and drop .unitypackage file to your project.
