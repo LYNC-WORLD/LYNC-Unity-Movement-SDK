@@ -1680,7 +1680,7 @@ MonoBehaviour:
       type: 0
     transactionId: 
     accountAddress: 
-    privateKey: 
+    privateAddress: 
     usePaymaster: 0
     network: 0
     apiKey: 
@@ -2845,7 +2845,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 375463546, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: SponsorTransaction
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8536144024681728995, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: m_LocalPosition.x

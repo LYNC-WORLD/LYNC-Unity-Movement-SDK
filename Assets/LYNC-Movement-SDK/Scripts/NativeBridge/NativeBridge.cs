@@ -32,7 +32,7 @@ public static class NativeBridge
 
 
             // WebGLLogin(url, LyncManager.BaseServerURL.Replace("http", "ws"), DeepLinkManager.gameObjectName);
-            WebGLLogin(url, "wss://server-supra-sdk.lync.world", DeepLinkManager.gameObjectName);
+            WebGLLogin(url, "wss://movement-sdk.lync.world", DeepLinkManager.gameObjectName);
         }
     }
 #endif
