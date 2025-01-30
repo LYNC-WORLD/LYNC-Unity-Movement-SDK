@@ -225,7 +225,7 @@ public class SUPRAExample : MonoBehaviour
     {
         WalletAddressText.text = (firebaseAuth == null ? "Disconnected" : AbbreviateWalletAddressHex(firebaseAuth.supraFirebaseAuthDetails.accountAddress));
         loginDateTxt.text = "Login Date = " + (firebaseAuth == null ? "" : firebaseAuth.LoginDate.ToString());
-        balance.text = (firebaseAuth == null ? "0" : firebaseAuth.supraFirebaseAuthDetails.balance) + " APT";
+        balance.text = (firebaseAuth == null ? "0" : firebaseAuth.supraFirebaseAuthDetails.balance) + " MOVE";
     }
 
     public string AbbreviateWalletAddressHex(string hexString, int prefixLength = 4, int suffixLength = 3)
