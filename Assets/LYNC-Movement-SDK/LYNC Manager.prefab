@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8536144024681728995}
-  - component: {fileID: 375463546}
-  - component: {fileID: 5805647402976630236}
+  - component: {fileID: 4682397190774593713}
+  - component: {fileID: 2770128286315958132}
   m_Layer: 0
   m_Name: LYNC Manager
   m_TagString: Untagged
@@ -33,7 +33,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &375463546
+--- !u!114 &4682397190774593713
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -42,15 +42,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 8536144024681728999}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 33b0adb2f0a9c496fb0aed6ee15da393, type: 3}
+  m_Script: {fileID: -278681970, guid: ccde53f7add4903448f5e1da500a85a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LyncAPIKey: 66f20e45-acc5-487c-863b-5c41dddf84d8
+  LyncAPIKey: 
   Network: 2
   SponsorTransaction: 1
   LoginOptionFirebase: 1
-  clientId: 335383702309-okoi94cho9s5dctvpe4ngng55iqgjbg5.apps.googleusercontent.com
---- !u!114 &5805647402976630236
+  clientId: 
+--- !u!114 &2770128286315958132
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -59,7 +59,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8536144024681728999}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c02012e941de34e49b415e7c44b845df, type: 3}
+  m_Script: {fileID: 1591778871, guid: ccde53f7add4903448f5e1da500a85a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deepLinkUrl: LYNCMovement
+  deepLinkUrl: lync
