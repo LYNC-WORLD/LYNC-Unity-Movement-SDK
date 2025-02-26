@@ -2845,7 +2845,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4682397190774593713, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: LyncAPIKey
-      value: 66f20e45-acc5-487c-863b-5c41dddf84d8
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8536144024681728995, guid: 2a88366018afe964b965e199ff79c9c4, type: 3}
       propertyPath: m_LocalPosition.x
