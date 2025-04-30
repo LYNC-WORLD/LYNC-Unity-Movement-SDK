@@ -2,7 +2,7 @@
 LYNC Unity Movement SDK is a no-code Modular Unity SDK supporting PC (MacOS and Windows) and Mobile (Android and iOS) on [Aptos Move (M2)](https://movementlabs.xyz/). 
 
 Platform Supported: PC (Windows and MacOs), Mobile (Android and iOS) and WebGL
-Network Supported: Movement Testnet and Devnet
+Network Supported: Movement Testnet and Mainnet
 
 This release includes the following:
 - Social Logins
